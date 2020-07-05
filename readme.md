@@ -6,12 +6,12 @@
  
  ## Contents
  
- - **Extension Methods**
- - **HiraCoroutines**
- - **HiraEvents**
- - **HiraLogger**
- - **HiraSaves**
- - **HiraTimer**
- - **HiraTweener**
- - **ScriptableObject Variables**
- - **SerializedInstance**
+ - **[Extension Methods](HiraTools/Extension%20Methods)**
+ - **[HiraCoroutines](HiraTools/HiraCoroutines)**
+ - **[HiraEvents](HiraTools/HiraEvents)**
+ - **[HiraLogger](HiraTools/HiraLogger)**
+ - **[HiraSaves](HiraTools/HiraSaves)**
+ - **[HiraTimer](HiraTools/HiraTimer)**
+ - **[HiraTweener](HiraTools/HiraTweener)**
+ - **[ScriptableObject Variables](HiraTools/ScriptableObject%20Variables)**
+ - **[SerializedInstance](HiraTools/SerializedInstance)**
