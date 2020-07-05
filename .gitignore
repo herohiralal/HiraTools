@@ -1,0 +1,7 @@
+﻿/HiraBoilerplate.sln
+/HiraBoilerplate.sln.DotSettings.user
+*/bin
+*/obj
+*/.idea/
+*/.idea.HiraBoilerplate
+*.csproj
