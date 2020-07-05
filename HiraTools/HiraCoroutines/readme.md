@@ -1,0 +1,7 @@
+﻿# HiraCoroutines
+
+### What?
+
+``HiraCoroutines`` is a dummy MonoBehaviour singleton that gets created when it's needed, and is then used to run any coroutines that [**HiraTimer**](../HiraTimer) or [**HiraTweener**](../HiraTweener) might require.
+
+> There is nothing else to do here, unless you are looking for a template singleton that creates itself and maintains the reference in a safe way with minimal runtime checks.

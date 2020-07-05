@@ -14,6 +14,8 @@
  
  - `HiraTools-Addressables.dll` requires the Addressables package from Unity Package Manager.
  
+#### Please also keep in mind to mark ``HiraTools-Editor.dll`` assembly as Editor-Only in your Unity Inspector.
+ 
 ## Contents
  
  - **[Extension Methods](HiraTools/Extension%20Methods)**
