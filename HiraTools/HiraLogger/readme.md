@@ -15,6 +15,7 @@ Here are the scripting define symbols you need to add to Unity's project setting
 ---
 
 >(To open the related setting, go to *Edit* / *Project Setings*; go to *Player* tab, open the *Other Settings* section, and scroll down to *Scripting Define Symbols*)
+![IMAGEPLACEHOLDER - DEFINE](.images/definesymbols.png)
 
 ---
 

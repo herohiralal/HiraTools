@@ -50,6 +50,16 @@ namespace HiraPoolTool.Abstractions
                 return null;
             }
         }
+        
+        public T GetPooledInstanceWithAutoReturn<T>(float timer, bool ignoreTimescale = false) where T : Component
+        {
+            var pooledInstance = GetPooledInstance<T>();
+            HiraTimerEvents.RequestPing(() => ReturnInstanceToPool(pooledInstance),
+                timer,
+                true,
+                ignoreTimescale);
+            return pooledInstance;
+        }
 
         public virtual void ReturnInstanceToPool(Component component)
         {
