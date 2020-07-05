@@ -48,6 +48,8 @@ pool.LoadResource(g=>g.GetComponentInChildren<SomeOtherComponent>(), 20);
 
 > If you pass ``null`` as the first parameter, or do not provide it, then PoolTool will automatically choose ``g=>g.transform`` as the first parameter.
 
+**NOTE: It is not possible to retrieve pooled instances before loading the resources.**
+
 #### 4. Retrieving
 
 > You will need to pass the correct type you initialized the pool with, or the system will throw a ``NullReferenceException``
@@ -74,9 +76,9 @@ pool.ReturnInstanceToPool(pooledInstance);
 
 #### 6. Unloading
 
-> It only makes sense to clear the pool up when not needed, so you can use this to unload all of the pool's resources:
+> It only makes sense to clear the pool up when not needed, so you can use this to destroy all pooled and loaned instances.
 ```c#
 pool.UnloadResource();
 ```
 
-> This will also clear all the pooled instances, regardless whether they are currently pooled or not.
+**NOTE: Unloading resources will destroy ALL instances of the pooled object, regardless whether they are still inside the pool, or outside.**
