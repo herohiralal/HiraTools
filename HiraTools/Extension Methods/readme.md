@@ -14,7 +14,7 @@
 
  1. #### Keeping To A Side
  
- ![IMAGEPLACEHOLDER - KEEP](images~/keep.png)
+ ![IMAGEPLACEHOLDER - KEEP](.images/keep.png)
  
  - ``(rect).KeepToLeftFor(int width)`` - 
  > Returns a new Rect that follows the bounds of the original Rect, except for the anchor being on the left edge, and with the given ``width``.
@@ -27,7 +27,7 @@
  
  2. #### Shifting To A Side
  
- ![IMAGEPLACEHOLDER - KEEP](images~/shift.png)
+ ![IMAGEPLACEHOLDER - KEEP](.images/shift.png)
  
  - ``(rect).ShiftToLeftBy(int amount)`` - 
  > Returns a new Rect that follows the bounds of the original Rect, except for the anchor being on the left edge, and with `amount` units of space left on the right side.
@@ -40,7 +40,7 @@
  
  3. #### Limited Shifting To A Side
  
- ![IMAGEPLACEHOLDER - KEEP](images~/lshift.png)
+ ![IMAGEPLACEHOLDER - KEEP](.images/lshift.png)
  
  - ``(rect).ShiftToLeftBy(int amount, int width)`` - 
  > Same as ``(rect).ShiftToLeftBy(int amount)`` but limits the width to ``width``.
