@@ -8,6 +8,8 @@
 
  Just grab the latest release and put it in your Unity Project's `Assets/Plugins` folder.
  
+ This repository contains all of the code involved in this project, so if you wish to build it yourself, you can do that as well. Or you can just import the *.cs files directly into your Unity project.
+ 
  The detailed documentation for any specific API is in the corresponding folder. Follow the links in the [Contents](#contents) section. 
  
  Keep package dependencies in mind however.
@@ -22,6 +24,8 @@
  - **[HiraCoroutines](HiraTools/HiraCoroutines)**
  - **[HiraEvents](HiraTools/HiraEvents)**
  - **[HiraLogger](HiraTools/HiraLogger)**
+ - **[HiraPoolTool](HiraTools/HiraPoolTool)**
+ - **[HiraPoolTool-Addressable](HiraTools-Addressables/HiraPoolTool)**
  - **[HiraSaves](HiraTools/HiraSaves)**
  - **[HiraTimer](HiraTools/HiraTimer)**
  - **[HiraTweener](HiraTools/HiraTweener)**
