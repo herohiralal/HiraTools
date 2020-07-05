@@ -90,7 +90,7 @@ namespace UnityEngine
 
 void Awake()
 {
-    playerHealth.Variable += OnHealthUpdate;
+    playerHealth.Variable.OnValueChange += OnHealthUpdate;
 }
 
 private void OnHealthUpdate(float newValue)
