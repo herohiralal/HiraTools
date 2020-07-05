@@ -16,7 +16,7 @@ namespace UnityEngine
                 .SelectMany(assembly => assembly.GetTypes()
                     .Where(t => (typeof(TBase)).IsAssignableFrom(t) && !t.IsAbstract));
 
-        public static IEnumerable<string> GetNamesOfSubclasses(this IEnumerable<Type> types) =>
+        private static IEnumerable<string> GetNamesOfSubclasses(this IEnumerable<Type> types) =>
             types.Select(t => t.Name);
 
         public static IEnumerable<string> GetNamesOfSubclasses(this Type baseClass) =>

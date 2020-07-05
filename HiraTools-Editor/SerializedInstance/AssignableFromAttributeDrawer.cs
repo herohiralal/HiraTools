@@ -32,9 +32,9 @@ namespace UnityEditor
             }
 
             var types = Attribute.Type.GetSubclasses().ToArray();
-            var names = types.GetNamesOfSubclasses().ToArray();
+            var names = types.Select(t=>t.Name).ToArray();
             //var (types, names) = GetTypesAndNames();
-            if (names == null || names.Length == 0) names = new[] {no_instances};
+            if (names.Length == 0) names = new[] {no_instances};
 
             var data = property.FindPropertyRelative(class_data_variable_name);
             var mainRect = EditorGUI.PrefixLabel(position, label);
