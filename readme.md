@@ -22,16 +22,37 @@
 ## Contents
  
  - **[Extension Methods](HiraTools/Extension%20Methods)**
+ > Some extension methods and static methods to cut down on the boilerplate.
+
  - **[HiraCoroutines](HiraTools/HiraCoroutines)**
+ > A template singleton that does nothing else.
+
  - **[HiraEvents](HiraTools/HiraEvents)**
+ > Boilerplate child classes of UnityEvents.
+
  - **[HiraLogger](HiraTools/HiraLogger)**
+ > Conditional logging, using scripting define symbols. More boilerplate.
+
  - **[HiraPoolTool](HiraTools/HiraPoolTool)**
+ > A pooling solution.
+
  - **[HiraPoolTool-Addressable](HiraTools-Addressables/HiraPoolTool)**
+ > A pooling solution ft. Addressables.
+
  - **[HiraSaves](HiraTools/HiraSaves)**
+ > Persistent saving solution.
+
  - **[HiraTimer](HiraTools/HiraTimer)**
+ > A better version of Unity MonoBehaviour's Invoke calls.
+
  - **[HiraTweener](HiraTools/HiraTweener)**
+ > Tweening library with a sharp focus on ease of use, so you can do a lot of things from the Inspector itself.
+
  - **[ScriptableObject Variables](HiraTools/ScriptableObject%20Variables)**
+ > ScriptableObject Variables, like the ones from Ryan Hipple's Unite Austin 2017 talk. Also includes some extra functionality.
+
  - **[SerializedInstance](HiraTools/SerializedInstance)**
+ > Too long to explain, LOL.
 
 
 # Created by Rohan.

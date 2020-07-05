@@ -19,7 +19,7 @@ namespace Hiralal.SOVariables.Core
             get => useConstant ? constant : Variable.Value;
             set
             {
-                if (useConstant || Variable == null) constant = value; 
+                if (useConstant) constant = value; 
                 else Variable.Value = value;
             }
         }
