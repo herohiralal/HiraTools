@@ -12,7 +12,7 @@ namespace UnityEngine
         void Resume();
         void Pause();
         void Stop(bool withOnEnableCallback = false);
-        IHiraTweenTracker Chain(in HiraTweenProperties properties);
+        IHiraTweenTracker Chain(in HiraTween tween);
     }
     
     internal readonly struct HiraTweenTracker : IHiraTweenTracker
@@ -91,15 +91,15 @@ namespace UnityEngine
             control.MarkFree();
         }
 
-        public IHiraTweenTracker Chain(in HiraTweenProperties properties)
+        public IHiraTweenTracker Chain(in HiraTween tween)
         {
             if (!IsValid)
             {
                 LogInvalidTrackerUsage();
                 return null;
             }
-            
-            var tracker = HiraTweenCore.InterpolateLater(in properties);
+
+            var tracker = tween.StartLater();
             control.OnCompletion += tracker.Start;
             return tracker;
         }

@@ -13,11 +13,21 @@ namespace Hiralal.Tweeners
         protected abstract ScriptableObjectVariableReference<T> EndValue { get; }
         protected abstract Func<T, T, float, T> InterpolationFunction { get; }
         
-        //====================================================================== INTERFACE
+        //====================================================================== CORE INTERFACE
         
-        public sealed override void StartTweenForward() => Tween(StartValue.Value, EndValue.Value, easing, OnForwardCompletion);
+        public sealed override void StartTweenForward() => 
+            Tween(StartValue.Value,
+                EndValue.Value,
+                easing,
+                OnForwardCompletion);
 
-        public sealed override void StartTweenBackward() => Tween(EndValue.Value, StartValue.Value, InverseEasing, OnBackwardCompletion);
+        public sealed override void StartTweenBackward() =>
+            Tween(EndValue.Value,
+                StartValue.Value,
+                invertEasingWhenTweeningBackwards
+                    ? InverseEasing
+                    : easing,
+                OnBackwardCompletion);
 
         public sealed override void Pause() { if(TrackerIsValid) CurrentTracker.Pause(); }
 
@@ -35,9 +45,9 @@ namespace Hiralal.Tweeners
         {
             Stop();
             
-            CurrentTracker = HiraTweenCore.Interpolate(new HiraTweenProperties(duration,
+            CurrentTracker = new HiraTween(duration,
                 f => Target.Invoke(InterpolationFunction(startValue, endValue, f)),
-                type, easeType, callback));
+                type, easeType, callback).Start();
         }
 
         private void OnForwardCompletion()

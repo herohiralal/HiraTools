@@ -2,11 +2,11 @@
 
 ### What?
 
- A bunch of neat extension methods (some of them are plain static methods) to speed up certain things.
+A bunch of neat extension methods (some of them are plain static methods) to speed up certain things.
  
 ### How?
 
- All the extension methods are in the UnityEngine namespace. Use that in your `*.cs` file and you're good to go.
+All the extension methods are in the UnityEngine namespace. Use that in your `*.cs` file and you're good to go.
  
 ## API
 

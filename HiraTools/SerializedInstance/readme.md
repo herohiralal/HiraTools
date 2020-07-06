@@ -18,7 +18,7 @@ public interface IDamageMitigationCalculator
 }
 ```
 
-The designers could make as many classes as they want to come up with as many formulae as they want to calculate the damage mitigation.
+The designers could make as many classes implementing the interface as they want to come up with as many formulae as they want to calculate the damage mitigation.
 
 And they could select the type of damage mitigation they wanted from a dropdown menu.
 

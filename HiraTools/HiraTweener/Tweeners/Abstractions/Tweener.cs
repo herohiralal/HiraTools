@@ -15,7 +15,26 @@ namespace UnityEngine
         [SerializeField] protected float duration = default;
         [SerializeField] protected HiraTweenterpolationType type = default;
         [SerializeField] protected HiraTweenEaseType easing = default;
-        [SerializeField] protected HiraTweenRepeatType repeat = HiraTweenRepeatType.Off; 
+        [SerializeField] protected HiraTweenRepeatType repeat = HiraTweenRepeatType.Off;
+        [SerializeField] protected HiraTweenPlayType playOnAwake = HiraTweenPlayType.Off;
+        [SerializeField] protected bool invertEasingWhenTweeningBackwards = true;
+
+        protected void Awake()
+        {
+            switch (playOnAwake)
+            {
+                case HiraTweenPlayType.Off:
+                    break;
+                case HiraTweenPlayType.Forward:
+                    StartTweenForward();
+                    break;
+                case HiraTweenPlayType.Backward:
+                    StartTweenBackward();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         protected HiraTweenEaseType InverseEasing =>
             easing switch
@@ -37,10 +56,5 @@ namespace UnityEngine
         public abstract void Stop();
         public abstract void SetToStart();
         public abstract void SetToEnd();
-    }
-
-    public enum HiraTweenRepeatType
-    {
-        Off, Loop, PingPong
     }
 }

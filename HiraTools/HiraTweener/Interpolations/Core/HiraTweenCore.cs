@@ -16,20 +16,20 @@ namespace UnityEngine
     {
         private static ulong _index = ulong.MinValue;
         
-        public static IHiraTweenTracker Interpolate(in HiraTweenProperties properties)
+        public static IHiraTweenTracker Start(in this HiraTween tween)
         {
-            var tracker = InterpolateLater(in properties);
+            var tracker = tween.StartLater();
             tracker.Start();
             return tracker;
         }
 
-        public static IHiraTweenTracker InterpolateLater(in HiraTweenProperties properties)
+        public static IHiraTweenTracker StartLater(in this HiraTween tween)
         {
             _index++;
             
-            var control = HiraTweenControl.Get(properties.Time, properties.OnIteration, properties.OnCompletion, _index);
+            var control = HiraTweenControl.Get(tween.Time, tween.OnIteration, tween.OnCompletion, _index);
 
-            var interpolationMethod = GetInterpolationMethod(properties.TweenType, properties.EaseType);
+            var interpolationMethod = GetInterpolationMethod(tween.TweenType, tween.EaseType);
 
             var coroutine = UseInterpolator(control, interpolationMethod);
 
