@@ -27,7 +27,8 @@ namespace UnityEngine
         {
             _index++;
             
-            var control = HiraTweenControl.Get(tween.Time, tween.OnIteration, tween.OnCompletion, _index);
+            var control = HiraTweenControl.Get(_index);
+            control.Initialize(tween.Time, tween.OnIteration, tween.OnCompletion);
 
             var interpolationMethod = GetInterpolationMethod(tween.TweenType, tween.EaseType);
 
@@ -38,14 +39,14 @@ namespace UnityEngine
 
         private static IEnumerator UseInterpolator(HiraTweenControl control, Func<float, float> interpolationMethod)
         {
-            while (control.IsPaused) yield return null;
+            while (control.Paused) yield return null;
 
             var timeSinceStart = Time.deltaTime;
             var onIteration = control.OnIteration;
 
             while (timeSinceStart < control.Duration)
             {
-                if (!control.IsPaused)
+                if (!control.Paused)
                 {
                     onIteration(interpolationMethod(timeSinceStart / control.Duration));
                     timeSinceStart += Time.deltaTime;

@@ -1,32 +1,34 @@
-﻿﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Hiralal.CoroutineTracker
 {
-    internal class HiraTimerControl
+    internal class HiraTimerControl : HiraCoroutineControlGeneric<HiraTimerControl>
     {
-        private static readonly List<HiraTimerControl> pool = new List<HiraTimerControl>();
-
-        private HiraTimerControl() { }        
-        internal static HiraTimerControl Get(float startingTimer)
+        internal void Initialize(float startingTimer, Action onCompletion)
         {
-            var count = pool.Count;
-            
-            HiraTimerControl hiraTimerControl;
-            if (count > 0)
-            {
-                hiraTimerControl = pool[count - 1];
-                pool.RemoveAt(count - 1);
-            }
-            else hiraTimerControl = new HiraTimerControl();
-
-            hiraTimerControl.Timer = startingTimer;
-            return hiraTimerControl;
+            Timer = startingTimer;
+            OnCompletion = onCompletion;
         }
         
-        internal float Timer { get; set; }
+        private float Timer { get; set; }
 
-        internal bool IsPaused { get; set; } = false;
+        //====================================================================== COROUTINE INTERFACE
 
-        internal void MarkFree() => pool.Add(this);
+        internal bool TimerNotYetExpired => Timer >= 0;
+        
+        internal WaitForSecondsRealtime GetWaiter() => new WaitForSecondsRealtime(Timer);
+
+        internal void PunchTimer() => Timer -= Time.deltaTime;
+
+        //====================================================================== TRACKER INTERFACE
+
+        internal float GetTimer(in ulong index) => DoesIndexMatch(in index) ? Timer : 0;
+
+        internal void SetTimer(in ulong index, in float value)
+        {
+            if (DoesIndexMatch(in index)) Timer = value;
+        }
     }
 }

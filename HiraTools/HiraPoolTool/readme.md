@@ -12,6 +12,10 @@ A pooling solution for Unity, with an emphasis on ease of use, while retaining t
 
 ![IMAGE PLACEHOLDER - PoolTool](.images/pooltool.png)
 
+> As of release 1.11 you can also use PoolTool (Resources).
+
+![IMAGE PLACEHOLDER - PoolToolResources](.images/pooltoolresources.png)
+
 #### 2. Key-Referencing
 
 > In your project window, right-click, and go to *Create* / *Hiralal* / *Pool Key* to create a pool key.
@@ -49,6 +53,16 @@ pool.LoadResource(g=>g.GetComponentInChildren<SomeOtherComponent>(), 20);
 > If you pass ``null`` as the first parameter, or do not provide it, then PoolTool will automatically choose ``g=>g.transform`` as the first parameter.
 
 **NOTE: It is not possible to retrieve pooled instances before loading the resources.**
+> You can query whether the resource has been loaded.
+```c#
+if (pool.IsResourceLoaded)
+{
+    // ..
+}
+```
+
+> For a ``PoolTool``, the system will initialize itself when you call LoadResources. For ``PoolTool (Resources)`` the system will use ``Resources.LoadAsync`` to load the appropriate prefab.
+
 
 #### 4. Retrieving
 
@@ -82,3 +96,5 @@ pool.UnloadResource();
 ```
 
 **NOTE: Unloading resources will destroy ALL instances of the pooled object, regardless whether they are still inside the pool, or outside.**
+
+> A ``PoolTool (Resources)`` will not unload the resources from memory however. You would manually need to call ``Resources.UnloadUnusedAssets()``.

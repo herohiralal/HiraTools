@@ -12,35 +12,44 @@ namespace UnityEngine
 {
     public static class HiraTimerEvents
     {
+        private static ulong _index = ulong.MinValue;
+        
         public static IHiraTimerTracker RequestPing(Action onTimerFinish, float time, bool startAutomatically = true, bool ignoreTimeScale = false)
         {
-            var control = HiraTimerControl.Get(time);
-            control.IsPaused = !startAutomatically;
+            _index++;
+            
+            var control = HiraTimerControl.Get(_index);
+            control.Initialize(time, onTimerFinish);
+            
             var enumerator = ignoreTimeScale
-                ? UnscaledTimerPing(onTimerFinish, control)
-                : ScaledTimerPing(onTimerFinish, control);
-            var coroutine = HiraCoroutines.Instance.StartCoroutine(enumerator);
-            return new HiraTimerTracker(coroutine, control);
+                ? UnscaledTimerPing(control)
+                : ScaledTimerPing(control);
+            
+            var tracker = new HiraTimerTracker(enumerator, control, _index);
+
+            if (startAutomatically) tracker.Start();
+            
+            return tracker;
         }
 
-        private static IEnumerator ScaledTimerPing(Action onTimerFinish, HiraTimerControl control)
+        private static IEnumerator ScaledTimerPing(HiraTimerControl control)
         {
-            while (control.Timer >= 0)
+            while (control.TimerNotYetExpired)
             {
-                if (!control.IsPaused) control.Timer -= Time.deltaTime;
+                if (!control.Paused) control.PunchTimer();
 
                 yield return null;
             }
 
-            onTimerFinish();
+            control.OnCompletion();
             control.MarkFree();
         }
 
-        private static IEnumerator UnscaledTimerPing(Action onTimerFinish, HiraTimerControl control)
+        private static IEnumerator UnscaledTimerPing(HiraTimerControl control)
         {
-            while (control.IsPaused) yield return null;
-            yield return new WaitForSecondsRealtime(control.Timer);
-            onTimerFinish();
+            while (control.Paused) yield return null;
+            yield return control.GetWaiter();
+            control.OnCompletion();
             control.MarkFree();
         }
     }

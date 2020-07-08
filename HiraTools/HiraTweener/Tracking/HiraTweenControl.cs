@@ -1,59 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Hiralal.CoroutineTracker
 {
-    public class HiraTweenControl
+    internal class HiraTweenControl : HiraCoroutineControlGeneric<HiraTweenControl>
     {
-        private static readonly List<HiraTweenControl> pool = new List<HiraTweenControl>();
-
-        private HiraTweenControl() { }
-        
-        //====================================================================== POOLING
-
-        internal static HiraTweenControl Get(float duration, Action<float> onIteration, Action onCompletion, ulong index)
+        internal void Initialize(float duration, Action<float> onIteration, Action onCompletion)
         {
-            var count = pool.Count;
-            
-            HiraTweenControl hiraTweenControl;
-            if (count > 0)
-            {
-                hiraTweenControl = pool[count - 1];
-                pool.RemoveAt(count - 1);
-            }
-            else hiraTweenControl = new HiraTweenControl();
-            
-            // set the appropriate initial state for the object
-            hiraTweenControl.IsPaused = false;
-            hiraTweenControl.Duration = duration;
-            hiraTweenControl.OnIteration = onIteration;
-            hiraTweenControl.OnCompletion = onCompletion;
-            hiraTweenControl.IsRunning = false;
-            hiraTweenControl.Index = index;
-            
-            return hiraTweenControl;
+            Duration = duration;
+            OnIteration = onIteration;
+            OnCompletion = onCompletion;
         }
 
-        internal void MarkFree()
-        {
-            IsRunning = false;
-            pool.Add(this);
-            Index = ulong.MinValue;
-        }
-        
-        internal ulong Index { get; private set; }
+        internal Action<float> OnIteration { get; private set; } = null;
 
-        //====================================================================== CORE FUNCTIONALITY
-        internal bool IsRunning { get; private set; }
-
-        internal Action<float> OnIteration = null;
-        internal Action OnCompletion = null;
-        internal void MarkStarted() => IsRunning = true;
-        
-        //====================================================================== PAUSING / RESUMING
-        
         internal float Duration { get; private set; }
 
-        internal bool IsPaused { get; set; } = false;
+        internal IHiraTweenTracker Chain(in ulong index, in HiraTween tween)
+        {
+            if (!DoesIndexMatch(in index)) return null;
+
+            var tracker = tween.StartLater();
+            OnCompletion += tracker.Start;
+            return tracker;
+        }
     }
 }

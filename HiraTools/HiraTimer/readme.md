@@ -24,7 +24,7 @@ var tracker = HiraTimerEvents.RequestPing(() => Debug.Log("Invoked"), 10, true, 
 > The third parameter is whether or not you wish for the timer to start automatically.
 > If you do not wish to start automatically, you can start it later by using:
 ```c#
-tracker.Resume();
+if (!tracker.HasStarted) tracker.Start();
 ```
 
 > The fourth parameter determines whether or not you wish to ignore the timescale.
