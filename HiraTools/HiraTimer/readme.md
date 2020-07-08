@@ -59,7 +59,15 @@ if(tracker.IsPaused) tracker.Resume();
 tracker.Stop();
 ```
 
-> This will not return a callback, obviously.
+> You can choose to explicitly enable the callback.
+```c#
+tracker.Stop(true);
+```
+
+> Also note that stopping the timer, or the timer running out will render your tracker useless. You can query its validity with:
+```c#
+if(tracker.IsValid) { /* something */ }
+```
 
 #### 5. Accessing the time remaining
 

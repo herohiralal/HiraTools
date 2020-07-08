@@ -27,7 +27,7 @@ namespace UnityEngine
         {
             _index++;
             
-            var control = HiraTweenControl.Get(_index);
+            var control = HiraTweenControl.Get(in _index);
             control.Initialize(tween.Time, tween.OnIteration, tween.OnCompletion);
 
             var interpolationMethod = GetInterpolationMethod(tween.TweenType, tween.EaseType);

@@ -18,7 +18,7 @@ namespace UnityEngine
         {
             _index++;
             
-            var control = HiraTimerControl.Get(_index);
+            var control = HiraTimerControl.Get(in _index);
             control.Initialize(time, onTimerFinish);
             
             var enumerator = ignoreTimeScale

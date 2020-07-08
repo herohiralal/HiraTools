@@ -10,7 +10,7 @@ namespace Hiralal.CoroutineTracker
         
         private static readonly List<T> pool = new List<T>();
 
-        internal static T Get(ulong index)
+        internal static T Get(in ulong index)
         {
             var count = pool.Count;
 
