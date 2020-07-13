@@ -6,4 +6,5 @@
 
 There's also some boilerplate for those two tools.
 
-> There is nothing else to do here, unless you are looking for a template singleton that creates itself and maintains the reference in a safe way with minimal runtime checks.
+> ~~There is nothing else to do here, unless you are looking for a template singleton that creates itself and maintains the reference in a safe way with minimal runtime checks.~~
+> For a template singleton, you can check out HiraManagers.

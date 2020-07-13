@@ -27,7 +27,8 @@
  - ### **[HiraCoroutines](HiraTools/HiraCoroutines)**
  > ``HiraCoroutines`` is a dummy MonoBehaviour singleton that gets created when it's needed, and is then used to run any coroutines that [**HiraTimer**](../HiraTimer) or [**HiraTweener**](../HiraTweener) might require.
  
- > There is nothing else to do here, unless you are looking for a template singleton that creates itself and maintains the reference in a safe way with minimal runtime checks.
+ > ~~There is nothing else to do here, unless you are looking for a template singleton that creates itself and maintains the reference in a safe way with minimal runtime checks.~~
+ > For a template singleton, you can check out HiraManagers.
 
  - ### **[HiraEvents](HiraTools/HiraEvents)**
  > You know how Unity doesn't really support generics in its reflection, in the way UE4 does, and you have to create a dummy UnityEvent every time you want a different dynamic invokation signature?
@@ -38,6 +39,9 @@
  > Generally, ``Debug.Log("Message")`` is much more expensive than people think it is. So logging every frame might not be a good idea.
    
  > But working in game dev, sometimes you need those per frame logs. HiraLogger provides an alternate way to do so, using C#'s ``Conditional`` method attribute.
+
+ - ### **[HiraManagers](HiraTools/HiraManagers)**
+ > An attribute to add to a MonoBehaviour to automate singleton instantiation.
 
  - ### **[HiraPoolTool](HiraTools/HiraPoolTool)**
  > A pooling solution for Unity, with an emphasis on ease of use, while retaining the maximum possible performance.
