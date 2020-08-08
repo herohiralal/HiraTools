@@ -24,6 +24,9 @@
  - ### **[Extension Methods](HiraTools/Extension%20Methods)**
  > A bunch of neat extension methods (some of them are plain static methods) to speed up certain things.
 
+ - ### **[HiraCollection](HiraTools/HiraCollection)**
+ > Some boilerplate for making a Reorderable List of ScriptableObjects, with all of them serialized into the same file.
+
  - ### **[HiraCoroutines](HiraTools/HiraCoroutines)**
  > ``HiraCoroutines`` is a dummy MonoBehaviour singleton that gets created when it's needed, and is then used to run any coroutines that [**HiraTimer**](../HiraTimer) or [**HiraTweener**](../HiraTweener) might require.
  
@@ -69,6 +72,9 @@
  > Also provides quite a few handy MonoBehaviours, that let you do a lot of things directly from the editor window.
    
  > As a result, the iteration times at design are significantly lowered.
+
+ - ### **[HiraWorlds](HiraTools/HiraWorlds)**
+ > A basic implementation of UE4's level streaming volumes into Unity.
 
  - ### **[ScriptableObject Variables](HiraTools/ScriptableObject%20Variables)**
  > Check out Ryan Hipple's excellent Unite Austin 2017 [Presentation](https://youtu.be/raQ3iHhE_Kk?t=1057) for an idea of what ScriptableObject Variables are and how to make the best use of them.
