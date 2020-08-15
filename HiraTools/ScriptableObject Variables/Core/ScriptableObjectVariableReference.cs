@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Hiralal.SOVariables.Core
 {
@@ -13,6 +14,12 @@ namespace Hiralal.SOVariables.Core
         [SerializeField] private bool useConstant = false;
         [SerializeField] private T constant = default;
         public abstract ScriptableObjectVariable<T> Variable { get; }
+
+        public event Action<T> OnValueChange
+        {
+            add => Variable.OnValueChange += value;
+            remove => Variable.OnValueChange -= value;
+        }
 
         public T Value
         {
