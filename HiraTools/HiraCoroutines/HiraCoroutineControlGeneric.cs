@@ -20,7 +20,7 @@ namespace Hiralal.CoroutineTracker
                 hiraCoroutineControl = pool[count - 1];
                 pool.RemoveAt(count - 1);
             }
-            else hiraCoroutineControl = new HiraCoroutineControlGeneric<T>();
+            else hiraCoroutineControl = new T();
 
             // set the appropriate initial state for the object
             hiraCoroutineControl.Paused = false;
