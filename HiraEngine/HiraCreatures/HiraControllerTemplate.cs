@@ -6,8 +6,13 @@
 
         public void Possess(HiraCreature creature)
         {
-            creature.Controller.Unpossess();
-            creature.OnUnpossess();
+            // TODO: Replace this with a GameMode based solution.
+            if (creature.Controller != null)
+            {
+                creature.Controller.Unpossess();
+                creature.OnUnpossess();
+            }
+
             var controller = Instantiate(controllerPrefab, Vector3.zero, Quaternion.identity);
             controller.Possess(creature);
             creature.OnPossess(controller);
