@@ -8,7 +8,7 @@ namespace UnityEditor
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (!property.type.Contains("HiraToken"))
+            if (!property.type.Contains(nameof(HiraButtonToken)))
             {
                 EditorGUI.LabelField(position, "Please only use HiraButton attribute on a HiraToken.");
             }
