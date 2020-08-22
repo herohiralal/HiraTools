@@ -1,9 +1,8 @@
 ﻿﻿using System;
 using System.Collections.Generic;
 using HiraPoolTool.Abstractions;
-using HiraPoolTool.Core;
 
-namespace UnityEngine
+ namespace UnityEngine
 {
     [AddComponentMenu("HiraTools/Pooling/PoolTool")]
     public class PoolTool : PoolToolAbstract

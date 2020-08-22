@@ -32,22 +32,22 @@ namespace HiraSaves.FileManagement
         #region PseudoEnumeration
         
         // general settings for any file
-        private static readonly string ROOT_FOLDER = Application.persistentDataPath + ROOT_FOLDER_NAME;
-        private const string ROOT_FOLDER_NAME = "/data/";
+        private static readonly string root_folder = Application.persistentDataPath + root_folder_name;
+        private const string root_folder_name = "/data/";
 
         // settings for a config file
         internal static readonly HiraFileType CONFIG =
-            new HiraFileType(ROOT_FOLDER + CONFIG_FOLDER_NAME, CONFIG_EXTENSION);
+            new HiraFileType(root_folder + config_folder_name, config_extension);
 
-        private const string CONFIG_FOLDER_NAME = "config/";
-        private const string CONFIG_EXTENSION = ".hiracfg";
+        private const string config_folder_name = "config/";
+        private const string config_extension = ".hiracfg";
 
         // settings for a save file
         internal static readonly HiraFileType SAVE =
-            new HiraFileType(ROOT_FOLDER + SAVE_FOLDER_NAME, SAVE_EXTENSION);
+            new HiraFileType(root_folder + save_folder_name, save_extension);
 
-        private const string SAVE_FOLDER_NAME = "save/";
-        private const string SAVE_EXTENSION = ".hirasave";
+        private const string save_folder_name = "save/";
+        private const string save_extension = ".hirasave";
         
         #endregion
 

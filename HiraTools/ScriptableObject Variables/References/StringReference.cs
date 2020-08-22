@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 using Hiralal.SOVariables.Core;
 
 namespace UnityEngine

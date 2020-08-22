@@ -40,13 +40,5 @@ namespace UnityEngine
             get => control.GetTimer(in index);
             set => control.SetTimer(in index, in value);
         }
-
-        //====================================================================== EXCEPTION HANDLING
-        
-        private static void LogInvalidTrackerUsage() => Debug.LogError("Invalid tracker being used.");
-
-        private static void LogAlreadyRunning() => Debug.LogWarning("The requested timer is already running.");
-
-        private static void LogNotRunning() => Debug.LogWarning("The requested timer has not been started yet.");
     }
 }

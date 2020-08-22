@@ -5,7 +5,7 @@ namespace Hiralal.SOVariables.Core
 {
     public abstract class ScriptableObjectVariableReference { }
 
-    [System.Serializable]
+    [Serializable]
     public abstract class ScriptableObjectVariableReference<T> : ScriptableObjectVariableReference
     {
         protected ScriptableObjectVariableReference() { }

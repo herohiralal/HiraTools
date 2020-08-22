@@ -6,10 +6,6 @@ namespace Hiralal.CoroutineTracker
 {
     internal abstract class HiraCoroutineControl
     {
-        protected HiraCoroutineControl()
-        {
-        }
-
         internal virtual void MarkFree()
         {
             Index = ulong.MinValue;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Hiralal.CoroutineTracker;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,7 +9,7 @@ namespace Hiralal.HiraWorlds
     public class HiraWorld : ScriptableObject
     {
         [SerializeField] private int buildIndex = default;
-        [SerializeField] private bool isLoaded = false;
+        [SerializeField] public bool isLoaded = false;
 
         public int BuildIndex => buildIndex;
         public bool IsLoaded => Application.isPlaying && SceneManager.GetSceneByBuildIndex(buildIndex).isLoaded;

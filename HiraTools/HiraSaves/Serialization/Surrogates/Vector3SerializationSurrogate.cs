@@ -20,22 +20,22 @@ namespace HiraSaves.Serialization.Surrogates
     [UsedImplicitly]
     internal class Vector3SerializationSurrogate : _SerializationSurrogateAbstract<Vector3>
     {
-        private const string X_VARIABLE_SERIALIZATION_STRING = "x";
-        private const string Y_VARIABLE_SERIALIZATION_STRING = "y";
-        private const string Z_VARIABLE_SERIALIZATION_STRING = "z";
+        private const string x_variable_serialization_string = "x";
+        private const string y_variable_serialization_string = "y";
+        private const string z_variable_serialization_string = "z";
         
         protected override void SaveObject(Vector3 casted, SerializationInfo info)
         {
-            info.AddValue(X_VARIABLE_SERIALIZATION_STRING, casted.x);
-            info.AddValue(Y_VARIABLE_SERIALIZATION_STRING, casted.y);
-            info.AddValue(Z_VARIABLE_SERIALIZATION_STRING, casted.z);
+            info.AddValue(x_variable_serialization_string, casted.x);
+            info.AddValue(y_variable_serialization_string, casted.y);
+            info.AddValue(z_variable_serialization_string, casted.z);
         }
 
         protected override Vector3 LoadObject(Vector3 casted, SerializationInfo info)
         {
-            casted.x = (float) info.GetValue(X_VARIABLE_SERIALIZATION_STRING, typeof(float));
-            casted.y = (float) info.GetValue(Y_VARIABLE_SERIALIZATION_STRING, typeof(float));
-            casted.z = (float) info.GetValue(Z_VARIABLE_SERIALIZATION_STRING, typeof(float));
+            casted.x = (float) info.GetValue(x_variable_serialization_string, typeof(float));
+            casted.y = (float) info.GetValue(y_variable_serialization_string, typeof(float));
+            casted.z = (float) info.GetValue(z_variable_serialization_string, typeof(float));
 
             return casted;
         }

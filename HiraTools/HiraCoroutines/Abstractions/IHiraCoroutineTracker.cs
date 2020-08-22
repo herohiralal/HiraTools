@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Hiralal.CoroutineTracker
+﻿namespace Hiralal.CoroutineTracker
 {
     public interface IHiraCoroutineTracker
     {

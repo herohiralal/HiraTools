@@ -14,7 +14,7 @@ namespace UnityEngine
         {
             if (ownerInstanceId.HasValue)
             {
-                var context = ((MonoBehaviour) hash_map[ownerInstanceId.Value]).gameObject;
+                var context = hash_map[ownerInstanceId.Value].gameObject;
                 Debug.LogErrorFormat(context, $"PoolKey {name} has already been claimed by the " +
                                           $"AddressablePoolTool on GameObject {context.name}.");
                 return;
