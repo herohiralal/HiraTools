@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Hiralal.Blackboard
 {
-    [CreateAssetMenu]
+    [CreateAssetMenu(fileName = "New HiraBlackboardKeySet", menuName = "Hiralal/HiraEngine/AI/HiraBlackboard Key Set")]
     public class HiraBlackboardKeySet : ScriptableObject
     {
         [SerializeField] private HiraBlackboardKey[] keys = null;
