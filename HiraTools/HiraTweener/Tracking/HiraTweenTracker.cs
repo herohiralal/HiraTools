@@ -3,12 +3,7 @@ using Hiralal.CoroutineTracker;
 
 namespace UnityEngine
 {
-    public interface IHiraTweenTracker : IHiraCoroutineTracker
-    {
-        IHiraTweenTracker Chain(in HiraTween tween);
-    }
-
-    internal readonly struct HiraTweenTracker : IHiraTweenTracker
+    public readonly struct HiraTweenTracker
     {
         internal HiraTweenTracker(IEnumerator coroutine, HiraTweenControl control, ulong index) =>
             (this.coroutine, this.control, this.index) = (coroutine, control, index);
@@ -19,7 +14,7 @@ namespace UnityEngine
 
         //====================================================================== QUERIES
 
-        public bool IsValid => control.IsValid(in index);
+        public bool IsValid => control != null && control.IsValid(in index);
         public bool HasStarted => control.HasStarted(in index);
         public bool IsPaused => control.IsPaused(in index);
 
@@ -31,8 +26,9 @@ namespace UnityEngine
 
         public void Pause() => control.Pause(in index);
 
-        public void Stop(bool withOnCompletionCallback = false) => control.Stop(in index, coroutine, withOnCompletionCallback);
+        public void Stop(bool withOnCompletionCallback = false) =>
+            control.Stop(in index, coroutine, withOnCompletionCallback);
 
-        public IHiraTweenTracker Chain(in HiraTween tween) => control.Chain(in index, in tween);
+        public HiraTweenTracker Chain(in HiraTween tween) => control.Chain(in index, in tween);
     }
 }

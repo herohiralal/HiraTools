@@ -44,8 +44,8 @@ namespace UnityEngine
                 _ => throw new ArgumentOutOfRangeException()
             };
 
-        protected IHiraTweenTracker CurrentTracker = null;
-        protected bool TrackerIsValid => CurrentTracker != null && CurrentTracker.IsValid;
+        protected HiraTweenTracker CurrentTracker = default;
+        protected bool TrackerIsValid => CurrentTracker.IsValid;
         public bool IsPaused => TrackerIsValid && CurrentTracker.IsPaused;
 
         public abstract void StartTweenForward();

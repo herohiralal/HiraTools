@@ -3,12 +3,7 @@ using Hiralal.CoroutineTracker;
 
 namespace UnityEngine
 {
-    public interface IHiraTimerTracker : IHiraCoroutineTracker
-    {
-        float Timer { get; set; }
-    }
-
-    internal readonly struct HiraTimerTracker : IHiraTimerTracker
+    public readonly struct HiraTimerTracker
     {
         internal HiraTimerTracker(IEnumerator coroutine, HiraTimerControl control, ulong index) =>
             (this.coroutine, this.control, this.index) = (coroutine, control, index);

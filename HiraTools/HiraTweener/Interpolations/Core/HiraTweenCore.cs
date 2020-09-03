@@ -16,14 +16,14 @@ namespace UnityEngine
     {
         private static ulong _index = ulong.MinValue;
         
-        public static IHiraTweenTracker Start(in this HiraTween tween)
+        public static HiraTweenTracker Start(in this HiraTween tween)
         {
             var tracker = tween.StartLater();
             tracker.Start();
             return tracker;
         }
 
-        public static IHiraTweenTracker StartLater(in this HiraTween tween)
+        public static HiraTweenTracker StartLater(in this HiraTween tween)
         {
             _index++;
             

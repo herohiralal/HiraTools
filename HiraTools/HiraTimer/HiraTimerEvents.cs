@@ -1,4 +1,4 @@
-﻿﻿/*
+﻿/*
  * Name: HiraTimerEvents.cs
  * Created By: Rohan Jadav
  * Description: 
@@ -14,7 +14,7 @@ namespace UnityEngine
     {
         private static ulong _index = ulong.MinValue;
         
-        public static IHiraTimerTracker RequestPing(Action onTimerFinish, float time, bool startAutomatically = true, bool ignoreTimeScale = false)
+        public static HiraTimerTracker RequestPing(Action onTimerFinish, float time, bool startAutomatically = true, bool ignoreTimeScale = false)
         {
             _index++;
             

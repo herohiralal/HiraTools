@@ -16,9 +16,9 @@ namespace Hiralal.CoroutineTracker
 
         internal float Duration { get; private set; }
 
-        internal IHiraTweenTracker Chain(in ulong index, in HiraTween tween)
+        internal HiraTweenTracker Chain(in ulong index, in HiraTween tween)
         {
-            if (!DoesIndexMatch(in index)) return null;
+            if (!DoesIndexMatch(in index)) throw new NullReferenceException("Invalid index.");
 
             var tracker = tween.StartLater();
             OnCompletion += tracker.Start;
