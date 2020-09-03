@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine
 {
-    [CreateAssetMenu(fileName = "New HiraController", menuName = "Hiralal/HiraCreatures/Controller Template")]
+    [CreateAssetMenu(fileName = "New HiraController", menuName = "Hiralal/HiraEngine/HiraCreatures/Controller Template")]
     public class HiraControllerTemplate : ScriptableObject
     {
         [SerializeField] private HiraController controllerPrefab = null;
