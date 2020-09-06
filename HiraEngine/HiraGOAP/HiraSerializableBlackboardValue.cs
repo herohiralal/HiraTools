@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Hiralal.GOAP
 {
-    [System.Serializable]
+    [Serializable]
     public class HiraSerializableBlackboardValue
     {
         [SerializeField] private StringReference name = null;
