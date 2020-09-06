@@ -2,25 +2,14 @@
 
 namespace Hiralal.Blackboard
 {
-    internal class HiraBlackboardValues
+    internal class HiraBlackboardComponent
     {
         private readonly HiraBlackboardKeySet keySet = null;
+        
+        internal readonly HiraBlackboardValueSet valueSet = null;
 
-        internal readonly bool[] booleans = null;
-        internal readonly float[] floats = null;
-        internal readonly int[] integers = null;
-        internal readonly string[] strings = null;
-        internal readonly Vector3[] vectors = null;
-
-        internal HiraBlackboardValues(HiraBlackboardKeySet keySet)
-        {
-            this.keySet = keySet;
-            booleans = new bool[keySet.BooleanKeyCount];
-            floats = new float[keySet.FloatKeyCount];
-            integers = new int[keySet.IntegerKeyCount];
-            strings = new string[keySet.StringKeyCount];
-            vectors = new Vector3[keySet.VectorKeyCount];
-        }
+        internal HiraBlackboardComponent(HiraBlackboardKeySet keySet, HiraBlackboardValueSet valueSet) => 
+            (this.keySet, this.valueSet) = (keySet, valueSet);
 
         private bool synced = false;
 
@@ -48,32 +37,19 @@ namespace Hiralal.Blackboard
             keySet.InstanceSynchronizer.OnSyncInstanceValueUpdateVector -= OnSyncInstanceValueUpdate_vector;
         }
 
-        internal HiraBlackboardValues Copy()
-        {
-            var copy = new HiraBlackboardValues(keySet);
-
-            for (var i = 0; i < booleans.Length; i++) copy.booleans[i] = booleans[i];
-            for (var i = 0; i < floats.Length; i++) copy.floats[i] = floats[i];
-            for (var i = 0; i < integers.Length; i++) copy.integers[i] = integers[i];
-            for (var i = 0; i < strings.Length; i++) copy.strings[i] = strings[i];
-            for (var i = 0; i < vectors.Length; i++) copy.vectors[i] = vectors[i];
-
-            return copy;
-        }
-
         private void OnSyncInstanceValueUpdate_boolean(uint typeSpecificIndex, bool newValue) =>
-            booleans[typeSpecificIndex] = newValue;
+            valueSet.booleans[typeSpecificIndex] = newValue;
 
         private void OnSyncInstanceValueUpdate_float(uint typeSpecificIndex, float newValue) =>
-            floats[typeSpecificIndex] = newValue;
+            valueSet.floats[typeSpecificIndex] = newValue;
 
         private void OnSyncInstanceValueUpdate_integer(uint typeSpecificIndex, int newValue) =>
-            integers[typeSpecificIndex] = newValue;
+            valueSet.integers[typeSpecificIndex] = newValue;
 
         private void OnSyncInstanceValueUpdate_string(uint typeSpecificIndex, string newValue) =>
-            strings[typeSpecificIndex] = newValue;
+            valueSet.strings[typeSpecificIndex] = newValue;
 
         private void OnSyncInstanceValueUpdate_vector(uint typeSpecificIndex, Vector3 newValue) =>
-            vectors[typeSpecificIndex] = newValue;
+            valueSet.vectors[typeSpecificIndex] = newValue;
     }
 }

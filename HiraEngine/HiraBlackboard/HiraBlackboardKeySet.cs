@@ -9,12 +9,7 @@ namespace Hiralal.Blackboard
     {
         [SerializeField] private HiraBlackboardKey[] keys = null;
         private Dictionary<string, uint> indices = null;
-
-        public uint BooleanKeyCount { get; private set; } = 0;
-        public uint FloatKeyCount { get; private set; } = 0;
-        public uint IntegerKeyCount { get; private set; } = 0;
-        public uint StringKeyCount { get; private set; } = 0;
-        public uint VectorKeyCount { get; private set; } = 0;
+        private HiraBlackboardComponent defaultBlackboard = null;
 
         internal HiraBlackboardInstanceSynchronizer InstanceSynchronizer { get; private set; }
 
@@ -31,39 +26,45 @@ namespace Hiralal.Blackboard
         {
             if (hash >= keys.Length)
                 throw new NullReferenceException("Invalid hash.");
-            
-            if(keyType==HiraBlackboardKeyType.Undefined || keyType!= keys[hash].KeyType)
+
+            if (keyType == HiraBlackboardKeyType.Undefined || keyType != keys[hash].KeyType)
                 throw new InvalidCastException($"Hash mismatch with type {keyType}.");
         }
 
         internal bool IsInstanceSynced(uint hash) => keys[hash].InstanceSynchronized;
 
         internal uint GetTypeSpecificIndex(uint hash) => keys[hash].TypeSpecificIndex;
-        
+
         #endregion
 
         private void OnEnable()
         {
             InstanceSynchronizer = new HiraBlackboardInstanceSynchronizer(this);
-            indices = BuildIndexCache();
+            (indices, defaultBlackboard) = BuildCache();
+            defaultBlackboard.RequestSynchronizationWithKeySet();
         }
 
         private void OnDisable()
         {
+            defaultBlackboard.BreakSynchronizationWithKeySet();
+            defaultBlackboard = null;
             indices = null;
             InstanceSynchronizer = null;
         }
 
+        internal HiraBlackboardComponent GetFreshBlackboardComponent() =>
+            new HiraBlackboardComponent(this, defaultBlackboard.valueSet.Copy());
+
         #region Index Cache
 
-        private Dictionary<string, uint> BuildIndexCache()
+        private (Dictionary<string, uint>, HiraBlackboardComponent) BuildCache()
         {
-            BooleanKeyCount = 0;
-            FloatKeyCount = 0;
-            IntegerKeyCount = 0;
-            StringKeyCount = 0;
-            VectorKeyCount = 0;
-            
+            uint boolKeyCount = 0;
+            uint floatKeyCount = 0;
+            uint intKeyCount = 0;
+            uint stringKeyCount = 0;
+            uint vectorKeyCount = 0;
+
             var keyIndices = new Dictionary<string, uint>();
 
             for (uint i = 0; i < keys.Length; i++)
@@ -78,19 +79,19 @@ namespace Hiralal.Blackboard
                     switch (keys[i].KeyType)
                     {
                         case HiraBlackboardKeyType.Bool:
-                            keys[i].TypeSpecificIndex = BooleanKeyCount++;
+                            keys[i].TypeSpecificIndex = boolKeyCount++;
                             break;
                         case HiraBlackboardKeyType.Float:
-                            keys[i].TypeSpecificIndex = FloatKeyCount++;
+                            keys[i].TypeSpecificIndex = floatKeyCount++;
                             break;
                         case HiraBlackboardKeyType.Int:
-                            keys[i].TypeSpecificIndex = IntegerKeyCount++;
+                            keys[i].TypeSpecificIndex = intKeyCount++;
                             break;
                         case HiraBlackboardKeyType.String:
-                            keys[i].TypeSpecificIndex = StringKeyCount++;
+                            keys[i].TypeSpecificIndex = stringKeyCount++;
                             break;
                         case HiraBlackboardKeyType.Vector:
-                            keys[i].TypeSpecificIndex = VectorKeyCount++;
+                            keys[i].TypeSpecificIndex = vectorKeyCount++;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -98,7 +99,14 @@ namespace Hiralal.Blackboard
                 }
             }
 
-            return keyIndices;
+            var blackboardComponent = new HiraBlackboardComponent(this,
+                new HiraBlackboardValueSet(boolKeyCount,
+                    floatKeyCount,
+                    intKeyCount,
+                    stringKeyCount,
+                    vectorKeyCount));
+
+            return (keyIndices, blackboardComponent);
         }
 
         #endregion
