@@ -2,7 +2,7 @@
 
 namespace UnityEngine
 {
-    public class HiraBlackboard : MonoBehaviour, IHiraBlackboard
+    public class HiraBlackboard : MonoBehaviour
     {
         // TODO: Create a Readme for this.
 
@@ -40,139 +40,69 @@ namespace UnityEngine
         protected virtual void OnDestroy_Override()
         {
         }
+        
+        #region Blackboard Accessors
 
-        #region BlackboardAccessors
+        // Booleans
+        public HiraBlackboardValueAccessor<bool> GetBooleanAccessor(in string keyName) =>
+            GetBooleanAccessor(keySet.GetHash(in keyName));
 
-        #region Boolean
-
-        public bool GetValueAsBool(in string keyName) =>
-            GetValueAsBool(keySet.GetHash(in keyName));
-
-        public bool GetValueAsBool(uint hash)
+        public HiraBlackboardValueAccessor<bool> GetBooleanAccessor(uint hash)
         {
             keySet.ValidateTransaction(hash, HiraBlackboardKeyType.Bool);
 
-            return state.booleans[keySet.GetTypeSpecificIndex(hash)];
+            return new HiraBlackboardValueAccessor<bool>(keySet,
+                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_boolean, state.booleans, hash);
         }
 
-        public void SetValueAsBool(in string keyName, bool value) =>
-            SetValueAsBool(keySet.GetHash(in keyName), value);
+        // Floats
+        public HiraBlackboardValueAccessor<float> GetFloatAccessor(in string keyName) =>
+            GetFloatAccessor(keySet.GetHash(in keyName));
 
-        public void SetValueAsBool(uint hash, bool value)
-        {
-            keySet.ValidateTransaction(hash, HiraBlackboardKeyType.Bool);
-
-            if (keySet.IsInstanceSynced(hash))
-                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_boolean(hash, value);
-            else state.booleans[keySet.GetTypeSpecificIndex(hash)] = value;
-        }
-
-        #endregion
-
-        #region Float
-
-        public float GetValueAsFloat(in string keyName) =>
-            GetValueAsFloat(keySet.GetHash(in keyName));
-
-        public float GetValueAsFloat(uint hash)
+        public HiraBlackboardValueAccessor<float> GetFloatAccessor(uint hash)
         {
             keySet.ValidateTransaction(hash, HiraBlackboardKeyType.Float);
 
-            return state.floats[keySet.GetTypeSpecificIndex(hash)];
+            return new HiraBlackboardValueAccessor<float>(keySet,
+                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_float, state.floats, hash);
         }
 
-        public void SetValueAsFloat(in string keyName, float value) =>
-            SetValueAsFloat(keySet.GetHash(in keyName), value);
+        // Integers
+        public HiraBlackboardValueAccessor<int> GetIntegerAccessor(in string keyName) =>
+            GetIntegerAccessor(keySet.GetHash(in keyName));
 
-        public void SetValueAsFloat(uint hash, float value)
-        {
-            keySet.ValidateTransaction(hash, HiraBlackboardKeyType.Float);
-
-            if (keySet.IsInstanceSynced(hash))
-                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_float(hash, value);
-            else state.floats[keySet.GetTypeSpecificIndex(hash)] = value;
-        }
-
-        #endregion
-
-        #region Int
-
-        public int GetValueAsInt(in string keyName) =>
-            GetValueAsInt(keySet.GetHash(in keyName));
-
-        public int GetValueAsInt(uint hash)
+        public HiraBlackboardValueAccessor<int> GetIntegerAccessor(uint hash)
         {
             keySet.ValidateTransaction(hash, HiraBlackboardKeyType.Int);
 
-            return state.integers[keySet.GetTypeSpecificIndex(hash)];
+            return new HiraBlackboardValueAccessor<int>(keySet,
+                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_integer, state.integers, hash);
         }
 
-        public void SetValueAsInt(in string keyName, int value) =>
-            SetValueAsInt(keySet.GetHash(in keyName), value);
+        // Strings
+        public HiraBlackboardValueAccessor<string> GetStringAccessor(in string keyName) =>
+            GetStringAccessor(keySet.GetHash(in keyName));
 
-        public void SetValueAsInt(uint hash, int value)
-        {
-            keySet.ValidateTransaction(hash, HiraBlackboardKeyType.Int);
-
-            if (keySet.IsInstanceSynced(hash))
-                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_integer(hash, value);
-            else state.integers[keySet.GetTypeSpecificIndex(hash)] = value;
-        }
-
-        #endregion
-
-        #region String
-
-        public string GetValueAsString(in string keyName) =>
-            GetValueAsString(keySet.GetHash(in keyName));
-
-        public string GetValueAsString(uint hash)
+        public HiraBlackboardValueAccessor<string> GetStringAccessor(uint hash)
         {
             keySet.ValidateTransaction(hash, HiraBlackboardKeyType.String);
 
-            return state.strings[keySet.GetTypeSpecificIndex(hash)];
+            return new HiraBlackboardValueAccessor<string>(keySet,
+                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_string, state.strings, hash);
         }
+        
+        // Vectors
+        public HiraBlackboardValueAccessor<Vector3> GetVectorAccessor(in string keyName) =>
+            GetVectorAccessor(keySet.GetHash(in keyName));
 
-        public void SetValueAsString(in string keyName, string value) =>
-            SetValueAsString(keySet.GetHash(in keyName), value);
-
-        public void SetValueAsString(uint hash, string value)
-        {
-            keySet.ValidateTransaction(hash, HiraBlackboardKeyType.String);
-
-            if (keySet.IsInstanceSynced(hash))
-                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_string(hash, value);
-            else state.strings[keySet.GetTypeSpecificIndex(hash)] = value;
-        }
-
-        #endregion
-
-        #region Vector
-
-        public Vector3 GetValueAsVector(in string keyName) =>
-            GetValueAsVector(keySet.GetHash(in keyName));
-
-        public Vector3 GetValueAsVector(uint hash)
+        public HiraBlackboardValueAccessor<Vector3> GetVectorAccessor(uint hash)
         {
             keySet.ValidateTransaction(hash, HiraBlackboardKeyType.Vector);
 
-            return state.vectors[keySet.GetTypeSpecificIndex(hash)];
+            return new HiraBlackboardValueAccessor<Vector3>(keySet,
+                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_vector, state.vectors, hash);
         }
-
-        public void SetValueAsVector(in string keyName, Vector3 value) =>
-            SetValueAsVector(keySet.GetHash(in keyName), value);
-
-        public void SetValueAsVector(uint hash, Vector3 value)
-        {
-            keySet.ValidateTransaction(hash, HiraBlackboardKeyType.Vector);
-
-            if (keySet.IsInstanceSynced(hash))
-                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_vector(hash, value);
-            else state.vectors[keySet.GetTypeSpecificIndex(hash)] = value;
-        }
-
-        #endregion
-
+        
         #endregion
     }
 }
