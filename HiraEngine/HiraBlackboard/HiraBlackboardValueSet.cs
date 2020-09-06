@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Hiralal.Blackboard
 {
@@ -34,6 +35,26 @@ namespace Hiralal.Blackboard
             for (var i = 0; i < vectors.Length; i++) copy.vectors[i] = vectors[i];
 
             return copy;
+        }
+
+        public bool ContainsValue(HiraBlackboardValue value)
+        {
+            switch (value)
+            {
+                case HiraBlackboardValue<bool> booleanValue:
+                    return booleans[booleanValue.TypeSpecificIndex] == booleanValue.TargetValue;
+                case HiraBlackboardValue<float> floatValue:
+                    // ReSharper disable once CompareOfFloatsByEqualityOperator
+                    return floats[floatValue.TypeSpecificIndex] == floatValue.TargetValue;
+                case HiraBlackboardValue<int> intValue:
+                    return integers[intValue.TypeSpecificIndex] == intValue.TargetValue;
+                case HiraBlackboardValue<string> stringValue:
+                    return strings[stringValue.TypeSpecificIndex] == stringValue.TargetValue;
+                case HiraBlackboardValue<Vector3> vectorValue:
+                    return vectors[vectorValue.TypeSpecificIndex] == vectorValue.TargetValue;
+                default:
+                    throw new InvalidCastException($"Type {value.GetType().GetGenericArguments()[0].Name} is not supported.");
+            }
         }
     }
 }
