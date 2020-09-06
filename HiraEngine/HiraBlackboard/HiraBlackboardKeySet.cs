@@ -1,133 +1,106 @@
-﻿/*
- * Name: HiraBlackboardKeySet.cs
- * Created By: Rohan Jadav
- * Description: A set of keys for a blackboard.
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Hiralal.Blackboard
 {
-    [CreateAssetMenu(fileName = "New HiraBlackboardKeySet", menuName = "Hiralal/HiraEngine/AI/HiraBlackboard Key Set")]
-    public class HiraBlackboardKeySet : ScriptableObject
+    [CreateAssetMenu(fileName = "New HiraBlackboard Key Set", menuName = "Hiralal/HiraEngine/HiraBlackboard/Key Set")]
+    public sealed class HiraBlackboardKeySet : ScriptableObject
     {
         [SerializeField] private HiraBlackboardKey[] keys = null;
-        private Dictionary<string, uint> keyIndices = null;
-        private Dictionary<string, bool> instanceSyncMap = null;
-        internal HiraMap MapComponent { get; private set; } = null;
+        private Dictionary<string, uint> indices = null;
+
+        public uint BooleanKeyCount { get; private set; } = 0;
+        public uint FloatKeyCount { get; private set; } = 0;
+        public uint IntegerKeyCount { get; private set; } = 0;
+        public uint StringKeyCount { get; private set; } = 0;
+        public uint VectorKeyCount { get; private set; } = 0;
+
+        internal HiraBlackboardInstanceSynchronizer InstanceSynchronizer { get; private set; }
+
+        #region Key-Specific Queries
+
+        public uint GetHash(in string keyName)
+        {
+            if (indices.ContainsKey(keyName)) return indices[keyName];
+            throw new NullReferenceException($"HiraBlackboardKeySet \"{name}\" could not" +
+                                             $" find a key with the name \"{keyName}\".");
+        }
+
+        public void ValidateTransaction(uint hash, HiraBlackboardKeyType keyType)
+        {
+            if (hash >= keys.Length)
+                throw new NullReferenceException("Invalid hash.");
+            
+            if(keyType==HiraBlackboardKeyType.Undefined || keyType!= keys[hash].KeyType)
+                throw new InvalidCastException($"Hash mismatch with type {keyType}.");
+        }
+
+        internal bool IsInstanceSynced(uint hash) => keys[hash].InstanceSynchronized;
+
+        internal uint GetTypeSpecificIndex(uint hash) => keys[hash].TypeSpecificIndex;
         
-
-        private uint boolKeyCount = 0;
-        private uint floatKeyCount = 0;
-        private uint integerKeyCount = 0;
-        private uint stringKeyCount = 0;
-        private uint vectorKeyCount = 0;
-        private uint unityObjectKeyCount = 0;
-
-        internal uint BoolKeyCount => boolKeyCount;
-        internal uint FloatKeyCount => floatKeyCount;
-        internal uint IntegerKeyCount => integerKeyCount;
-        internal uint StringKeyCount => stringKeyCount;
-        internal uint VectorKeyCount => vectorKeyCount;
-        internal uint UnityObjectKeyCount => unityObjectKeyCount;
+        #endregion
 
         private void OnEnable()
         {
-            Initialize();
+            InstanceSynchronizer = new HiraBlackboardInstanceSynchronizer(this);
+            indices = BuildIndexCache();
         }
 
         private void OnDisable()
         {
-            keyIndices.Clear();
-            keyIndices = null;
-            
-            instanceSyncMap.Clear();
-            instanceSyncMap = null;
-            
-            MapComponent = null;
+            indices = null;
+            InstanceSynchronizer = null;
         }
 
-        internal uint GetIndex(in string key) => keyIndices[key];
-        internal bool IsInstanceSynced(in string key) => instanceSyncMap[key];
-        
-        #region Initialization
+        #region Index Cache
 
-        private void Initialize()
+        private Dictionary<string, uint> BuildIndexCache()
         {
-            boolKeyCount = 0;
-            floatKeyCount = 0;
-            integerKeyCount = 0;
-            stringKeyCount = 0;
-            vectorKeyCount = 0;
-            unityObjectKeyCount = 0;
+            BooleanKeyCount = 0;
+            FloatKeyCount = 0;
+            IntegerKeyCount = 0;
+            StringKeyCount = 0;
+            VectorKeyCount = 0;
+            
+            var keyIndices = new Dictionary<string, uint>();
 
-
-            uint boolKeyCountInstanceSynced = 0;
-            uint floatKeyCountInstanceSynced = 0;
-            uint integerKeyCountInstanceSynced = 0;
-            uint stringKeyCountInstanceSynced = 0;
-            uint vectorKeyCountInstanceSynced = 0;
-            uint unityObjectKeyCountInstanceSynced = 0;
-
-            keyIndices = new Dictionary<string, uint>();
-            instanceSyncMap = new Dictionary<string, bool>();
-
-            foreach (var key in keys)
+            for (uint i = 0; i < keys.Length; i++)
             {
-                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-                switch (key.KeyType)
-                {
-                    case HiraBlackboardKeyType.Bool:
-                        AddKey(key, ref boolKeyCount, ref boolKeyCountInstanceSynced);
-                        break;
-                    case HiraBlackboardKeyType.Float:
-                        AddKey(key, ref floatKeyCount, ref floatKeyCountInstanceSynced);
-                        break;
-                    case HiraBlackboardKeyType.Int:
-                        AddKey(key, ref integerKeyCount, ref integerKeyCountInstanceSynced);
-                        break;
-                    case HiraBlackboardKeyType.String:
-                        AddKey(key, ref stringKeyCount, ref stringKeyCountInstanceSynced);
-                        break;
-                    case HiraBlackboardKeyType.Vector:
-                        AddKey(key, ref vectorKeyCount, ref vectorKeyCountInstanceSynced);
-                        break;
-                    case HiraBlackboardKeyType.UnityObject:
-                        AddKey(key, ref unityObjectKeyCount, ref unityObjectKeyCountInstanceSynced);
-                        break;
-                    default: throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            MapComponent = new HiraMap(this, boolKeyCountInstanceSynced,
-                floatKeyCountInstanceSynced,
-                integerKeyCountInstanceSynced,
-                stringKeyCountInstanceSynced,
-                vectorKeyCountInstanceSynced,
-                unityObjectKeyCountInstanceSynced);
-        }
-
-        private void AddKey(HiraBlackboardKey key, ref uint index, ref uint instanceSyncedIndex)
-        {
-            if (!keyIndices.ContainsKey(key.Name))
-            {
-                instanceSyncMap.Add(key.Name, key.InstanceSynchronized);
-                if (key.InstanceSynchronized)
-                {
-                    keyIndices.Add(key.Name, instanceSyncedIndex);
-                    instanceSyncedIndex++;
-                }
+                if (keyIndices.ContainsKey(keys[i].Name))
+                    Debug.LogErrorFormat(this, $"Duplicate key \"{keys[i].Name}\" in HiraBlackboardKeySet \"{name}\".");
                 else
                 {
-                    keyIndices.Add(key.Name, index);
-                    index++;
+                    keyIndices.Add(keys[i].Name, i);
+
+                    // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+                    switch (keys[i].KeyType)
+                    {
+                        case HiraBlackboardKeyType.Bool:
+                            keys[i].TypeSpecificIndex = BooleanKeyCount++;
+                            break;
+                        case HiraBlackboardKeyType.Float:
+                            keys[i].TypeSpecificIndex = FloatKeyCount++;
+                            break;
+                        case HiraBlackboardKeyType.Int:
+                            keys[i].TypeSpecificIndex = IntegerKeyCount++;
+                            break;
+                        case HiraBlackboardKeyType.String:
+                            keys[i].TypeSpecificIndex = StringKeyCount++;
+                            break;
+                        case HiraBlackboardKeyType.Vector:
+                            keys[i].TypeSpecificIndex = VectorKeyCount++;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
             }
-            else Debug.LogErrorFormat(this, $"Duplicate key {key.Name} in HiraBlackboardKeySet {name}.");
+
+            return keyIndices;
         }
-        
+
         #endregion
     }
 }

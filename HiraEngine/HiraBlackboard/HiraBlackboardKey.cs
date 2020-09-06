@@ -1,11 +1,5 @@
-﻿/*
- * Name: HiraBlackboardKey.cs
- * Created By: Rohan Jadav
- * Description: A single key for a blackboard.
- */
-
+﻿using UnityEngine;
 using System;
-using UnityEngine;
 
 namespace Hiralal.Blackboard
 {
@@ -20,5 +14,7 @@ namespace Hiralal.Blackboard
         
         [SerializeField] private bool instanceSynchronized = false;
         internal bool InstanceSynchronized => instanceSynchronized;
+
+        internal uint TypeSpecificIndex { get; set; } = 0;
     }
 }
