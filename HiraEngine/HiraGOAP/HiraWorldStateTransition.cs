@@ -20,7 +20,7 @@ namespace Hiralal.GOAP
         public bool ArePreConditionsSatisfied(HiraBlackboardValueSet valueSet) =>
             generatedPreconditions.All(valueSet.ContainsValue);
 
-        private void OnEnable()
+        public void Activate()
         {
             if (keySet == null) return;
             
@@ -35,7 +35,7 @@ namespace Hiralal.GOAP
                                generatedEffectsEnumerable.ToArray();
         }
 
-        private void OnDisable()
+        public void Deactivate()
         {
             generatedPreconditions = null;
             generatedEffects = null;

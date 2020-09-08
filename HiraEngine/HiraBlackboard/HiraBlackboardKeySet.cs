@@ -37,14 +37,14 @@ namespace Hiralal.Blackboard
 
         #endregion
 
-        private void OnEnable()
+        public void Activate()
         {
             InstanceSynchronizer = new HiraBlackboardInstanceSynchronizer(this);
             (indices, defaultBlackboard) = BuildCache();
             defaultBlackboard.RequestSynchronizationWithKeySet();
         }
 
-        private void OnDisable()
+        public void Deactivate()
         {
             defaultBlackboard.BreakSynchronizationWithKeySet();
             defaultBlackboard = null;
