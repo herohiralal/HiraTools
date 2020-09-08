@@ -9,6 +9,8 @@ namespace UnityEngine
         [SerializeField] private HiraBlackboardKeySet keySet = null;
         private HiraBlackboardComponent state = null;
 
+        public HiraBlackboardValueSet GetDuplicateWorldState() => state.valueSet.Copy();
+
         private void Awake()
         {
             if (keySet != null)
