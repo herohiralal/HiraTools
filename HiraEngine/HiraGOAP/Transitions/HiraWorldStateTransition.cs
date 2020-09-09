@@ -3,7 +3,7 @@ using System.Linq;
 using Hiralal.Blackboard;
 using UnityEngine;
 
-namespace Hiralal.GOAP
+namespace Hiralal.GOAP.Transitions
 {
     [CreateAssetMenu(fileName = "New HiraGOAP Transition", menuName = "Hiralal/HiraEngine/HiraGOAP/Transition")]
     public class HiraWorldStateTransition : ScriptableObject

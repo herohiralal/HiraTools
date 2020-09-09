@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hiralal.Blackboard;
+using Hiralal.GOAP.Transitions;
 
 // ReSharper disable PossibleMultipleEnumeration
 

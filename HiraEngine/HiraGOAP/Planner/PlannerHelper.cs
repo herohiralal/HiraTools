@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Hiralal.Blackboard;
+using Hiralal.GOAP.Transitions;
 using UnityEngine;
 
 namespace Hiralal.GOAP.Planner

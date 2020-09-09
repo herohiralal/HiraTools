@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Hiralal.Blackboard;
 
-namespace Hiralal.GOAP
+namespace Hiralal.GOAP.Transitions
 {
     public interface IHiraWorldStateTransition
     {
