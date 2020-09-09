@@ -27,7 +27,8 @@ namespace UnityEngine
             Object.DontDestroyOnLoad(component);
 
             var propertyInfo = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static);
-            propertyInfo ??= type.GetProperty("Current", BindingFlags.Public | BindingFlags.Static);
+            if (propertyInfo == null)
+                propertyInfo = type.GetProperty("Current", BindingFlags.Public | BindingFlags.Static);
             if (propertyInfo != null) propertyInfo.SetValue(null, component);
 
             if (database.ContainsKey(type)) database[type] = component;

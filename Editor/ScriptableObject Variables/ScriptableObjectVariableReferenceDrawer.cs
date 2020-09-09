@@ -25,8 +25,9 @@ namespace Hiralal.SOVariables.Core.Editor
         
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            popupStyle ??= new GUIStyle(GUI.skin.GetStyle("PaneOptions")) {imagePosition = ImagePosition.ImageOnly};
-            
+            if (popupStyle == null)
+                popupStyle = new GUIStyle(GUI.skin.GetStyle("PaneOptions")) {imagePosition = ImagePosition.ImageOnly};
+
             var useConstantProperty = property.FindPropertyRelative(use_constant_property_name);
             var constantProperty = property.FindPropertyRelative(constant_value_property_name);
             var variableProperty = property.FindPropertyRelative(variable_value_property_name);

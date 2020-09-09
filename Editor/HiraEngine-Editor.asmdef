@@ -1,0 +1,17 @@
+{
+    "name": "HiraEngine-Editor",
+    "references": [
+        "GUID:89c4159a3b65bec4ea921302c61d32db"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

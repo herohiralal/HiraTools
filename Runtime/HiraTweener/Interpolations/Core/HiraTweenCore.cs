@@ -62,21 +62,35 @@ namespace UnityEngine
         }
 
         private static Func<float, float> GetInterpolationMethod(HiraTweenterpolationType tweenType,
-            HiraTweenEaseType easeType) =>
-            tweenType switch
+            HiraTweenEaseType easeType)
+        {
+            switch (tweenType)
             {
-                HiraTweenterpolationType.Linear => LinearTweenterpolator.GetInterpolationMethod(easeType),
-                HiraTweenterpolationType.Quad => QuadTweenterpolator.GetInterpolationMethod(easeType),
-                HiraTweenterpolationType.Cubic => CubicTweenterpolator.GetInterpolationMethod(easeType),
-                HiraTweenterpolationType.Quart => QuartTweenterpolator.GetInterpolationMethod(easeType),
-                HiraTweenterpolationType.Quint => QuintTweenterpolator.GetInterpolationMethod(easeType),
-                HiraTweenterpolationType.Sine => SineTweenterpolator.GetInterpolationMethod(easeType),
-                HiraTweenterpolationType.Exponential => ExponentialTweenterpolator.GetInterpolationMethod(easeType),
-                HiraTweenterpolationType.Circular => CircularTweenterpolator.GetInterpolationMethod(easeType),
-                HiraTweenterpolationType.Back => BackTweenterpolator.GetInterpolationMethod(easeType),
-                HiraTweenterpolationType.Elastic => ElasticTweenterpolator.GetInterpolationMethod(easeType),
-                HiraTweenterpolationType.Bounce => BounceTweenterpolator.GetInterpolationMethod(easeType),
-                _ => throw new ArgumentOutOfRangeException(nameof(tweenType), tweenType, null)
-            };
+                case HiraTweenterpolationType.Linear:
+                    return LinearTweenterpolator.GetInterpolationMethod(easeType);
+                case HiraTweenterpolationType.Quad:
+                    return QuadTweenterpolator.GetInterpolationMethod(easeType);
+                case HiraTweenterpolationType.Cubic:
+                    return CubicTweenterpolator.GetInterpolationMethod(easeType);
+                case HiraTweenterpolationType.Quart:
+                    return QuartTweenterpolator.GetInterpolationMethod(easeType);
+                case HiraTweenterpolationType.Quint:
+                    return QuintTweenterpolator.GetInterpolationMethod(easeType);
+                case HiraTweenterpolationType.Sine:
+                    return SineTweenterpolator.GetInterpolationMethod(easeType);
+                case HiraTweenterpolationType.Exponential:
+                    return ExponentialTweenterpolator.GetInterpolationMethod(easeType);
+                case HiraTweenterpolationType.Circular:
+                    return CircularTweenterpolator.GetInterpolationMethod(easeType);
+                case HiraTweenterpolationType.Back:
+                    return BackTweenterpolator.GetInterpolationMethod(easeType);
+                case HiraTweenterpolationType.Elastic:
+                    return ElasticTweenterpolator.GetInterpolationMethod(easeType);
+                case HiraTweenterpolationType.Bounce:
+                    return BounceTweenterpolator.GetInterpolationMethod(easeType);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(tweenType), tweenType, null);
+            }
+        }
     }
 }

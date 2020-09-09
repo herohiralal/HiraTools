@@ -65,8 +65,25 @@ namespace Hiralal.HiraWorlds
                 () =>
                 {
                     //localPhysicsModeProperty.enumValueIndex = (int) LocalPhysicsMode.Physics2D;
-                    localPhysicsModeProperty.intValue = localPhysicsModeProperty.intValue switch
-                    {-1 => 2, 0 => 1, 1 => 0, 2 => -1, _ => localPhysicsModeProperty.intValue};
+                    switch (localPhysicsModeProperty.intValue)
+                    {
+                        case -1:
+                            localPhysicsModeProperty.intValue = 2;
+                            break;
+                        case 0:
+                            localPhysicsModeProperty.intValue = 1;
+                            break;
+                        case 1:
+                            localPhysicsModeProperty.intValue = 0;
+                            break;
+                        case 2:
+                            localPhysicsModeProperty.intValue = -1;
+                            break;
+                        default:
+                            localPhysicsModeProperty.intValue = localPhysicsModeProperty.intValue;
+                            break;
+                    }
+
                     property.serializedObject.ApplyModifiedProperties();
                 });
 
@@ -74,8 +91,25 @@ namespace Hiralal.HiraWorlds
                 ((LocalPhysicsMode) localPhysicsModeProperty.enumValueIndex & LocalPhysicsMode.Physics3D) != 0,
                 () =>
                 {
-                    localPhysicsModeProperty.intValue = localPhysicsModeProperty.intValue switch
-                    {-1 => 1, 0 => 2, 1 => -1, 2 => 0, _ => localPhysicsModeProperty.intValue};
+                    switch (localPhysicsModeProperty.intValue)
+                    {
+                        case -1:
+                            localPhysicsModeProperty.intValue = 1;
+                            break;
+                        case 0:
+                            localPhysicsModeProperty.intValue = 2;
+                            break;
+                        case 1:
+                            localPhysicsModeProperty.intValue = -1;
+                            break;
+                        case 2:
+                            localPhysicsModeProperty.intValue = 0;
+                            break;
+                        default:
+                            localPhysicsModeProperty.intValue = localPhysicsModeProperty.intValue;
+                            break;
+                    }
+
                     property.serializedObject.ApplyModifiedProperties();
                 });
 

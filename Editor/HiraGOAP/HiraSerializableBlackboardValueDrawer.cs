@@ -60,15 +60,23 @@ namespace UnityEditor
         }
 
         private static SerializedProperty ChooseValueProperty(SerializedProperty property,
-            int keyType) =>
-            (HiraBlackboardKeyType) keyType switch
+            int keyType)
+        {
+            switch ((HiraBlackboardKeyType) keyType)
             {
-                HiraBlackboardKeyType.Bool => property.FindPropertyRelative(bool_value_variable_name),
-                HiraBlackboardKeyType.Float => property.FindPropertyRelative(float_value_variable_name),
-                HiraBlackboardKeyType.Int => property.FindPropertyRelative(int_value_variable_name),
-                HiraBlackboardKeyType.String => property.FindPropertyRelative(string_value_variable_name),
-                HiraBlackboardKeyType.Vector => property.FindPropertyRelative(vector_value_variable_name),
-                _ => null
-            };
+                case HiraBlackboardKeyType.Bool:
+                    return property.FindPropertyRelative(bool_value_variable_name);
+                case HiraBlackboardKeyType.Float:
+                    return property.FindPropertyRelative(float_value_variable_name);
+                case HiraBlackboardKeyType.Int:
+                    return property.FindPropertyRelative(int_value_variable_name);
+                case HiraBlackboardKeyType.String:
+                    return property.FindPropertyRelative(string_value_variable_name);
+                case HiraBlackboardKeyType.Vector:
+                    return property.FindPropertyRelative(vector_value_variable_name);
+                default:
+                    return null;
+            }
+        }
     }
 }

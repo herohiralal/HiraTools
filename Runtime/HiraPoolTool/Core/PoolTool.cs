@@ -27,7 +27,8 @@ using HiraPoolTool.Abstractions;
         {
             if (IsResourceLoaded) return;
 
-            getTarget ??= go => go.transform;
+            if (getTarget == null) getTarget = go => go.transform;
+            
             Pool = GetPool(getTarget(targetPrefab));
 
             if (initialPopulateOverride.HasValue) Pool.AddToPool(initialPopulateOverride.Value);

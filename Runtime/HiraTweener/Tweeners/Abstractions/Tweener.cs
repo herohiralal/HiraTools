@@ -35,14 +35,23 @@ namespace UnityEngine
             }
         }
 
-        protected HiraTweenEaseType InverseEasing =>
-            easing switch
+        protected HiraTweenEaseType InverseEasing
+        {
+            get
             {
-                HiraTweenEaseType.EaseIn => HiraTweenEaseType.EaseOut,
-                HiraTweenEaseType.EaseOut => HiraTweenEaseType.EaseIn,
-                HiraTweenEaseType.EaseInOut => easing,
-                _ => throw new ArgumentOutOfRangeException()
-            };
+                switch (easing)
+                {
+                    case HiraTweenEaseType.EaseIn:
+                        return HiraTweenEaseType.EaseOut;
+                    case HiraTweenEaseType.EaseOut:
+                        return HiraTweenEaseType.EaseIn;
+                    case HiraTweenEaseType.EaseInOut:
+                        return easing;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
 
         protected HiraTweenTracker CurrentTracker = default;
         protected bool TrackerIsValid => CurrentTracker.IsValid;
