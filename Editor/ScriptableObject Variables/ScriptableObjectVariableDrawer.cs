@@ -7,7 +7,7 @@ namespace Hiralal.SOVariables.Core.Editor
     [CustomPropertyDrawer(typeof(ScriptableObjectVariable), true)]
     public class ScriptableObjectVariableDrawer : PropertyDrawer
     {
-        private const string variable_value_name  = "value";
+        private const string variable_value_name  = "_value";
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
