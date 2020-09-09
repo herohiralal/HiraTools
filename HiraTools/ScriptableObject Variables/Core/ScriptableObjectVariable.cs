@@ -20,5 +20,7 @@ namespace Hiralal.SOVariables.Core
         }
 
         public static implicit operator T(ScriptableObjectVariable<T> original) => original.Value;
+
+        public override string ToString() => $"{value} ({name})";
     }
 }
