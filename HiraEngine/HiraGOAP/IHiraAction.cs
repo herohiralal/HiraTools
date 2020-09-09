@@ -1,8 +1,6 @@
 ﻿namespace Hiralal.GOAP
 {
-    public interface IHiraAction
+    public interface IHiraAction : IHiraWorldStateTransition
     {
-        IHiraWorldStateTransition TransitionComponent { get; }
-        float Cost { get; }
     }
 }

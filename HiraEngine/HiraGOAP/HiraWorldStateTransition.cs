@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Hiralal.GOAP
 {
     [CreateAssetMenu(fileName = "New HiraGOAP Transition", menuName = "Hiralal/HiraEngine/HiraGOAP/Transition")]
-    public class HiraWorldStateTransition : ScriptableObject, IHiraWorldStateTransition
+    public class HiraWorldStateTransition : ScriptableObject
     {
         [SerializeField] private HiraBlackboardKeySet keySet = null;
         [SerializeField] [Range(0, 100)] private float baseCost = 0f;

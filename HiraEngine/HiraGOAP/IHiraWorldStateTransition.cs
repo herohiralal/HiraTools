@@ -7,6 +7,6 @@ namespace Hiralal.GOAP
     {
         bool ArePreConditionsSatisfied(HiraBlackboardValueSet valueSet);
         IReadOnlyList<HiraBlackboardValue> Effects { get; }
-        float BaseCost { get; }
+        float Cost { get; }
     }
 }

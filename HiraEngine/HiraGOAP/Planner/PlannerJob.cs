@@ -7,7 +7,7 @@ using Hiralal.Blackboard;
 
 namespace Hiralal.GOAP.Planner
 {
-    public readonly struct PlannerJob<T> where T : IHiraAction
+    public readonly struct PlannerJob<T> where T : IHiraWorldStateTransition
     {
         public PlannerJob(float maxFScore, HiraBlackboardValueSet state, IReadOnlyList<HiraBlackboardValue> target,
             IEnumerable<T> actions, Action<List<T>> planSetter)
@@ -63,7 +63,7 @@ namespace Hiralal.GOAP.Planner
             foreach (var action in actions)
             {
                 // ignore invalid actions
-                if (!action.TransitionComponent.ArePreConditionsSatisfied(state)) continue;
+                if (!action.ArePreConditionsSatisfied(state)) continue;
 
                 // Mutate the state
                 var undoBuffer = state.ApplyAction(action);

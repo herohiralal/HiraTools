@@ -6,9 +6,9 @@ namespace Hiralal.GOAP.Planner
 {
     internal static class PlannerHelper
     {
-        internal static IReadOnlyList<HiraBlackboardValue> ApplyAction(this HiraBlackboardValueSet state, IHiraAction action)
+        internal static IReadOnlyList<HiraBlackboardValue> ApplyAction(this HiraBlackboardValueSet state, IHiraWorldStateTransition transition)
         {
-            var effects = action.TransitionComponent.Effects;
+            var effects = transition.Effects;
             var count = effects.Count;
             var undoBuffer = new HiraBlackboardValue[count];
 
