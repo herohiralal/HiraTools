@@ -11,7 +11,7 @@ namespace Hiralal.SOVariables.Core.Editor
         private const string variable_value_property_name = "variable";
         
         private static readonly string[] popup_options = { "Use Constant", "Use Variable" };
-        private GUIStyle popupStyle;
+        private GUIStyle _popupStyle;
         
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -25,8 +25,8 @@ namespace Hiralal.SOVariables.Core.Editor
         
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (popupStyle == null)
-                popupStyle = new GUIStyle(GUI.skin.GetStyle("PaneOptions")) {imagePosition = ImagePosition.ImageOnly};
+            if (_popupStyle == null)
+                _popupStyle = new GUIStyle(GUI.skin.GetStyle("PaneOptions")) {imagePosition = ImagePosition.ImageOnly};
 
             var useConstantProperty = property.FindPropertyRelative(use_constant_property_name);
             var constantProperty = property.FindPropertyRelative(constant_value_property_name);
@@ -49,7 +49,7 @@ namespace Hiralal.SOVariables.Core.Editor
 
             // get UseConstant value
             useConstantProperty.boolValue = 
-                EditorGUI.Popup(buttonRect, useConstantProperty.boolValue ? 0 : 1, popup_options, popupStyle) == 0;
+                EditorGUI.Popup(buttonRect, useConstantProperty.boolValue ? 0 : 1, popup_options, _popupStyle) == 0;
 
             // rect gymnastics idk
             if (!useConstantProperty.boolValue) mainRect.height = EditorGUIUtility.singleLineHeight * 2;

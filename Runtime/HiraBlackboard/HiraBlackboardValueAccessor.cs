@@ -6,25 +6,25 @@ namespace Hiralal.Blackboard
     {
         internal HiraBlackboardValueAccessor(HiraBlackboardKeySet keySet, Action<uint, T> syncedInstanceValueUpdateReporter, T[] targetArray, uint hash)
         {
-            this.keySet = keySet;
-            this.syncedInstanceValueUpdateReporter = syncedInstanceValueUpdateReporter;
-            this.targetArray = targetArray;
-            this.hash = hash;
+            _keySet = keySet;
+            _syncedInstanceValueUpdateReporter = syncedInstanceValueUpdateReporter;
+            _targetArray = targetArray;
+            _hash = hash;
         }
 
-        private readonly HiraBlackboardKeySet keySet;
-        private readonly Action<uint, T> syncedInstanceValueUpdateReporter;
-        private readonly T[] targetArray;
-        private readonly uint hash;
+        private readonly HiraBlackboardKeySet _keySet;
+        private readonly Action<uint, T> _syncedInstanceValueUpdateReporter;
+        private readonly T[] _targetArray;
+        private readonly uint _hash;
         
         public T Value
         {
-            get => targetArray[keySet.GetTypeSpecificIndex(hash)];
+            get => _targetArray[_keySet.GetTypeSpecificIndex(_hash)];
 
             set
             {
-                if (keySet.IsInstanceSynced(hash)) syncedInstanceValueUpdateReporter.Invoke(hash, value);
-                else targetArray[keySet.GetTypeSpecificIndex(hash)] = value;
+                if (_keySet.IsInstanceSynced(_hash)) _syncedInstanceValueUpdateReporter.Invoke(_hash, value);
+                else _targetArray[_keySet.GetTypeSpecificIndex(_hash)] = value;
             }
         }
     }

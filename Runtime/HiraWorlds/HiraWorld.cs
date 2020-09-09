@@ -14,15 +14,15 @@ namespace Hiralal.HiraWorlds
         public int BuildIndex => buildIndex;
         public bool IsLoaded => Application.isPlaying && SceneManager.GetSceneByBuildIndex(buildIndex).isLoaded;
 
-        private void OnEnable() => loadRequests = 0;
-        private void OnDisable() => loadRequests = 0;
+        private void OnEnable() => _loadRequests = 0;
+        private void OnDisable() => _loadRequests = 0;
 
-        private uint loadRequests = 0;
+        private uint _loadRequests = 0;
 
         public void SubmitLoadingRequest(bool asynchronous, LocalPhysicsMode localPhysicsMode, bool setActive)
         {
-            loadRequests++;
-            if (loadRequests > 1) return;
+            _loadRequests++;
+            if (_loadRequests > 1) return;
 
             var loadSceneParameters = new LoadSceneParameters(LoadSceneMode.Additive, localPhysicsMode);
             if (asynchronous)
@@ -45,8 +45,8 @@ namespace Hiralal.HiraWorlds
 
         public void WithdrawLoadingRequest(bool unloadAllEmbeddedSceneObjects)
         {
-            loadRequests--;
-            if (loadRequests > 0) return;
+            _loadRequests--;
+            if (_loadRequests > 0) return;
 
             SceneManager.UnloadSceneAsync(buildIndex,
                 unloadAllEmbeddedSceneObjects

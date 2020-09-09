@@ -8,8 +8,8 @@ namespace Hiralal.Blackboard
     public sealed class HiraBlackboardKeySet : ScriptableObject
     {
         [SerializeField] private HiraBlackboardKey[] keys = null;
-        private Dictionary<string, uint> indices = null;
-        private HiraBlackboardComponent defaultBlackboard = null;
+        private Dictionary<string, uint> _indices = null;
+        private HiraBlackboardComponent _defaultBlackboard = null;
 
         internal HiraBlackboardInstanceSynchronizer InstanceSynchronizer { get; private set; }
 
@@ -17,7 +17,7 @@ namespace Hiralal.Blackboard
 
         public uint GetHash(in string keyName)
         {
-            if (indices.ContainsKey(keyName)) return indices[keyName];
+            if (_indices.ContainsKey(keyName)) return _indices[keyName];
             throw new NullReferenceException($"HiraBlackboardKeySet \"{name}\" could not" +
                                              $" find a key with the name \"{keyName}\".");
         }
@@ -40,20 +40,20 @@ namespace Hiralal.Blackboard
         public void Activate()
         {
             InstanceSynchronizer = new HiraBlackboardInstanceSynchronizer(this);
-            (indices, defaultBlackboard) = BuildCache();
-            defaultBlackboard.RequestSynchronizationWithKeySet();
+            (_indices, _defaultBlackboard) = BuildCache();
+            _defaultBlackboard.RequestSynchronizationWithKeySet();
         }
 
         public void Deactivate()
         {
-            defaultBlackboard.BreakSynchronizationWithKeySet();
-            defaultBlackboard = null;
-            indices = null;
+            _defaultBlackboard.BreakSynchronizationWithKeySet();
+            _defaultBlackboard = null;
+            _indices = null;
             InstanceSynchronizer = null;
         }
 
         internal HiraBlackboardComponent GetFreshBlackboardComponent() =>
-            new HiraBlackboardComponent(this, defaultBlackboard.valueSet.Copy());
+            new HiraBlackboardComponent(this, _defaultBlackboard.ValueSet.Copy());
 
         #region Index Cache
 

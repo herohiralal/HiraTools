@@ -7,21 +7,21 @@ namespace Hiralal.SOVariables.Core
     public abstract class ScriptableObjectVariable : ScriptableObject { }
     public abstract class ScriptableObjectVariable<T> : ScriptableObjectVariable
     {
-        [SerializeField] private T value = default;
+        [SerializeField] private T _value = default;
         public event Action<T> OnValueChange = default;
 
         public T Value
         {
-            get => value;
+            get => _value;
             set
             {
                 OnValueChange?.Invoke(value);
-                this.value = value;
+                this._value = value;
             }
         }
 
         public static implicit operator T(ScriptableObjectVariable<T> original) => original.Value;
 
-        public override string ToString() => $"{value} ({name})";
+        public override string ToString() => $"{_value} ({name})";
     }
 }

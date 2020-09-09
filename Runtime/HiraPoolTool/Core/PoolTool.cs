@@ -8,18 +8,18 @@ using HiraPoolTool.Abstractions;
     public class PoolTool : PoolToolAbstract
     {
         [SerializeField] private GameObject targetPrefab = null;
-        private readonly List<Component> loanedObjects = new List<Component>();
+        private readonly List<Component> _loanedObjects = new List<Component>();
 
         public override T GetPooledInstance<T>()
         {
             var pooledInstance = base.GetPooledInstance<T>();
-            loanedObjects.Add(pooledInstance);
+            _loanedObjects.Add(pooledInstance);
             return pooledInstance;
         }
 
         public override void ReturnInstanceToPool(Component component)
         {
-            loanedObjects.Remove(component);
+            _loanedObjects.Remove(component);
             base.ReturnInstanceToPool(component);
         }
 
@@ -39,8 +39,8 @@ using HiraPoolTool.Abstractions;
         {
             if (!IsResourceLoaded) return;
 
-            foreach (var loanedObject in loanedObjects) Destroy(loanedObject.gameObject);
-            loanedObjects.Clear();
+            foreach (var loanedObject in _loanedObjects) Destroy(loanedObject.gameObject);
+            _loanedObjects.Clear();
             Pool.Dispose();
             Pool = null;
         }

@@ -8,9 +8,9 @@ namespace UnityEngine
     public class HiraManagerAttribute : Attribute
     {
 
-        public HiraManagerAttribute() => defaultPrefabLocation = null;
-        public HiraManagerAttribute(string defaultPrefabLocation) => this.defaultPrefabLocation = defaultPrefabLocation;
-        private readonly string defaultPrefabLocation;
+        public HiraManagerAttribute() => _defaultPrefabLocation = null;
+        public HiraManagerAttribute(string defaultPrefabLocation) => this._defaultPrefabLocation = defaultPrefabLocation;
+        private readonly string _defaultPrefabLocation;
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void OnInitialization()
@@ -34,11 +34,11 @@ namespace UnityEngine
                 }
                 
                 // checking if a default prefab is provided
-                if (m.defaultPrefabLocation != null)
+                if (m._defaultPrefabLocation != null)
                 {
-                    var prefab = Resources.Load<GameObject>(m.defaultPrefabLocation);
-                    if (prefab == null) prefab = Resources.Load<GameObject>($"Default_{m.defaultPrefabLocation}");
-                    if (prefab == null) Debug.LogErrorFormat($"Target prefab at {m.defaultPrefabLocation} could not be found.");
+                    var prefab = Resources.Load<GameObject>(m._defaultPrefabLocation);
+                    if (prefab == null) prefab = Resources.Load<GameObject>($"Default_{m._defaultPrefabLocation}");
+                    if (prefab == null) Debug.LogErrorFormat($"Target prefab at {m._defaultPrefabLocation} could not be found.");
                     else
                     {
                         var instantiatedObject = Object.Instantiate(prefab);
@@ -47,7 +47,7 @@ namespace UnityEngine
                         // checking if the instantiated object has the component
                         if (component == null)
                         {
-                            Debug.LogErrorFormat($"Target prefab at {m.defaultPrefabLocation} does not contain " +
+                            Debug.LogErrorFormat($"Target prefab at {m._defaultPrefabLocation} does not contain " +
                                                  $"a {t.Name} component. Adding one to the instance.");
                             component = instantiatedObject.AddComponent(t);
                         }

@@ -5,9 +5,9 @@ namespace Hiralal.Blackboard
 {
     internal sealed class HiraBlackboardInstanceSynchronizer
     {
-        public HiraBlackboardInstanceSynchronizer(HiraBlackboardKeySet keySet) => this.keySet = keySet;
+        public HiraBlackboardInstanceSynchronizer(HiraBlackboardKeySet keySet) => this._keySet = keySet;
 
-        private readonly HiraBlackboardKeySet keySet;
+        private readonly HiraBlackboardKeySet _keySet;
         
         internal event Action<uint, bool> OnSyncInstanceValueUpdateBoolean = delegate { };
         internal event Action<uint, float> OnSyncInstanceValueUpdateFloat = delegate { };
@@ -16,18 +16,18 @@ namespace Hiralal.Blackboard
         internal event Action<uint, Vector3> OnSyncInstanceValueUpdateVector = delegate { };
 
         internal void ReportSyncedInstanceValueUpdate_boolean(uint hash, bool newValue) => 
-            OnSyncInstanceValueUpdateBoolean(keySet.GetTypeSpecificIndex(hash), newValue);
+            OnSyncInstanceValueUpdateBoolean(_keySet.GetTypeSpecificIndex(hash), newValue);
 
         internal void ReportSyncedInstanceValueUpdate_float(uint hash, float newValue) => 
-            OnSyncInstanceValueUpdateFloat(keySet.GetTypeSpecificIndex(hash), newValue);
+            OnSyncInstanceValueUpdateFloat(_keySet.GetTypeSpecificIndex(hash), newValue);
 
         internal void ReportSyncedInstanceValueUpdate_integer(uint hash, int newValue) => 
-            OnSyncInstanceValueUpdateInteger(keySet.GetTypeSpecificIndex(hash), newValue);
+            OnSyncInstanceValueUpdateInteger(_keySet.GetTypeSpecificIndex(hash), newValue);
 
         internal void ReportSyncedInstanceValueUpdate_string(uint hash, string newValue) => 
-            OnSyncInstanceValueUpdateString(keySet.GetTypeSpecificIndex(hash), newValue);
+            OnSyncInstanceValueUpdateString(_keySet.GetTypeSpecificIndex(hash), newValue);
 
         internal void ReportSyncedInstanceValueUpdate_vector(uint hash, Vector3 newValue) => 
-            OnSyncInstanceValueUpdateVector(keySet.GetTypeSpecificIndex(hash), newValue);
+            OnSyncInstanceValueUpdateVector(_keySet.GetTypeSpecificIndex(hash), newValue);
     }
 }

@@ -2,8 +2,6 @@
 
 namespace UnityEngine
 {
-    // TODO: A readme for this.
-
     public abstract class RuntimeReference<T> : ScriptableObject where T : Object
     {
         public T Value { get; private set; } = null;

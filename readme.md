@@ -6,23 +6,23 @@
  
 ### How to use?
 
- Just grab the latest release and put it in your Unity Project's `Assets/Plugins` folder.
+ Just open ``Window / Package Manager`` in Unity, click the (+) icon on top left and select ``Add Package from git URL``.
  
- This repository contains all of the code involved in this project, so if you wish to build it yourself, you can do that as well. Or you can just import the *.cs files directly into your Unity project.
- 
- The detailed documentation for any specific API is in the corresponding folder. Follow the links in the [Contents](#contents) section. 
- 
- Keep package dependencies in mind however.
- 
- - `HiraTools-Addressables.dll` requires the Addressables package from Unity Package Manager.
- 
-> #### Please also keep in mind to mark ``HiraTools-Editor.dll`` assembly as Editor-Only in your Unity Inspector.
-> ![IMAGEPLACEHOLDER - EDITORONLY](.images/editoronly.png)
+ Enter this as the git URL:
+```
+https://www.github.com/herohiralal/HiraTools.git
+```
  
 ## Contents
  
  - ### **[Extension Methods](HiraTools/Extension%20Methods)**
  > A bunch of neat extension methods (some of them are plain static methods) to speed up certain things.
+
+ - ### **[HiraBlackboard](HiraTools/HiraBlackboard)**
+ > A blackboard API to use for HiraGOAP and HiraBT, but with the way it serializes its maps, it can be used with much more than just that.
+
+ - ### **[HiraButtons](HiraTools/HiraButtons)**
+ > A way to quickly add buttons to an editor for a MonoBehaviour.
 
  - ### **[HiraCollection](HiraTools/HiraCollection)**
  > Some boilerplate for making a Reorderable List of ScriptableObjects, with all of them serialized into the same file.
@@ -32,6 +32,11 @@
  
  > ~~There is nothing else to do here, unless you are looking for a template singleton that creates itself and maintains the reference in a safe way with minimal runtime checks.~~
  > For a template singleton, you can check out HiraManagers.
+
+ - ### **[HiraCreatures](HiraTools/HiraCreatures)**
+ > A UE4 like framework to have a more defined model for controllers & pawns, which are sort of non-existent in Unity.
+   
+ > This plugin basically promotes a cleaner object-oriented approach to players, player characters, player controllers, and all that, without relying too much on singletons.
 
  - ### **[HiraEvents](HiraTools/HiraEvents)**
  > You know how Unity doesn't really support generics in its reflection, in the way UE4 does, and you have to create a dummy UnityEvent every time you want a different dynamic invokation signature?
@@ -48,9 +53,6 @@
 
  - ### **[HiraPoolTool](HiraTools/HiraPoolTool)**
  > A pooling solution for Unity, with an emphasis on ease of use, while retaining the maximum possible performance.
-
- - ### **[HiraPoolTool-Addressable](HiraTools-Addressables/HiraPoolTool)**
- > An alternate version of [**HiraPoolTool**](../../HiraTools/HiraPoolTool), that uses Unity's excellent Addressables package and AssetReference to select the target, instead of a GameObject.
 
  - ### **[HiraSaves](HiraTools/HiraSaves)**
  > A simple API to create persistent saves for your game.

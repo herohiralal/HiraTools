@@ -8,43 +8,43 @@ namespace UnityEngine
     {
         private static readonly Dictionary<int, PoolToolAbstract> hash_map = new Dictionary<int, PoolToolAbstract>();
 
-        private int? ownerInstanceId = null;
+        private int? _ownerInstanceId = null;
 
         public void SetOwner(PoolToolAbstract poolTool)
         {
-            if (ownerInstanceId.HasValue)
+            if (_ownerInstanceId.HasValue)
             {
-                var context = hash_map[ownerInstanceId.Value].gameObject;
+                var context = hash_map[_ownerInstanceId.Value].gameObject;
                 Debug.LogErrorFormat(context, $"PoolKey {name} has already been claimed by the " +
                                           $"AddressablePoolTool on GameObject {context.name}.");
                 return;
             }
 
-            ownerInstanceId = poolTool.GetInstanceID();
-            hash_map.Add(ownerInstanceId.Value, poolTool);
+            _ownerInstanceId = poolTool.GetInstanceID();
+            hash_map.Add(_ownerInstanceId.Value, poolTool);
         }
 
         public void ClearOwner()
         {
-            if (!ownerInstanceId.HasValue)
+            if (!_ownerInstanceId.HasValue)
             {
                 Debug.LogErrorFormat(this, $"PoolKey {name} has not been claimed yet.");
                 return;
             }
 
-            hash_map.Remove(ownerInstanceId.Value);
-            ownerInstanceId = null;
+            hash_map.Remove(_ownerInstanceId.Value);
+            _ownerInstanceId = null;
         }
 
         public PoolToolAbstract GetPool()
         {
-            if (!ownerInstanceId.HasValue)
+            if (!_ownerInstanceId.HasValue)
             {
                 Debug.LogErrorFormat(this, $"PoolKey {name} has not been claimed yet.");
                 return null;
             }
 
-            return hash_map[ownerInstanceId.Value];
+            return hash_map[_ownerInstanceId.Value];
         }
     }
 }

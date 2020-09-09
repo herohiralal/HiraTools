@@ -105,3 +105,9 @@ private void OnHealthUpdate(float newValue)
 > You can use a Listener MonoBehaviour, and its UnityEvent's corresponding Dynamic Invocations.
 
 ![IMAGE PLACEHOLDER - FLOATLISTENER](.images/floatlistener.png)
+
+#### 5. Runtime References
+
+> Create your own runtime reference ScriptableObject and store the value of a runtime Object (GameObject, or a Component) with a Claimant MonoBehaviour.
+
+> This can be used to have relative references between two game entities.

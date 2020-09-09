@@ -9,46 +9,46 @@ namespace HiraPoolTool.Core
     {
         public Pool(Component bucket, Component target)
         {
-            (this.bucket, this.target) = (bucket.transform, target);
-            pooledObjects = new List<Component>();
-            counter = new Counter();
+            (this._bucket, this._target) = (bucket.transform, target);
+            _pooledObjects = new List<Component>();
+            _counter = new Counter();
         }
 
         // destroy all pooled objects and clear the references
         public void Dispose()
         {
-            foreach (var pooledObject in pooledObjects) 
+            foreach (var pooledObject in _pooledObjects) 
                 Object.Destroy(pooledObject.gameObject);
 
-            counter.Reset();
-            pooledObjects.Clear();
+            _counter.Reset();
+            _pooledObjects.Clear();
         }
 
-        private readonly Counter counter;
-        private readonly Component target;
-        private readonly List<Component> pooledObjects;
-        private readonly Transform bucket;
+        private readonly Counter _counter;
+        private readonly Component _target;
+        private readonly List<Component> _pooledObjects;
+        private readonly Transform _bucket;
 
-        public int PoolCount => counter.Value;
+        public int PoolCount => _counter.Value;
 
         #region Pool Access
         
         // get an object from the pool
         public Component GetObject()
         {
-            counter.Decrement();
-            var pooledObject = pooledObjects[PoolCount];
-            pooledObjects.RemoveAt(PoolCount);
+            _counter.Decrement();
+            var pooledObject = _pooledObjects[PoolCount];
+            _pooledObjects.RemoveAt(PoolCount);
             return pooledObject;
         }
 
         // return an object to the pool
         public void ReturnObject(Component component)
         {
-            counter.Increment();
-            component.transform.SetParent(bucket);
+            _counter.Increment();
+            component.transform.SetParent(_bucket);
             component.gameObject.SetActive(false);
-            pooledObjects.Add(component);
+            _pooledObjects.Add(component);
         }
         
         #endregion
@@ -62,7 +62,7 @@ namespace HiraPoolTool.Core
         public void RemoveFromPool(byte count) { for (; count > 0; count--) RemoveFromPool(); }
 
         // add one instance to the pool
-        public void AddToPool() => ReturnObject(Object.Instantiate(target));
+        public void AddToPool() => ReturnObject(Object.Instantiate(_target));
         // remove one instance from the pool
         public void RemoveFromPool() => Object.Destroy(GetObject().gameObject);
         

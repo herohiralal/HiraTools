@@ -14,20 +14,20 @@ namespace Hiralal.GOAP.Planner
         public PlannerJob(float maxFScore, HiraBlackboard blackboard, IReadOnlyList<HiraBlackboardValue> target,
             IEnumerable<T> actions, Action<Stack<T>> planSetter)
         {
-            this.maxFScore = maxFScore;
-            state = blackboard.GetDuplicateWorldState();
-            this.target = target;
-            this.actions = actions;
-            plan = new Stack<T>();
-            this.planSetter = planSetter;
+            this._maxFScore = maxFScore;
+            _state = blackboard.GetDuplicateWorldState();
+            this._target = target;
+            this._actions = actions;
+            _plan = new Stack<T>();
+            this._planSetter = planSetter;
         }
 
-        private readonly float maxFScore;
-        private readonly HiraBlackboardValueSet state;
-        private readonly IReadOnlyList<HiraBlackboardValue> target;
-        private readonly IEnumerable<T> actions;
-        private readonly Stack<T> plan;
-        private readonly Action<Stack<T>> planSetter;
+        private readonly float _maxFScore;
+        private readonly HiraBlackboardValueSet _state;
+        private readonly IReadOnlyList<HiraBlackboardValue> _target;
+        private readonly IEnumerable<T> _actions;
+        private readonly Stack<T> _plan;
+        private readonly Action<Stack<T>> _planSetter;
 
         public void GeneratePlan()
         {
@@ -37,12 +37,12 @@ namespace Hiralal.GOAP.Planner
                 var score = PerformHeuristicEstimatedSearch(0, threshold);
                 if (!score.HasValue)
                 {
-                    planSetter(plan);
+                    _planSetter(_plan);
                     return;
                 }
-                if (score.Value > maxFScore)
+                if (score.Value > _maxFScore)
                 {
-                    planSetter(null);
+                    _planSetter(null);
                     return;
                 }
                 threshold = score.Value;
@@ -62,13 +62,13 @@ namespace Hiralal.GOAP.Planner
             if (heuristic == 0) return null;
 
             var min = float.MaxValue;
-            foreach (var action in actions)
+            foreach (var action in _actions)
             {
                 // ignore invalid actions
-                if (!action.ArePreConditionsSatisfied(state)) continue;
+                if (!action.ArePreConditionsSatisfied(_state)) continue;
 
                 // Mutate the state
-                var undoBuffer = state.ApplyAction(action);
+                var undoBuffer = _state.ApplyAction(action);
 
                 // Calculate new cost
                 var actionCost = action.Cost;
@@ -81,12 +81,12 @@ namespace Hiralal.GOAP.Planner
                 cost -= actionCost;
 
                 // Undo state mutation
-                state.Undo(undoBuffer);
+                _state.Undo(undoBuffer);
 
                 // If the goal state was reached
                 if (!score.HasValue)
                 {
-                    plan.Push(action);
+                    _plan.Push(action);
                     return null;
                 }
 
@@ -97,6 +97,6 @@ namespace Hiralal.GOAP.Planner
             return min;
         }
 
-        private int Heuristic => target.Count(state.DoesNotContainValue);
+        private int Heuristic => _target.Count(_state.DoesNotContainValue);
     }
 }

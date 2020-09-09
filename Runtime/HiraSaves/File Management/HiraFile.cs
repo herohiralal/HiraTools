@@ -22,39 +22,39 @@ namespace HiraSaves.FileManagement
 
         private HiraFile(string fileName, HiraFileType type)
         {
-            this.type = type;
-            this.fileName = fileName;
+            _type = type;
+            _fileName = fileName;
         }
 
         internal static HiraFile<T> Get(string fileName, HiraFileType type) => new HiraFile<T>(fileName, type);
 
         #endregion
 
-        private readonly string fileName;
-        private readonly HiraFileType type;
+        private readonly string _fileName;
+        private readonly HiraFileType _type;
 
         public T Data
         {
             get
             {
-                if (type.FolderCouldntBeInitialized) return null;
+                if (_type.FolderCouldntBeInitialized) return null;
 
-                using (var file = fileName.GetFileStreamAs(type))
+                using (var file = _fileName.GetFileStreamAs(_type))
                     return FormatterUtility.Formatter.Deserialize(file) as T;
             }
 
             set
             {
-                if (type.FolderCouldntBeInitialized) return;
+                if (_type.FolderCouldntBeInitialized) return;
 
-                if (value == null) type.DeleteFile(fileName);
+                if (value == null) _type.DeleteFile(_fileName);
                 else
-                    using (var file = fileName.GetFileStreamAs(type)) 
+                    using (var file = _fileName.GetFileStreamAs(_type)) 
                         FormatterUtility.Formatter.Serialize(file, value);
             }
         }
 
         public override string ToString() =>
-            "Saves to, and loads from data in " + fileName + " as " + nameof(T) + ".";
+            "Saves to, and loads from data in " + _fileName + " as " + nameof(T) + ".";
     }
 }

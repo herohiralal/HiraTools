@@ -2,9 +2,6 @@
 {
     public static class FloatExtensions
     {
-        // TODO: Add this to readme.
-        
-        
         public static float AsDegrees360(this float input)
         {
             input %= 360;

@@ -13,21 +13,21 @@ public class HiraCollectionEditor : Editor
     protected Object ObjectAtIndex(int i) => ElementAtIndex(i).objectReferenceValue;
     private Type CollectionType => (Type) target.GetType().GetProperty("CollectionType")?.GetValue(target);
     
-    private ReorderableList reorderableList = null;
+    private ReorderableList _reorderableList = null;
     private void OnEnable()
     {
-        reorderableList = BuildReorderableList();
+        _reorderableList = BuildReorderableList();
     }
 
     private void OnDisable()
     {
-        reorderableList = null;
+        _reorderableList = null;
     }
 
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
-        reorderableList.DoLayoutList();
+        _reorderableList.DoLayoutList();
         serializedObject.ApplyModifiedProperties();
         EditorGUI.LabelField(EditorGUILayout.GetControlRect().KeepToRightFor(130), "Made by Rohan Jadav.");
         if (GUILayout.Button("Make Main Asset"))

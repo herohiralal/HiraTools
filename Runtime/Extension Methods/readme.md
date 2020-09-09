@@ -62,3 +62,9 @@ All the extension methods are in the UnityEngine namespace. Use that in your `*.
  > Returns animator hash as an integer, that can be used for setting/getting Animator properties (bool / trigger / float / int). Cache this value at initialization, because getting/setting by hashes is more efficient than doing so by strings.
  - ``(string).GetShaderHash()`` - 
  > Returns shader property ID, that can be used for setting/getting a material's properties (float / vector / color). Cache this value at initialization, because getting/setting by ID is more efficient than doing so by strings.
+
+### Float Extensions
+ - ``(float).AsDegrees360()`` -
+ > Returns a float value to degrees between 0 and 359.9', without editing the original.
+ - ``(float).ConvertToDegrees360()`` -
+ > Converts a float variable to degrees between 0 and 359.9'.

@@ -5,19 +5,17 @@ namespace UnityEngine
     [AddComponentMenu("HiraTools/HiraBlackbord/Blackboard")]
     public class HiraBlackboard : MonoBehaviour
     {
-        // TODO: Create a Readme for this.
-
         [SerializeField] private HiraBlackboardKeySet keySet = null;
-        private HiraBlackboardComponent state = null;
+        private HiraBlackboardComponent _state = null;
 
-        public HiraBlackboardValueSet GetDuplicateWorldState() => state.valueSet.Copy();
+        public HiraBlackboardValueSet GetDuplicateWorldState() => _state.ValueSet.Copy();
 
         private void Awake()
         {
             if (keySet != null)
             {
-                state = keySet.GetFreshBlackboardComponent();
-                state.RequestSynchronizationWithKeySet();
+                _state = keySet.GetFreshBlackboardComponent();
+                _state.RequestSynchronizationWithKeySet();
             }
             else
             {
@@ -32,8 +30,8 @@ namespace UnityEngine
         {
             OnDestroy_Override();
 
-            state?.BreakSynchronizationWithKeySet();
-            state = null;
+            _state?.BreakSynchronizationWithKeySet();
+            _state = null;
         }
 
         protected virtual void Awake_Override()
@@ -55,7 +53,7 @@ namespace UnityEngine
             keySet.ValidateTransaction(hash, HiraBlackboardKeyType.Bool);
 
             return new HiraBlackboardValueAccessor<bool>(keySet,
-                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_boolean, state.valueSet.booleans, hash);
+                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_boolean, _state.ValueSet.Booleans, hash);
         }
 
         // Floats
@@ -67,7 +65,7 @@ namespace UnityEngine
             keySet.ValidateTransaction(hash, HiraBlackboardKeyType.Float);
 
             return new HiraBlackboardValueAccessor<float>(keySet,
-                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_float, state.valueSet.floats, hash);
+                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_float, _state.ValueSet.Floats, hash);
         }
 
         // Integers
@@ -79,7 +77,7 @@ namespace UnityEngine
             keySet.ValidateTransaction(hash, HiraBlackboardKeyType.Int);
 
             return new HiraBlackboardValueAccessor<int>(keySet,
-                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_integer, state.valueSet.integers, hash);
+                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_integer, _state.ValueSet.Integers, hash);
         }
 
         // Strings
@@ -91,7 +89,7 @@ namespace UnityEngine
             keySet.ValidateTransaction(hash, HiraBlackboardKeyType.String);
 
             return new HiraBlackboardValueAccessor<string>(keySet,
-                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_string, state.valueSet.strings, hash);
+                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_string, _state.ValueSet.Strings, hash);
         }
         
         // Vectors
@@ -103,7 +101,7 @@ namespace UnityEngine
             keySet.ValidateTransaction(hash, HiraBlackboardKeyType.Vector);
 
             return new HiraBlackboardValueAccessor<Vector3>(keySet,
-                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_vector, state.valueSet.vectors, hash);
+                keySet.InstanceSynchronizer.ReportSyncedInstanceValueUpdate_vector, _state.ValueSet.Vectors, hash);
         }
         
         #endregion

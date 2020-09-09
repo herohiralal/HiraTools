@@ -14,11 +14,11 @@ namespace Hiralal.GOAP.Transitions
         [SerializeField] private HiraSerializableBlackboardValue[] preconditions = null;
         [SerializeField] private HiraSerializableBlackboardValue[] effects = null;
 
-        private HiraBlackboardValue[] generatedPreconditions = null;
-        private HiraBlackboardValue[] generatedEffects = null;
+        private HiraBlackboardValue[] _generatedPreconditions = null;
+        private HiraBlackboardValue[] _generatedEffects = null;
 
         public bool ArePreConditionsSatisfied(HiraBlackboardValueSet valueSet) =>
-            generatedPreconditions.All(valueSet.ContainsValue);
+            _generatedPreconditions.All(valueSet.ContainsValue);
 
         public void Activate()
         {
@@ -26,22 +26,22 @@ namespace Hiralal.GOAP.Transitions
             
             var generatedPreconditionsEnumerable =
                 preconditions.Select(serializableValue => serializableValue.GetBlackboardValue(keySet));
-            generatedPreconditions = generatedPreconditionsEnumerable as HiraBlackboardValue[] ??
+            _generatedPreconditions = generatedPreconditionsEnumerable as HiraBlackboardValue[] ??
                                      generatedPreconditionsEnumerable.ToArray();
 
             var generatedEffectsEnumerable =
                 effects.Select(serializableValue => serializableValue.GetBlackboardValue(keySet));
-            generatedEffects = generatedEffectsEnumerable as HiraBlackboardValue[] ??
+            _generatedEffects = generatedEffectsEnumerable as HiraBlackboardValue[] ??
                                generatedEffectsEnumerable.ToArray();
         }
 
         public void Deactivate()
         {
-            generatedPreconditions = null;
-            generatedEffects = null;
+            _generatedPreconditions = null;
+            _generatedEffects = null;
         }
 
         public float BaseCost => baseCost;
-        public IReadOnlyList<HiraBlackboardValue> Effects => generatedEffects;
+        public IReadOnlyList<HiraBlackboardValue> Effects => _generatedEffects;
     }
 }
