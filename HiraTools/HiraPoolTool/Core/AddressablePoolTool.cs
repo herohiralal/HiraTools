@@ -1,4 +1,6 @@
-﻿﻿using System;
+﻿#if HIRAENGINE_ADDRESSABLES
+
+using System;
 using System.Collections;
 using HiraPoolTool.Abstractions;
 using UnityEngine.AddressableAssets;
@@ -48,3 +50,5 @@ namespace UnityEngine
         #endregion
     }
 }
+
+#endif

@@ -12,6 +12,11 @@ A pooling solution for Unity, with an emphasis on ease of use, while retaining t
 
 ![IMAGE PLACEHOLDER - PoolTool](.images/pooltool.png)
 
+> You can alternatively use AddressablePoolTool if you have Addressables installed.
+> Just add ``HIRAENGINE_ADDRESSABLES`` to your Scripting Define Symbols.
+
+![IMAGE PLACEHOLDER - AddressablePoolTool](.images/addressablepooltool.png)
+
 > As of release 1.11 you can also use PoolTool (Resources).
 
 ![IMAGE PLACEHOLDER - PoolToolResources](.images/pooltoolresources.png)
@@ -98,3 +103,4 @@ pool.UnloadResource();
 **NOTE: Unloading resources will destroy ALL instances of the pooled object, regardless whether they are still inside the pool, or outside.**
 
 > A ``PoolTool (Resources)`` will not unload the resources from memory however. You would manually need to call ``Resources.UnloadUnusedAssets()``.
+> An ``AddressablePoolTool`` will however unload the relevant asset reference.
