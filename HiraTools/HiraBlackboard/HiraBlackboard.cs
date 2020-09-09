@@ -2,6 +2,7 @@
 
 namespace UnityEngine
 {
+    [AddComponentMenu("HiraTools/HiraBlackbord/Blackboard")]
     public class HiraBlackboard : MonoBehaviour
     {
         // TODO: Create a Readme for this.

@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Hiralal.HiraWorlds
 {
     [RequireComponent(typeof(Collider))]
+    [AddComponentMenu("HiraTools/HiraWorlds/HiraWorld Volume")]
     public class HiraWorldVolume : MonoBehaviour, IEnumerable<HiraWorldLoader>
     {
         [SerializeField] private HiraWorldLoader[] correspondingWorlds = null;

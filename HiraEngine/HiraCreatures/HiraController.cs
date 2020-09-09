@@ -1,5 +1,6 @@
 ﻿namespace UnityEngine
 {
+    [AddComponentMenu("HiraTools/HiraCreatures/HiraController")]
     public class HiraController : MonoBehaviour
     {
         [SerializeField] private HiraCreature controlledCreature = null;

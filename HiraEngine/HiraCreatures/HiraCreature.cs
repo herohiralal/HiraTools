@@ -1,5 +1,6 @@
 ﻿namespace UnityEngine
 {
+    [AddComponentMenu("HiraTools/HiraCreatures/HiraCreature")]
     public class HiraCreature : MonoBehaviour
     {
         // TODO: Create a readme for this.
