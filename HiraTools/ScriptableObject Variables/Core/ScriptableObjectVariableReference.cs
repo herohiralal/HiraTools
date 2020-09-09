@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+// ReSharper disable Unity.RedundantSerializeFieldAttribute
 
 namespace Hiralal.SOVariables.Core
 {
