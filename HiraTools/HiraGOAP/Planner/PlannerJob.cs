@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Hiralal.Blackboard;
 using Hiralal.GOAP.Transitions;
+using UnityEngine;
 
 // ReSharper disable PossibleMultipleEnumeration
 
@@ -10,11 +11,11 @@ namespace Hiralal.GOAP.Planner
 {
     public readonly struct PlannerJob<T> where T : IHiraWorldStateTransition
     {
-        public PlannerJob(float maxFScore, HiraBlackboardValueSet state, IReadOnlyList<HiraBlackboardValue> target,
+        public PlannerJob(float maxFScore, HiraBlackboard blackboard, IReadOnlyList<HiraBlackboardValue> target,
             IEnumerable<T> actions, Action<Stack<T>> planSetter)
         {
             this.maxFScore = maxFScore;
-            this.state = state;
+            state = blackboard.GetDuplicateWorldState();
             this.target = target;
             this.actions = actions;
             plan = new Stack<T>();
