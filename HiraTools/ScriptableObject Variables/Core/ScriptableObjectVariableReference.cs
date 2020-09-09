@@ -31,5 +31,7 @@ namespace Hiralal.SOVariables.Core
             }
         }
         public static implicit operator T(ScriptableObjectVariableReference<T> original) => original.Value;
+
+        public override string ToString() => Value.ToString();
     }
 }
