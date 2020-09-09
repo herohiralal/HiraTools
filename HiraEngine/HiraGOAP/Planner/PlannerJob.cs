@@ -10,13 +10,13 @@ namespace Hiralal.GOAP.Planner
     public readonly struct PlannerJob<T> where T : IHiraWorldStateTransition
     {
         public PlannerJob(float maxFScore, HiraBlackboardValueSet state, IReadOnlyList<HiraBlackboardValue> target,
-            IEnumerable<T> actions, Action<List<T>> planSetter)
+            IEnumerable<T> actions, Action<Stack<T>> planSetter)
         {
             this.maxFScore = maxFScore;
             this.state = state;
             this.target = target;
             this.actions = actions;
-            plan = new List<T>();
+            plan = new Stack<T>();
             this.planSetter = planSetter;
         }
 
@@ -24,8 +24,8 @@ namespace Hiralal.GOAP.Planner
         private readonly HiraBlackboardValueSet state;
         private readonly IReadOnlyList<HiraBlackboardValue> target;
         private readonly IEnumerable<T> actions;
-        private readonly List<T> plan;
-        private readonly Action<List<T>> planSetter;
+        private readonly Stack<T> plan;
+        private readonly Action<Stack<T>> planSetter;
 
         public void GeneratePlan()
         {
@@ -84,7 +84,7 @@ namespace Hiralal.GOAP.Planner
                 // If the goal state was reached
                 if (!score.HasValue)
                 {
-                    plan.Add(action);
+                    plan.Push(action);
                     return null;
                 }
 
