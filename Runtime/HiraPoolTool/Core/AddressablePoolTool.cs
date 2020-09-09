@@ -17,7 +17,8 @@ namespace UnityEngine
 
         public override void LoadResource(Func<GameObject, Component> getTarget = null, byte? initialPopulateOverride = null)
         {
-            getTarget ??= go => go.transform;
+            if (getTarget == null) getTarget = go => go.transform;
+
             StartCoroutine(LoadResourceEnumerator(getTarget, initialPopulateOverride));
         }
         
