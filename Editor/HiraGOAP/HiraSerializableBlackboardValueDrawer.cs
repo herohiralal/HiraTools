@@ -1,4 +1,4 @@
-﻿﻿using Hiralal.Blackboard;
+﻿using Hiralal.Blackboard;
 using Hiralal.GOAP.Transitions;
 using UnityEngine;
 

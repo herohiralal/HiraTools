@@ -1,4 +1,4 @@
-﻿﻿using Hiralal.HiraWorlds;
+﻿using Hiralal.HiraWorlds;
 using UnityEditor;
 using UnityEngine;
 
