@@ -14,9 +14,12 @@
                 creature.OnUnpossess();
             }
 
-            var controller = Instantiate(controllerPrefab, Vector3.zero, Quaternion.identity);
-            controller.Possess(creature);
-            creature.OnPossess(controller);
+            if (controllerPrefab != null)
+            {
+                var controller = Instantiate(controllerPrefab, Vector3.zero, Quaternion.identity);
+                controller.Possess(creature);
+                creature.OnPossess(controller);
+            }
         }
     }
 }
