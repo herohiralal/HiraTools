@@ -3,7 +3,6 @@
     [AddComponentMenu("HiraTools/HiraCreatures/HiraCreature")]
     public class HiraCreature : MonoBehaviour
     {
-        // TODO: Create a readme for this.
         [SerializeField] private HiraController controller;
         public HiraController Controller => controller;
 
@@ -23,6 +22,21 @@
         public virtual void OnUnpossess()
         {
             controller = null;
+        }
+
+#if UNITY_EDITOR
+        [SerializeField] private HiraControllerTemplate controllerTemplate = null;
+#endif
+
+        protected virtual void OnValidate()
+        {
+#if UNITY_EDITOR
+            if (controllerTemplate != null)
+            {
+                if (Application.isPlaying) controllerTemplate.Possess(this);
+                controllerTemplate = null;
+            }
+#endif
         }
     }
 }
