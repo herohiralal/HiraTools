@@ -28,13 +28,18 @@ namespace Hiralal.Blackboard
                 (uint) Strings.Length,
                 (uint) Vectors.Length);
 
-            for (var i = 0; i < Booleans.Length; i++) copy.Booleans[i] = Booleans[i];
-            for (var i = 0; i < Floats.Length; i++) copy.Floats[i] = Floats[i];
-            for (var i = 0; i < Integers.Length; i++) copy.Integers[i] = Integers[i];
-            for (var i = 0; i < Strings.Length; i++) copy.Strings[i] = Strings[i];
-            for (var i = 0; i < Vectors.Length; i++) copy.Vectors[i] = Vectors[i];
+            Copy(this, copy);
 
             return copy;
+        }
+
+        public static void Copy(HiraBlackboardValueSet source, HiraBlackboardValueSet destination)
+        {
+            for (var i = 0; i < source.Booleans.Length; i++) destination.Booleans[i] = source.Booleans[i];
+            for (var i = 0; i < source.Floats.Length; i++) destination.Floats[i] = source.Floats[i];
+            for (var i = 0; i < source.Integers.Length; i++) destination.Integers[i] = source.Integers[i];
+            for (var i = 0; i < source.Strings.Length; i++) destination.Strings[i] = source.Strings[i];
+            for (var i = 0; i < source.Vectors.Length; i++) destination.Vectors[i] = source.Vectors[i];
         }
 
         public bool ContainsValue(HiraBlackboardValue value)
