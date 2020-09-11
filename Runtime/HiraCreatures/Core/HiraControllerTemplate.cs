@@ -10,8 +10,8 @@
             // TODO: Replace this with a GameMode based solution.
             if (creature.Controller != null)
             {
-                creature.Controller.Unpossess();
-                creature.OnUnpossess();
+                creature.Controller.Dispossess();
+                creature.OnDispossess();
             }
 
             if (controllerPrefab != null)

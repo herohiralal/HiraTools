@@ -11,7 +11,7 @@
             controlledCreature = creature;
         }
 
-        public virtual void Unpossess()
+        public virtual void Dispossess()
         {
             controlledCreature = null;
         }

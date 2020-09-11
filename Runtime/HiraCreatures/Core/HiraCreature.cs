@@ -10,7 +10,7 @@
         {
         }
 
-        public virtual void Despawn()
+        public virtual void Kill()
         {
         }
 
@@ -19,7 +19,7 @@
             controller = inController;
         }
 
-        public virtual void OnUnpossess()
+        public virtual void OnDispossess()
         {
             controller = null;
         }
