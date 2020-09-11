@@ -16,8 +16,9 @@ namespace UnityEngine
         private List<HiraCreatureAction> actions = null;
 
         [Space] [Header("Planner Settings")] 
-        [SerializeField] private bool multiThreaded = false;
-        [SerializeField] private float maxFScore = 100;
+        [SerializeField] private BoolReference multiThreaded = null;
+        [SerializeField] private FloatReference maxFScore = null;
+        [SerializeField] private IntReference maxIterationsPerFrame = null;
         
         private bool _planRequested = false;
         private HiraWorldStateTransition currentGoal = null;
@@ -35,7 +36,7 @@ namespace UnityEngine
 
             _planRequested = true;
 
-            _planner.Initialize(maxFScore, currentGoal, actions);
+            _planner.Initialize(maxFScore, currentGoal, actions, maxIterationsPerFrame);
             
             if (multiThreaded) ThreadPool.QueueUserWorkItem(_planner.GeneratePlan);
             else _planner.GeneratePlan();

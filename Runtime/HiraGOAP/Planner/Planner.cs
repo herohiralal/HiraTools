@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Hiralal.Blackboard;
 using Hiralal.GOAP.Transitions;
 using UnityEngine;
@@ -24,23 +25,27 @@ namespace Hiralal.GOAP.Planner
         private IEnumerable<T> _actions = null;
 
         private float _maxFScore = 0;
+        private int _maxIterationsPerFrame = 0;
+        private int _iterationsThisFrame = 1;
         private Stack<T> _plan = null;
 
-        public void Initialize(float newMaxFScore, HiraWorldStateTransition goal, IEnumerable<T> actions)
+        public void Initialize(float newMaxFScore, HiraWorldStateTransition goal, IEnumerable<T> actions, int maxIterationsPerFrame)
         {
             _plan = new Stack<T>();
+            _iterationsThisFrame = 1;
             _maxFScore = newMaxFScore;
+            _maxIterationsPerFrame = maxIterationsPerFrame;
             HiraBlackboardValueSet.Copy(_blackboard.ValueSet, _state);
             _target = goal.Effects;
             _actions = actions;
         }
 
-        public void GeneratePlan(object context = null)
+        public async void GeneratePlan(object context = null)
         {
             float threshold = Heuristic;
             while (true)
             {
-                var score = PerformHeuristicEstimatedSearch(0, threshold);
+                var score = await PerformHeuristicEstimatedSearch(0, threshold);
                 if (!score.HasValue)
                 {
                     _planSetter(_plan);
@@ -56,7 +61,7 @@ namespace Hiralal.GOAP.Planner
             }
         }
 
-        private float? PerformHeuristicEstimatedSearch(float cost, float threshold)
+        private async Task<float?> PerformHeuristicEstimatedSearch(float cost, float threshold)
         {
             // Heuristic is the number of values still remaining
             var heuristic = Heuristic;
@@ -82,13 +87,15 @@ namespace Hiralal.GOAP.Planner
                 cost += actionCost;
 
                 // check if the goal state was reached
-                var score = PerformHeuristicEstimatedSearch(cost, threshold);
+                var score = await PerformHeuristicEstimatedSearch(cost, threshold);
 
                 // Undo cost mutation
                 cost -= actionCost;
 
                 // Undo state mutation
                 _state.Undo(undoBuffer);
+
+                await AsynchronousCheck();
 
                 // If the goal state was reached
                 if (!score.HasValue)
@@ -102,6 +109,16 @@ namespace Hiralal.GOAP.Planner
             }
 
             return min;
+        }
+
+        private async Task AsynchronousCheck()
+        {
+            _iterationsThisFrame++;
+            if (_iterationsThisFrame > _maxIterationsPerFrame)
+            {
+                _iterationsThisFrame = 1;
+                await Task.Yield();
+            }
         }
 
         private int Heuristic => _target.Count(_state.DoesNotContainValue);
