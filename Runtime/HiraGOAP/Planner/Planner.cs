@@ -37,7 +37,7 @@ namespace Hiralal.GOAP.Planner
             _maxIterationsPerFrame = maxIterationsPerFrame;
             HiraBlackboardValueSet.Copy(_blackboard.ValueSet, _state);
             _target = goal.Effects;
-            _actions = actions;
+            _actions = actions.ToArray();
         }
 
         public async void GeneratePlan(object context = null)
