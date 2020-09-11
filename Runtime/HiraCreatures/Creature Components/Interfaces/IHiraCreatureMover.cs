@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine
 {
-    public interface IHiraCreatureMovementComponent : IHiraCreatureComponent
+    public interface IHiraCreatureMover : IHiraCreatureComponent
     {
         HiraCreatureMovementMode MovementMode { get; set; }
         void MoveTowards(Vector3 direction);

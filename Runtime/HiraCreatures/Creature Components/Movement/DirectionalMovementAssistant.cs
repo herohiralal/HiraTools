@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
+﻿using UnityEngine;
+using System.Diagnostics;
 
-namespace UnityEngine
+namespace HiraCreatures.Components.Movement
 {
     public class DirectionalMovementAssistant
     {

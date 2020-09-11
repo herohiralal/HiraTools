@@ -1,9 +1,10 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.AI;
 
-namespace UnityEngine
+namespace HiraCreatures.Components.Movement
 {
-    public class HiraCreatureMover : HiraCreatureComponent, IHiraCreatureMovementComponent
+    public class HiraCreatureMover : HiraCreatureComponent, IHiraCreatureMover
     {
         [Space] [Header("Required Components")] [SerializeField]
         private Rigidbody targetRigidbody = null;
