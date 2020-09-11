@@ -52,6 +52,8 @@ namespace Hiralal.Blackboard
             InstanceSynchronizer = null;
         }
 
+        internal HiraBlackboardValueSet GetFreshValueSet() => _defaultBlackboard.ValueSet.Copy();
+
         internal HiraBlackboardComponent GetFreshBlackboardComponent() =>
             new HiraBlackboardComponent(this, _defaultBlackboard.ValueSet.Copy());
 

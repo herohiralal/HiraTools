@@ -2,10 +2,12 @@
 
 namespace UnityEngine
 {
-    [AddComponentMenu("HiraTools/HiraBlackbord/Blackboard")]
+    [AddComponentMenu("HiraTools/HiraBlackboard/Blackboard")]
     public class HiraBlackboard : MonoBehaviour
     {
         [SerializeField] private HiraBlackboardKeySet keySet = null;
+        public HiraBlackboardKeySet KeySet => keySet;
+        
         private HiraBlackboardComponent _state = null;
 
         internal HiraBlackboardValueSet ValueSet => _state.ValueSet;

@@ -5,8 +5,6 @@ using Hiralal.Blackboard;
 using Hiralal.GOAP.Transitions;
 using UnityEngine;
 
-// ReSharper disable PossibleMultipleEnumeration
-
 namespace Hiralal.GOAP.Planner
 {
     public class Planner<T> where T : IHiraWorldStateTransition
@@ -14,7 +12,7 @@ namespace Hiralal.GOAP.Planner
         public Planner(HiraBlackboard blackboard, Action<Stack<T>> planSetter)
         {
             _blackboard = blackboard;
-            _state = blackboard.GetDuplicateWorldState();
+            _state = blackboard.KeySet.GetFreshValueSet();
             _planSetter = planSetter;
         }
 
