@@ -9,27 +9,35 @@ using UnityEngine;
 
 namespace Hiralal.GOAP.Planner
 {
-    public readonly struct PlannerJob<T> where T : IHiraWorldStateTransition
+    public class Planner<T> where T : IHiraWorldStateTransition
     {
-        public PlannerJob(float maxFScore, HiraBlackboard blackboard, IReadOnlyList<HiraBlackboardValue> target,
-            IEnumerable<T> actions, Action<Stack<T>> planSetter)
+        public Planner(HiraBlackboard blackboard, Action<Stack<T>> planSetter)
         {
-            this._maxFScore = maxFScore;
+            _blackboard = blackboard;
             _state = blackboard.GetDuplicateWorldState();
-            this._target = target;
-            this._actions = actions;
-            _plan = new Stack<T>();
-            this._planSetter = planSetter;
+            _planSetter = planSetter;
         }
 
-        private readonly float _maxFScore;
+        private readonly HiraBlackboard _blackboard;
         private readonly HiraBlackboardValueSet _state;
-        private readonly IReadOnlyList<HiraBlackboardValue> _target;
-        private readonly IEnumerable<T> _actions;
-        private readonly Stack<T> _plan;
         private readonly Action<Stack<T>> _planSetter;
+        
+        private IReadOnlyList<HiraBlackboardValue> _target = null;
+        private IEnumerable<T> _actions = null;
 
-        public void GeneratePlan()
+        private float _maxFScore = 0;
+        private Stack<T> _plan = null;
+
+        public void Initialize(float newMaxFScore, HiraWorldStateTransition goal, IEnumerable<T> actions)
+        {
+            _plan = new Stack<T>();
+            _maxFScore = newMaxFScore;
+            HiraBlackboardValueSet.Copy(_blackboard.ValueSet, _state);
+            _target = goal.Effects;
+            _actions = actions;
+        }
+
+        public void GeneratePlan(object context = null)
         {
             float threshold = Heuristic;
             while (true)
@@ -45,6 +53,7 @@ namespace Hiralal.GOAP.Planner
                     _planSetter(null);
                     return;
                 }
+
                 threshold = score.Value;
             }
         }
