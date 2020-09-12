@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using HiraGOAP.Goals;
 using Hiralal.GOAP.Planner;
 using Hiralal.GOAP.Transitions;
 
@@ -12,7 +13,7 @@ namespace UnityEngine
         [SerializeField] private HiraBlackboard blackboard = null;
         
         [Space] [Header("Behaviour Customization")]
-        [SerializeField] private HiraWorldStateTransition[] goals = null;
+        [SerializeField] private GoalSet goals = null;
         private List<HiraCreatureAction> actions = null;
 
         [Space] [Header("Planner Settings")] 
