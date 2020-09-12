@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using HiraGOAP.Goals;
 using Hiralal.GOAP.Planner;
@@ -26,9 +27,24 @@ namespace UnityEngine
         private Stack<HiraCreatureAction> _plan = null;
         private Planner<HiraCreatureAction> _planner = null;
 
+        private CancellationTokenSource _cts = new CancellationTokenSource();
+
         private void Awake()
         {
+            GetNewPlanner();
+        }
+
+        private void OnDestroy()
+        {
+            _cts.Cancel();
+        }
+
+        private void GetNewPlanner()
+        {
+            _cts.Cancel();
+            _planRequested = false;
             _planner = new Planner<HiraCreatureAction>(blackboard, SetPlan);
+            _cts = new CancellationTokenSource();
         }
 
         private bool RequestPlan()
@@ -37,7 +53,7 @@ namespace UnityEngine
 
             _planRequested = true;
 
-            _planner.Initialize(maxFScore, currentGoal, actions, maxIterationsPerFrame);
+            _planner.Initialize(maxFScore, currentGoal, actions, maxIterationsPerFrame, _cts.Token);
             
             if (multiThreaded) ThreadPool.QueueUserWorkItem(_planner.GeneratePlan);
             else _planner.GeneratePlan();
@@ -48,7 +64,24 @@ namespace UnityEngine
         private void SetPlan(Stack<HiraCreatureAction> newPlan)
         {
             _planRequested = false;
-            _plan = newPlan;
+            if (newPlan != null) _plan = newPlan;
+        }
+
+        private void RecalculateGoal()
+        {
+            foreach (var goal in goals)
+            {
+                if (!goal.ArePreConditionsSatisfied(blackboard.ValueSet)) continue;
+                if (currentGoal == goal) return;
+
+                currentGoal = goal;
+
+                if (RequestPlan()) return;
+                
+                GetNewPlanner();
+                RequestPlan();
+                return;
+            }
         }
     }
 }
