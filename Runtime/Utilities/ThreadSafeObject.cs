@@ -1,4 +1,4 @@
-﻿namespace Utilities
+﻿namespace Hiralal.Utilities
 {
     public class ThreadSafeObject<T>
     {

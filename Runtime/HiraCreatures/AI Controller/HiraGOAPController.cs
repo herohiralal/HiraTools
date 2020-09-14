@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
-using HiraGOAP.Goals;
+using Hiralal.GOAP.Goals;
 using Hiralal.GOAP.Planner;
 using Hiralal.GOAP.Transitions;
+using Hiralal.Utilities;
 
 namespace UnityEngine
 {
@@ -21,56 +24,56 @@ namespace UnityEngine
         [SerializeField] private BoolReference multiThreaded = null;
         [SerializeField] private FloatReference maxFScore = null;
         
-        private bool _plannerActive = false;
+        private readonly ThreadSafeObject<bool> _plannerActive = new ThreadSafeObject<bool>(false);
+        private readonly ThreadSafeObject<bool> _planRequested = new ThreadSafeObject<bool>(false);
+        private readonly ThreadSafeObject<Stack<HiraCreatureAction>> _queuedPlan = new ThreadSafeObject<Stack<HiraCreatureAction>>();
+        
+        
         private HiraWorldStateTransition _currentGoal = null;
-        private Stack<HiraCreatureAction> _queuedPlan = null;
         private Planner<HiraCreatureAction> _planner = null;
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
         private void Awake()
         {
-            GetNewPlanner();
+            _planner = new Planner<HiraCreatureAction>(blackboard, PlannerCallback);
         }
 
         private void OnDestroy()
         {
             _cts.Cancel();
         }
+        
+        #region Planning
 
-        private void GetNewPlanner()
+        private void RequestPlan()
         {
-            _cts.Cancel();
-            _plannerActive = false;
-            _planner = new Planner<HiraCreatureAction>(blackboard, SetPlan);
-            _cts = new CancellationTokenSource();
+            if (_planRequested.Value) return;
+            _planRequested.Value = true;
+            StartCoroutine(RequestPlanEnumerator());
         }
 
-        private bool RequestPlan()
+        private IEnumerator RequestPlanEnumerator()
         {
-            if (_plannerActive) return false;
-
-            _plannerActive = true;
-
-            _planner.Initialize(maxFScore, _currentGoal, actions);
+            while (_plannerActive.Value) yield return null;
+            _plannerActive.Value = true;
             
+            if(_cts.IsCancellationRequested) _cts = new CancellationTokenSource();
+            
+            _planner.Initialize(maxFScore, _currentGoal, actions);
             if (multiThreaded) ThreadPool.QueueUserWorkItem(_planner.GeneratePlan, _cts.Token);
-            else _planner.GeneratePlan(_cts.Token);
-
-            return true;
+            else _planner.GeneratePlan(CancellationToken.None);
         }
-
-        private void SetPlan(PlannerResult result, Stack<HiraCreatureAction> newPlan)
+        
+        private void PlannerCallback(PlannerResult result, Stack<HiraCreatureAction> newPlan)
         {
-            _plannerActive = false;
-            // if (newPlan != null) _queuedPlan = newPlan;
             switch (result)
             {
                 case PlannerResult.None:
                     HiraLogger.LogErrorFormat(this, $"Planner returned an unhandled output.");
                     break;
                 case PlannerResult.Success:
-                    _queuedPlan = newPlan;
+                    _queuedPlan.Value = newPlan;
                     break;
                 case PlannerResult.FScoreOverflow:
                     HiraLogger.LogWarning($"FScore overflow.", this);
@@ -80,23 +83,23 @@ namespace UnityEngine
                 default:
                     throw new ArgumentOutOfRangeException(nameof(result), result, null);
             }
+            _planRequested.Value = false;
+            _plannerActive.Value = false;
         }
+        
+        #endregion
+        
+        #region Goal Calculation
 
         private void RecalculateGoal()
         {
-            foreach (var goal in goals)
-            {
-                if (!goal.ArePreConditionsSatisfied(blackboard.ValueSet)) continue;
-                if (_currentGoal == goal) return;
+            var goal = goals.FirstOrDefault(g => g.ArePreConditionsSatisfied(blackboard.ValueSet));
+            if (goal == _currentGoal) return;
 
-                _currentGoal = goal;
-
-                if (RequestPlan()) return;
-                
-                GetNewPlanner();
-                RequestPlan();
-                return;
-            }
+            _currentGoal = goal;
+            RequestPlan();
         }
+        
+        #endregion
     }
 }

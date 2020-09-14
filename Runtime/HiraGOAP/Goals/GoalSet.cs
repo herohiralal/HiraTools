@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Hiralal.GOAP.Transitions;
 using UnityEngine;
 
-namespace HiraGOAP.Goals
+namespace Hiralal.GOAP.Goals
 {
     [CreateAssetMenu(fileName = "New Goal Set", menuName = "Hiralal/HiraEngine/HiraGOAP/Goal Set")]
     public class GoalSet : ScriptableObject, IEnumerable<HiraWorldStateTransition>
