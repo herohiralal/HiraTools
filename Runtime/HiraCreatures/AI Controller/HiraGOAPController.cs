@@ -20,11 +20,10 @@ namespace UnityEngine
         [Space] [Header("Planner Settings")] 
         [SerializeField] private BoolReference multiThreaded = null;
         [SerializeField] private FloatReference maxFScore = null;
-        [SerializeField] private IntReference maxIterationsPerFrame = null;
         
-        private bool _planRequested = false;
-        private HiraWorldStateTransition currentGoal = null;
-        private Stack<HiraCreatureAction> _plan = null;
+        private bool _plannerActive = false;
+        private HiraWorldStateTransition _currentGoal = null;
+        private Stack<HiraCreatureAction> _queuedPlan = null;
         private Planner<HiraCreatureAction> _planner = null;
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
@@ -42,29 +41,45 @@ namespace UnityEngine
         private void GetNewPlanner()
         {
             _cts.Cancel();
-            _planRequested = false;
+            _plannerActive = false;
             _planner = new Planner<HiraCreatureAction>(blackboard, SetPlan);
             _cts = new CancellationTokenSource();
         }
 
         private bool RequestPlan()
         {
-            if (_planRequested) return false;
+            if (_plannerActive) return false;
 
-            _planRequested = true;
+            _plannerActive = true;
 
-            _planner.Initialize(maxFScore, currentGoal, actions, maxIterationsPerFrame, _cts.Token);
+            _planner.Initialize(maxFScore, _currentGoal, actions);
             
-            if (multiThreaded) ThreadPool.QueueUserWorkItem(_planner.GeneratePlan);
-            else _planner.GeneratePlan();
+            if (multiThreaded) ThreadPool.QueueUserWorkItem(_planner.GeneratePlan, _cts.Token);
+            else _planner.GeneratePlan(_cts.Token);
 
             return true;
         }
 
-        private void SetPlan(Stack<HiraCreatureAction> newPlan)
+        private void SetPlan(PlannerResult result, Stack<HiraCreatureAction> newPlan)
         {
-            _planRequested = false;
-            if (newPlan != null) _plan = newPlan;
+            _plannerActive = false;
+            // if (newPlan != null) _queuedPlan = newPlan;
+            switch (result)
+            {
+                case PlannerResult.None:
+                    HiraLogger.LogErrorFormat(this, $"Planner returned an unhandled output.");
+                    break;
+                case PlannerResult.Success:
+                    _queuedPlan = newPlan;
+                    break;
+                case PlannerResult.FScoreOverflow:
+                    HiraLogger.LogWarning($"FScore overflow.", this);
+                    break;
+                case PlannerResult.Cancelled:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(result), result, null);
+            }
         }
 
         private void RecalculateGoal()
@@ -72,9 +87,9 @@ namespace UnityEngine
             foreach (var goal in goals)
             {
                 if (!goal.ArePreConditionsSatisfied(blackboard.ValueSet)) continue;
-                if (currentGoal == goal) return;
+                if (_currentGoal == goal) return;
 
-                currentGoal = goal;
+                _currentGoal = goal;
 
                 if (RequestPlan()) return;
                 

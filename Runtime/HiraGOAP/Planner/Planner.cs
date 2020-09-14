@@ -2,75 +2,79 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Hiralal.Blackboard;
 using Hiralal.GOAP.Transitions;
 using UnityEngine;
 
 namespace Hiralal.GOAP.Planner
 {
+    public enum PlannerResult
+    {
+        None, Success, FScoreOverflow, Cancelled
+    }
+    
     public class Planner<T> where T : IHiraWorldStateTransition
     {
-        public Planner(HiraBlackboard blackboard, Action<Stack<T>> planSetter)
+        public Planner(HiraBlackboard blackboard, Action<PlannerResult, Stack<T>> completionCallback)
         {
             _blackboard = blackboard;
             _state = blackboard.KeySet.GetFreshValueSet();
-            _planSetter = planSetter;
+            _completionCallback = completionCallback;
         }
 
         private readonly HiraBlackboard _blackboard;
         private readonly HiraBlackboardValueSet _state;
-        private readonly Action<Stack<T>> _planSetter;
+        private readonly Action<PlannerResult, Stack<T>> _completionCallback;
         
         private IReadOnlyList<HiraBlackboardValue> _target = null;
         private IEnumerable<T> _actions = null;
 
-        private CancellationToken _ct;
         private float _maxFScore = 0;
-        private int _maxIterationsPerFrame = 0;
-        private int _iterationsThisFrame = 1;
         private Stack<T> _plan = null;
 
-        public void Initialize(float newMaxFScore, HiraWorldStateTransition goal, IEnumerable<T> actions, int maxIterationsPerFrame, CancellationToken ct)
+        public void Initialize(float newMaxFScore, HiraWorldStateTransition goal, IEnumerable<T> actions)
         {
             _plan = new Stack<T>();
-            _iterationsThisFrame = 1;
             _maxFScore = newMaxFScore;
-            _maxIterationsPerFrame = maxIterationsPerFrame;
             HiraBlackboardValueSet.Copy(_blackboard.ValueSet, _state);
             _target = goal.Effects;
             _actions = actions.ToArray();
-            _ct = ct;
         }
 
-        public async void GeneratePlan(object context = null)
+        public void GeneratePlan(object cancellationToken)
         {
+            var ct = (CancellationToken) cancellationToken;
+            
             float threshold = Heuristic;
             while (true)
             {
-                var score = await PerformHeuristicEstimatedSearch(0, threshold);
+                var score = PerformHeuristicEstimatedSearch(0, threshold, ct);
+                
                 if (!score.HasValue)
                 {
-                    _planSetter(_plan);
+                    _completionCallback(PlannerResult.Success, _plan);
                     return;
                 }
                 
                 if (score.Value > _maxFScore)
                 {
-                    _planSetter(null);
+                    _completionCallback(PlannerResult.FScoreOverflow, null);
                     return;
                 }
 
                 if (score.Value < 0)
+                {
+                    _completionCallback(PlannerResult.Cancelled, null);
                     return;
+                }
 
                 threshold = score.Value;
             }
         }
 
-        private async Task<float?> PerformHeuristicEstimatedSearch(float cost, float threshold)
+        private float? PerformHeuristicEstimatedSearch(float cost, float threshold, CancellationToken ct)
         {
-            if (_ct.IsCancellationRequested) return -1;
+            if (ct.IsCancellationRequested) return -1;
             
             // Heuristic is the number of values still remaining
             var heuristic = Heuristic;
@@ -96,15 +100,13 @@ namespace Hiralal.GOAP.Planner
                 cost += actionCost;
 
                 // check if the goal state was reached
-                var score = await PerformHeuristicEstimatedSearch(cost, threshold);
+                var score = PerformHeuristicEstimatedSearch(cost, threshold, ct);
 
                 // Undo cost mutation
                 cost -= actionCost;
 
                 // Undo state mutation
                 _state.Undo(undoBuffer);
-
-                await AsynchronousCheck();
 
                 // If the goal state was reached
                 if (!score.HasValue)
@@ -118,16 +120,6 @@ namespace Hiralal.GOAP.Planner
             }
 
             return min;
-        }
-
-        private async Task AsynchronousCheck()
-        {
-            _iterationsThisFrame++;
-            if (_iterationsThisFrame > _maxIterationsPerFrame)
-            {
-                _iterationsThisFrame = 1;
-                await Task.Yield();
-            }
         }
 
         private int Heuristic => _target.Count(_state.DoesNotContainValue);
