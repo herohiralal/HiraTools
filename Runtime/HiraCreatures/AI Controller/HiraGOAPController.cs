@@ -34,16 +34,23 @@ namespace UnityEngine
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
-        private void Awake()
+        public override void Possess(HiraCreature creature)
         {
+            base.Possess(creature);
+
+            blackboard.OnBlackboardUpdate += RecalculateGoal;
             _planner = new Planner<HiraCreatureAction>(blackboard, PlannerCallback);
         }
 
-        private void OnDestroy()
+        public override void Dispossess()
         {
             _cts.Cancel();
+            _planner = null;
+            blackboard.OnBlackboardUpdate -= RecalculateGoal;
+            
+            base.Dispossess();
         }
-        
+
         #region Planning
 
         private void RequestPlan()
