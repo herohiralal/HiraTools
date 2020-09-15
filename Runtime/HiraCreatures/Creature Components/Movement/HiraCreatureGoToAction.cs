@@ -1,18 +1,24 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Hiralal.Blackboard;
 using UnityEngine;
+
 // ReSharper disable SuspiciousTypeConversion.Global
 
 namespace HiraCreatures.Components.Movement
 {
     public class HiraCreatureGoToAction : HiraCreatureAction
     {
-        public HiraCreatureGoToAction(Vector3 targetPosition, IReadOnlyList<HiraBlackboardValue> effects)
+        public HiraCreatureGoToAction(Vector3 targetPosition,
+            IEnumerable<HiraBlackboardValue> preconditions,
+            IReadOnlyList<HiraBlackboardValue> effects,
+            float proximityThreshold)
+            : base(preconditions, effects)
         {
             _targetPosition = targetPosition;
-            Effects = effects;
+            _proximityThreshold = proximityThreshold;
         }
- 
+
         public override bool IsApplicableTo(HiraCreature creature) =>
             creature is IComponentOwner<IHiraCreatureMover>;
 
@@ -24,8 +30,8 @@ namespace HiraCreatures.Components.Movement
         {
             _cost = Vector3.Distance(_creatureMover.Position, _targetPosition);
         }
-        
-        public override HiraCreature TargetCreature 
+
+        public override HiraCreature TargetCreature
         {
             set
             {
@@ -36,6 +42,18 @@ namespace HiraCreatures.Components.Movement
 
         public override float Cost => _cost;
 
-        public override IReadOnlyList<HiraBlackboardValue> Effects { get; }
+        private readonly float _proximityThreshold;
+
+        public override void OnActionStart()
+        {
+            _creatureMover.MovementMode = HiraCreatureMovementMode.Positional;
+            _creatureMover.MoveTo(_targetPosition);
+        }
+
+        public override void OnActionExecute()
+        {
+            if (Vector3.Distance(_creatureMover.Position, _targetPosition) < _proximityThreshold)
+                MarkCompleted();
+        }
     }
 }
