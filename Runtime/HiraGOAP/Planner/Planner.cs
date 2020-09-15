@@ -4,15 +4,19 @@ using System.Linq;
 using System.Threading;
 using Hiralal.Blackboard;
 using Hiralal.GOAP.Transitions;
+using Hiralal.Utilities;
 using UnityEngine;
 
 namespace Hiralal.GOAP.Planner
 {
     public enum PlannerResult
     {
-        None, Success, FScoreOverflow, Cancelled
+        None,
+        Success,
+        FScoreOverflow,
+        Cancelled
     }
-    
+
     public class Planner<T> where T : IHiraWorldStateTransition
     {
         public Planner(HiraBlackboard blackboard, Action<PlannerResult, Stack<T>> completionCallback)
@@ -25,16 +29,20 @@ namespace Hiralal.GOAP.Planner
         private readonly HiraBlackboard _blackboard;
         private readonly HiraBlackboardValueSet _state;
         private readonly Action<PlannerResult, Stack<T>> _completionCallback;
-        
+        private readonly ThreadSafeObject<bool> _isActive = new ThreadSafeObject<bool>(false);
+
         private IReadOnlyList<HiraBlackboardValue> _target = null;
         private IEnumerable<T> _actions = null;
 
         private float _maxFScore = 0;
         private Stack<T> _plan = null;
 
+        public bool IsActive => _isActive.Value;
+
         public void Initialize(float newMaxFScore, HiraWorldStateTransition goal, IEnumerable<T> actions)
         {
-            _plan = new Stack<T>();
+            _isActive.Value = true;
+            _plan = null;
             _maxFScore = newMaxFScore;
             HiraBlackboardValueSet.Copy(_blackboard.ValueSet, _state);
             _target = goal.Effects;
@@ -44,38 +52,42 @@ namespace Hiralal.GOAP.Planner
         public void GeneratePlan(object cancellationToken)
         {
             var ct = (CancellationToken) cancellationToken;
-            
+            PlannerResult plannerResult;
+
             float threshold = Heuristic;
             while (true)
             {
                 var score = PerformHeuristicEstimatedSearch(0, threshold, ct);
-                
+
                 if (!score.HasValue)
                 {
-                    _completionCallback(PlannerResult.Success, _plan);
-                    return;
+                    plannerResult = PlannerResult.Success;
+                    break;
                 }
-                
+
                 if (score.Value > _maxFScore)
                 {
-                    _completionCallback(PlannerResult.FScoreOverflow, null);
-                    return;
+                    plannerResult = PlannerResult.FScoreOverflow;
+                    break;
                 }
 
                 if (score.Value < 0)
                 {
-                    _completionCallback(PlannerResult.Cancelled, null);
-                    return;
+                    plannerResult = PlannerResult.Cancelled;
+                    break;
                 }
 
                 threshold = score.Value;
             }
+
+            _completionCallback(plannerResult, _plan);
+            _isActive.Value = false;
         }
 
         private float? PerformHeuristicEstimatedSearch(float cost, float threshold, CancellationToken ct)
         {
             if (ct.IsCancellationRequested) return -1;
-            
+
             // Heuristic is the number of values still remaining
             var heuristic = Heuristic;
 
@@ -84,7 +96,11 @@ namespace Hiralal.GOAP.Planner
             if (fScore > threshold) return fScore;
 
             // Goal reached
-            if (heuristic == 0) return null;
+            if (heuristic == 0)
+            {
+                _plan = new Stack<T>();
+                return null;
+            }
 
             var min = float.MaxValue;
             foreach (var action in _actions)
