@@ -42,6 +42,8 @@ namespace Hiralal.GOAP.Transitions
         }
 
         public float BaseCost => baseCost;
+
+        public IReadOnlyList<HiraBlackboardValue> Preconditions => _generatedPreconditions;
         public IReadOnlyList<HiraBlackboardValue> Effects => _generatedEffects;
     }
 }
