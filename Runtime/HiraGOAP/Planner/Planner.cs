@@ -31,7 +31,7 @@ namespace Hiralal.GOAP.Planner
         private readonly Action<PlannerResult, Stack<T>> _completionCallback;
         private readonly ThreadSafeObject<bool> _isActive = new ThreadSafeObject<bool>(false);
 
-        private IReadOnlyList<HiraBlackboardValue> _target = null;
+        private IEnumerable<HiraBlackboardValue> _target = null;
         private IEnumerable<T> _actions = null;
 
         private float _maxFScore = 0;
