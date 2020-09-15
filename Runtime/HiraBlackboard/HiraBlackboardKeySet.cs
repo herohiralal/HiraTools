@@ -33,7 +33,7 @@ namespace Hiralal.Blackboard
 
         internal bool IsInstanceSynced(uint hash) => keys[hash].InstanceSynchronized;
 
-        internal uint GetTypeSpecificIndex(uint hash) => keys[hash].TypeSpecificIndex;
+        public uint GetTypeSpecificIndex(uint hash) => keys[hash].TypeSpecificIndex;
 
         #endregion
 
