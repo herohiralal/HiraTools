@@ -50,7 +50,7 @@ namespace UnityEngine
             return true;
         }
 
-        private void Awake()
+        public void Initialize()
         {
             _planner = new Planner<HiraCreatureAction>(blackboard, PlannerCallback);
         }

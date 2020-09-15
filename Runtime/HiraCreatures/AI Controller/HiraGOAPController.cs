@@ -48,7 +48,7 @@ namespace UnityEngine
 
         #endregion
 
-        private void Update()
+        protected void Iterate()
         {
             if (_plan == null)
             {
