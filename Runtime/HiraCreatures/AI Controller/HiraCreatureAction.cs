@@ -39,9 +39,6 @@ namespace UnityEngine
             Status = HiraActionStatus.Running;
         }
 
-        public virtual void OnActionExecute()
-        {
-            
-        }
+        public abstract void OnActionExecute();
     }
 }
