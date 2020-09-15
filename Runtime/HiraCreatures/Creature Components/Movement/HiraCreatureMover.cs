@@ -7,7 +7,8 @@ namespace HiraCreatures.Components.Movement
     public class HiraCreatureMover : HiraCreatureComponent, IHiraCreatureMover
     {
         [Space] [Header("Required Components")] [SerializeField]
-        private Rigidbody targetRigidbody = null;
+        private Transform targetTransform = null;
+        [SerializeField] private Rigidbody targetRigidbody = null;
         [SerializeField] private NavMeshAgent targetNavMeshAgent = null;
 
         [Space] [Header("Movement Properties")] [SerializeField]
@@ -30,6 +31,8 @@ namespace HiraCreatures.Components.Movement
             if (_directionalMovementAssistant != null)
                 UpdateDirectionalMovementAssistant();
         }
+
+        public Vector3 Position => targetTransform.position;
 
         public void MoveTowards(Vector3 direction)
         {
