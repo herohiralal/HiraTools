@@ -34,14 +34,20 @@ namespace UnityEngine
 
         private readonly List<HiraCreatureAction> _actions = new List<HiraCreatureAction>();
 
-        public void AddAction(HiraCreatureAction action)
+        public bool AddAction(HiraCreatureAction action)
         {
-            if (!_actions.Contains(action)) _actions.Add(action);
+            if (_actions.Contains(action)) return false;
+            
+            _actions.Add(action);
+            return true;
         }
 
-        public void RemoveAction(HiraCreatureAction action)
+        public bool RemoveAction(HiraCreatureAction action)
         {
-            if (_actions.Contains(action)) _actions.Remove(action);
+            if (!_actions.Contains(action)) return false;
+            
+            _actions.Remove(action);
+            return true;
         }
 
         private void Awake()

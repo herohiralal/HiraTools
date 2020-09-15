@@ -10,6 +10,7 @@ namespace UnityEngine
         protected HiraCreatureAction(HiraWorldStateTransition transition) => Transition = transition;
         
         protected readonly HiraWorldStateTransition Transition = null;
+        public abstract bool IsApplicableTo(HiraCreature creature);
         public bool ArePreConditionsSatisfied(HiraBlackboardValueSet valueSet) => Transition.ArePreConditionsSatisfied(valueSet);
         public IReadOnlyList<HiraBlackboardValue> Effects => Transition.Effects;
         public abstract float Cost { get; }
