@@ -88,7 +88,6 @@ namespace UnityEngine
         private void SetNextActionAsActive()
         {
             _currentAction = _plan.Pop();
-            _currentAction.TargetCreature = ControlledCreature;
             _currentAction.OnActionStart();
         }
 
