@@ -47,6 +47,7 @@ namespace Hiralal.GOAP.Planner
             HiraBlackboardValueSet.Copy(_blackboard.ValueSet, _state);
             _target = goal.Effects;
             _actions = actions.ToArray();
+            foreach (var action in _actions) action.BuildPrePlanCache();
         }
 
         public void GeneratePlan(object cancellationToken)

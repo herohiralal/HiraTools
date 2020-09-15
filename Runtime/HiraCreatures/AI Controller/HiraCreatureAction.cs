@@ -13,6 +13,10 @@ namespace UnityEngine
         public bool ArePreConditionsSatisfied(HiraBlackboardValueSet valueSet) => Transition.ArePreConditionsSatisfied(valueSet);
         public IReadOnlyList<HiraBlackboardValue> Effects => Transition.Effects;
         public abstract float Cost { get; }
+        public virtual void BuildPrePlanCache()
+        {
+            
+        }
 
         public HiraActionStatus Status { get; private set; } = HiraActionStatus.None;
         protected void MarkCompleted() => Status = HiraActionStatus.Succeeded;
