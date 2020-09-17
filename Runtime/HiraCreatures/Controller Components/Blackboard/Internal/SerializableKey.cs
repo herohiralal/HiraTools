@@ -11,15 +11,15 @@ namespace HiraCreatures.Components.Blackboard.Internal
             return this;
         }
         
-        internal string Name => name;
+        public string Name => name;
         
         [SerializeField] private BlackboardKeyType keyType = BlackboardKeyType.Undefined;
-        internal BlackboardKeyType KeyType => keyType;
+        public BlackboardKeyType KeyType => keyType;
         
         [SerializeField] private bool instanceSynchronized = false;
-        internal bool InstanceSynchronized => instanceSynchronized;
+        public bool InstanceSynchronized => instanceSynchronized;
 
-        internal uint TypeSpecificIndex { get; set; } = 0;
+        public uint TypeSpecificIndex { get; set; } = 0;
     }
 
     public enum BlackboardKeyType
