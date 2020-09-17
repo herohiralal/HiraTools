@@ -190,5 +190,21 @@ namespace Hiralal.Components.Blackboard.Tests
             Assert.AreEqual(second, duplicate.Floats[1]);
             Assert.AreEqual(third, duplicate.Floats[2]);
         }
+
+        [Test]
+        public void setting_a_value_from_the_key_set_changes_values_of_all_blackboards([Random(float.MinValue, float.MaxValue, 3)] float input)
+        {
+            var keyData = BlackboardTypes.GetKeyData(Keys);
+            keyData.Activate();
+            var mainAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
+            var secondAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
+            
+            keyData.ValueAccessor.SetFloatValue(float_key, input);
+            
+            Assert.AreEqual(input, mainAccessor.GetFloatValue(float_key));
+            Assert.AreEqual(input, secondAccessor.GetFloatValue(float_key));
+
+            keyData.Deactivate();
+        }
     }
 }
