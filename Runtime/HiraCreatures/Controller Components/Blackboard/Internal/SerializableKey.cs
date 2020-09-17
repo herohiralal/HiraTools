@@ -3,19 +3,15 @@
 namespace HiraCreatures.Components.Blackboard.Internal
 {
     [System.Serializable]
-    public class SerializableKey
+    public class SerializableKey : ScriptableObject
     {
-        public SerializableKey()
+        public SerializableKey Setup(string inName, BlackboardKeyType type, bool instanceSynced)
         {
-        }
-
-        public SerializableKey(string name, BlackboardKeyType type, bool instanceSynced)
-        {
-            (keyName, keyType, instanceSynchronized) = (new StringReference(name), type, instanceSynced);
+            (name, keyType, instanceSynchronized) = (new StringReference(inName), type, instanceSynced);
+            return this;
         }
         
-        [SerializeField] private StringReference keyName = null;
-        internal string Name => keyName.Value;
+        internal string Name => name;
         
         [SerializeField] private BlackboardKeyType keyType = BlackboardKeyType.Undefined;
         internal BlackboardKeyType KeyType => keyType;

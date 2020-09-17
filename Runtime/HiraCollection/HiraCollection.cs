@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class HiraCollection<T> : ScriptableObject, IEnumerable<T>
     where T : ScriptableObject
 {
-    [SerializeField] private T[] collection = null;
+    [SerializeField] protected T[] collection = null;
     public Type CollectionType => typeof(T);
     
     public IEnumerator<T> GetEnumerator() => (IEnumerator<T>) collection.GetEnumerator();

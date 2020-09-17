@@ -1,18 +1,18 @@
-﻿using HiraCreatures.Components.Blackboard;
+﻿using System.Linq;
+using HiraCreatures.Components.Blackboard;
 using HiraCreatures.Components.Blackboard.Internal;
 using HiraCreatures.Components.Blackboard.Helpers;
 
 namespace UnityEngine
 {
-    public class HiraBlackboardKeySet : ScriptableObject, IBlackboardKeyData
+    [CreateAssetMenu(fileName = "New Blackboard Key Set", menuName = "Hiralal/HiraEngine/HiraCreatures/Blackboard Key Set")]
+    public class HiraBlackboardKeySet : HiraCollection<SerializableKey>, IBlackboardKeyData
     {
-        [SerializeField] private SerializableKey[] keys = null;
-
         private IBlackboardKeyData _mainKeyData = null;
         
         public void Activate()
         {
-            _mainKeyData = BlackboardTypes.GetKeyData(keys);
+            _mainKeyData = BlackboardTypes.GetKeyData(collection);
             _mainKeyData.Activate();
         }
 
@@ -30,5 +30,7 @@ namespace UnityEngine
         public bool IsInstanceSynchronized(uint hash) => _mainKeyData.IsInstanceSynchronized(hash);
 
         public IBlackboardValueAccessor ValueAccessor => _mainKeyData.ValueAccessor;
+
+        public SerializableKey[] Keys => collection;
     }
 }

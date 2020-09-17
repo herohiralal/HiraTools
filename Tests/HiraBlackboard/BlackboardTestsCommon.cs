@@ -1,4 +1,7 @@
-﻿using HiraCreatures.Components.Blackboard.Internal;
+﻿using System;
+using HiraCreatures.Components.Blackboard.Internal;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Hiralal.Components.Blackboard.Tests
 {
@@ -12,16 +15,30 @@ namespace Hiralal.Components.Blackboard.Tests
         internal const string FloatKeyInstanceSynced = "InstanceSyncedFloat";
         internal const string VectorKeyInstanceSynced = "InstanceSyncedVector";
 
-        internal static SerializableKey[] Keys =>
+        private static SerializableKey[] Keys =>
             new[]
             {
-                new SerializableKey(BooleanKey, BlackboardKeyType.Bool, false),
-                new SerializableKey(FloatKey, BlackboardKeyType.Float, false),
-                new SerializableKey(IntKey, BlackboardKeyType.Int, false),
-                new SerializableKey(StringKey, BlackboardKeyType.String, false),
-                new SerializableKey(VectorKey, BlackboardKeyType.Vector, false),
-                new SerializableKey(FloatKeyInstanceSynced, BlackboardKeyType.Float, true),
-                new SerializableKey(VectorKeyInstanceSynced, BlackboardKeyType.Vector, true)
+                ScriptableObject.CreateInstance<SerializableKey>().Setup(BooleanKey, BlackboardKeyType.Bool, false),
+                ScriptableObject.CreateInstance<SerializableKey>().Setup(FloatKey, BlackboardKeyType.Float, false),
+                ScriptableObject.CreateInstance<SerializableKey>().Setup(IntKey, BlackboardKeyType.Int, false),
+                ScriptableObject.CreateInstance<SerializableKey>().Setup(StringKey, BlackboardKeyType.String, false),
+                ScriptableObject.CreateInstance<SerializableKey>().Setup(VectorKey, BlackboardKeyType.Vector, false),
+                ScriptableObject.CreateInstance<SerializableKey>().Setup(FloatKeyInstanceSynced, BlackboardKeyType.Float, true),
+                ScriptableObject.CreateInstance<SerializableKey>().Setup(VectorKeyInstanceSynced, BlackboardKeyType.Vector, true)
             };
+
+        internal static KeysResource Resource => new KeysResource(Keys);
+    }
+
+    internal class KeysResource : IDisposable
+    {
+        public KeysResource(SerializableKey[] keys) => Keys = keys;
+
+        public SerializableKey[] Keys { get; }
+            
+        public void Dispose()
+        {
+            foreach (var key in Keys) Object.DestroyImmediate(key);
+        }
     }
 }
