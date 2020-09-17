@@ -18,7 +18,7 @@ namespace HiraCreatures.Components.Blackboard.Internal
 
         public void Activate()
         {
-            IBlackboardDataSet dataSet;
+            IReadWriteBlackboardDataSet dataSet;
             (dataSet, _hashes) = BuildCache();
             var instanceSynchronizer = BlackboardTypes.GetSynchronizer();
             InstanceSynchronizer = instanceSynchronizer;
@@ -47,7 +47,7 @@ namespace HiraCreatures.Components.Blackboard.Internal
 
         #region Cache-Building
 
-        private (IBlackboardDataSet, Dictionary<string, uint>) BuildCache()
+        private (IReadWriteBlackboardDataSet, Dictionary<string, uint>) BuildCache()
         {
             uint booleans = 0, floats = 0, ints = 0, strings = 0, vectors = 0;
             var hashes = new Dictionary<string, uint>();
@@ -84,7 +84,7 @@ namespace HiraCreatures.Components.Blackboard.Internal
                 }
             }
 
-            var dataSet = BlackboardTypes.GetDataSet(booleans, floats, ints, 
+            var dataSet = BlackboardTypes.GetWriteableDataSet(booleans, floats, ints, 
                 strings, vectors);
             return (dataSet, hashes);
         }

@@ -2,7 +2,7 @@
 
 namespace HiraCreatures.Components.Blackboard.Internal
 {
-    public class DataSet : IBlackboardDataSet
+    public class DataSet : IReadWriteBlackboardDataSet
     {
         public DataSet(uint boolKeyCount, uint floatKeyCount, uint intKeyCount, uint stringKeyCount, uint vectorKeyCount)
         {
@@ -18,8 +18,14 @@ namespace HiraCreatures.Components.Blackboard.Internal
         public int[] Integers { get; }
         public string[] Strings { get; }
         public Vector3[] Vectors { get; }
-        
-        public IBlackboardDataSet GetDuplicate()
+
+        public bool GetBoolean(uint index) => Booleans[index];
+        public float GetFloat(uint index) => Floats[index];
+        public int GetInteger(uint index) => Integers[index];
+        public string GetString(uint index) => Strings[index];
+        public Vector3 GetVector(uint index) => Vectors[index];
+
+        public IReadWriteBlackboardDataSet GetDuplicate()
         {
             var copy = new DataSet((uint) Booleans.Length,
                 (uint) Floats.Length,
@@ -32,7 +38,7 @@ namespace HiraCreatures.Components.Blackboard.Internal
             return copy;
         }
 
-        public void CopyTo(IBlackboardDataSet duplicate)
+        public void CopyTo(IReadWriteBlackboardDataSet duplicate)
         {
             for (var i = 0; i < Booleans.Length; i++) duplicate.Booleans[i] = Booleans[i];
             for (var i = 0; i < Floats.Length; i++) duplicate.Floats[i] = Floats[i];

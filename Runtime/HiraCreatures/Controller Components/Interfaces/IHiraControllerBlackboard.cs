@@ -8,7 +8,7 @@ namespace UnityEngine
 
     public interface IBlackboardValueAccessor
     {
-        IBlackboardDataSet DataSet { get; }
+        IReadOnlyBlackboardDataSet DataSet { get; }
         event Action OnValueUpdate;
         uint GetHash(in string keyName);
         bool GetBooleanValue(uint hash);
@@ -23,14 +23,23 @@ namespace UnityEngine
         void SetVectorValue(uint hash, Vector3 value);
     }
 
-    public interface IBlackboardDataSet
+    public interface IReadOnlyBlackboardDataSet
+    {
+        bool GetBoolean(uint index);
+        float GetFloat(uint index);
+        int GetInteger(uint index);
+        string GetString(uint index);
+        Vector3 GetVector(uint index);
+        IReadWriteBlackboardDataSet GetDuplicate();
+        void CopyTo(IReadWriteBlackboardDataSet duplicate);
+    }
+
+    public interface IReadWriteBlackboardDataSet : IReadOnlyBlackboardDataSet
     {
         bool[] Booleans { get; }
         float[] Floats { get; }
         int[] Integers { get; }
         string[] Strings { get; }
         Vector3[] Vectors { get; }
-        IBlackboardDataSet GetDuplicate();
-        void CopyTo(IBlackboardDataSet duplicate);
     }
 }

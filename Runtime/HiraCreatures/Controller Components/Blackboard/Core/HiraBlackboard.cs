@@ -28,7 +28,7 @@ namespace UnityEngine
         {
         }
 
-        public IBlackboardDataSet DataSet => _mainBlackboard.DataSet;
+        public IReadOnlyBlackboardDataSet DataSet => _mainBlackboard.DataSet;
 
         public event Action OnValueUpdate
         {

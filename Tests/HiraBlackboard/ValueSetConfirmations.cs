@@ -122,7 +122,6 @@ namespace Hiralal.Components.Blackboard.Tests
 
             Assert.AreEqual(true, checkedValue);
 
-            mainAccessor = null;
             keyData.Deactivate();
         }
 
@@ -141,8 +140,6 @@ namespace Hiralal.Components.Blackboard.Tests
 
             Assert.AreEqual(true, checkedValue);
 
-            secondAccessor = null;
-            mainAccessor = null;
             keyData.Deactivate();
         }
 
@@ -155,7 +152,7 @@ namespace Hiralal.Components.Blackboard.Tests
             [Random(0u, 20u, 2)] uint vectorCount
             )
         {
-            var dataSet = BlackboardTypes.GetDataSet(boolCount, floatCount, intCount, stringCount, vectorCount);
+            var dataSet = BlackboardTypes.GetWriteableDataSet(boolCount, floatCount, intCount, stringCount, vectorCount);
             var duplicate = dataSet.GetDuplicate();
 
             Assert.AreNotEqual(duplicate, dataSet);
@@ -177,7 +174,7 @@ namespace Hiralal.Components.Blackboard.Tests
             [Random(float.MinValue, float.MaxValue, 2)] float second,
             [Random(float.MinValue, float.MaxValue, 2)] float third)
         {
-            var dataSet = BlackboardTypes.GetDataSet(0, 3, 0, 0, 0);
+            var dataSet = BlackboardTypes.GetWriteableDataSet(0, 3, 0, 0, 0);
             (dataSet.Floats[0], dataSet.Floats[1], dataSet.Floats[2]) = (first, second, third);
 
             var duplicate = dataSet.GetDuplicate();

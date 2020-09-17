@@ -7,45 +7,47 @@ namespace HiraCreatures.Components.Blackboard.Internal
     public class KeySetValueAccessor : IBlackboardValueAccessor
     {
         public KeySetValueAccessor(IBlackboardKeyData keyData,
-            IBlackboardDataSet dataSet,
+            IReadWriteBlackboardDataSet dataSet,
             IInstanceSynchronizer instanceSynchronizer) =>
-            (_keyData, DataSet, _instanceSynchronizer) = (keyData, dataSet, instanceSynchronizer);
+            (_keyData, _dataSet, _instanceSynchronizer) = (keyData, dataSet, instanceSynchronizer);
 
         private readonly IBlackboardKeyData _keyData;
-        public IBlackboardDataSet DataSet { get; }
+        private readonly IReadWriteBlackboardDataSet _dataSet;
         private readonly IInstanceSynchronizer _instanceSynchronizer;
-        public event Action OnValueUpdate = delegate {  };
+
+        public IReadOnlyBlackboardDataSet DataSet => _dataSet;
+        public event Action OnValueUpdate = delegate { };
 
         public uint GetHash(in string keyName) => _keyData.GetHash(keyName);
 
         public bool GetBooleanValue(uint hash)
         {
             Assert.IsTrue(_keyData.IsInstanceSynchronized(hash));
-            return DataSet.Booleans[_keyData.GetTypeSpecificIndex(hash)];
+            return _dataSet.Booleans[_keyData.GetTypeSpecificIndex(hash)];
         }
 
         public float GetFloatValue(uint hash)
         {
             Assert.IsTrue(_keyData.IsInstanceSynchronized(hash));
-            return DataSet.Floats[_keyData.GetTypeSpecificIndex(hash)];
+            return _dataSet.Floats[_keyData.GetTypeSpecificIndex(hash)];
         }
 
         public int GetIntValue(uint hash)
         {
             Assert.IsTrue(_keyData.IsInstanceSynchronized(hash));
-            return DataSet.Integers[_keyData.GetTypeSpecificIndex(hash)];
+            return _dataSet.Integers[_keyData.GetTypeSpecificIndex(hash)];
         }
 
         public string GetStringValue(uint hash)
         {
             Assert.IsTrue(_keyData.IsInstanceSynchronized(hash));
-            return DataSet.Strings[_keyData.GetTypeSpecificIndex(hash)];
+            return _dataSet.Strings[_keyData.GetTypeSpecificIndex(hash)];
         }
 
         public Vector3 GetVectorValue(uint hash)
         {
             Assert.IsTrue(_keyData.IsInstanceSynchronized(hash));
-            return DataSet.Vectors[_keyData.GetTypeSpecificIndex(hash)];
+            return _dataSet.Vectors[_keyData.GetTypeSpecificIndex(hash)];
         }
 
         public void SetBooleanValue(uint hash, bool value)
@@ -54,7 +56,7 @@ namespace HiraCreatures.Components.Blackboard.Internal
             var typeSpecificIndex = _keyData.GetTypeSpecificIndex(hash);
             _instanceSynchronizer.ReportSyncedInstanceValueUpdate_boolean(typeSpecificIndex, value);
             OnValueUpdate();
-            DataSet.Booleans[typeSpecificIndex] = value;
+            _dataSet.Booleans[typeSpecificIndex] = value;
         }
 
         public void SetFloatValue(uint hash, float value)
@@ -63,7 +65,7 @@ namespace HiraCreatures.Components.Blackboard.Internal
             var typeSpecificIndex = _keyData.GetTypeSpecificIndex(hash);
             _instanceSynchronizer.ReportSyncedInstanceValueUpdate_float(typeSpecificIndex, value);
             OnValueUpdate();
-            DataSet.Floats[typeSpecificIndex] = value;
+            _dataSet.Floats[typeSpecificIndex] = value;
         }
 
         public void SetIntValue(uint hash, int value)
@@ -72,7 +74,7 @@ namespace HiraCreatures.Components.Blackboard.Internal
             var typeSpecificIndex = _keyData.GetTypeSpecificIndex(hash);
             _instanceSynchronizer.ReportSyncedInstanceValueUpdate_integer(typeSpecificIndex, value);
             OnValueUpdate();
-            DataSet.Integers[typeSpecificIndex] = value;
+            _dataSet.Integers[typeSpecificIndex] = value;
         }
 
         public void SetStringValue(uint hash, string value)
@@ -81,7 +83,7 @@ namespace HiraCreatures.Components.Blackboard.Internal
             var typeSpecificIndex = _keyData.GetTypeSpecificIndex(hash);
             _instanceSynchronizer.ReportSyncedInstanceValueUpdate_string(typeSpecificIndex, value);
             OnValueUpdate();
-            DataSet.Strings[typeSpecificIndex] = value;
+            _dataSet.Strings[typeSpecificIndex] = value;
         }
 
         public void SetVectorValue(uint hash, Vector3 value)
@@ -90,7 +92,7 @@ namespace HiraCreatures.Components.Blackboard.Internal
             var typeSpecificIndex = _keyData.GetTypeSpecificIndex(hash);
             _instanceSynchronizer.ReportSyncedInstanceValueUpdate_vector(typeSpecificIndex, value);
             OnValueUpdate();
-            DataSet.Vectors[typeSpecificIndex] = value;
+            _dataSet.Vectors[typeSpecificIndex] = value;
         }
     }
 }

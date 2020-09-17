@@ -5,7 +5,7 @@ namespace HiraCreatures.Components.Blackboard.Helpers
 {
     public static class BlackboardTypes
     {
-        public static IBlackboardDataSet GetDataSet(uint boolKeyCount, uint floatKeyCount, uint intKeyCount,
+        public static IReadWriteBlackboardDataSet GetWriteableDataSet(uint boolKeyCount, uint floatKeyCount, uint intKeyCount,
             uint stringKeyCount, uint vectorKeyCount) =>
             new DataSet(boolKeyCount, floatKeyCount, intKeyCount, stringKeyCount, vectorKeyCount);
 
@@ -13,7 +13,7 @@ namespace HiraCreatures.Components.Blackboard.Helpers
             new InstanceSynchronizer();
 
         public static IBlackboardValueAccessor GetKeySetValueAccessor(IBlackboardKeyData keyData,
-            IBlackboardDataSet dataSet,
+            IReadWriteBlackboardDataSet dataSet,
             IInstanceSynchronizer instanceSynchronizer) =>
             new KeySetValueAccessor(keyData, dataSet, instanceSynchronizer);
 

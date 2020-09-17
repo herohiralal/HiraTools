@@ -8,7 +8,7 @@ namespace HiraCreatures.Components.Blackboard.Internal
         public MainValueAccessor(IBlackboardKeyData keyData)
         {
             var dataSet = keyData.ValueAccessor.DataSet.GetDuplicate();
-            (_keyData, DataSet, _instanceSynchronizer) = (keyData, dataSet, keyData.InstanceSynchronizer);
+            (_keyData, _dataSet, _instanceSynchronizer) = (keyData, dataSet, keyData.InstanceSynchronizer);
 
             _instanceSynchronizer.OnSyncInstanceValueUpdateBoolean += ChangeBoolValue;
             _instanceSynchronizer.OnSyncInstanceValueUpdateFloat += ChangeFloatValue;
@@ -27,23 +27,25 @@ namespace HiraCreatures.Components.Blackboard.Internal
         }
 
         private readonly IBlackboardKeyData _keyData;
-        public IBlackboardDataSet DataSet { get; }
+        private readonly IReadWriteBlackboardDataSet _dataSet;
         private readonly IReadOnlyInstanceSynchronizer _instanceSynchronizer;
+
+        public IReadOnlyBlackboardDataSet DataSet => _dataSet;
         public event Action OnValueUpdate = delegate { };
 
         public uint GetHash(in string keyName) => _keyData.GetHash(keyName);
 
         #region Getters
 
-        public bool GetBooleanValue(uint hash) => DataSet.Booleans[_keyData.GetTypeSpecificIndex(hash)];
+        public bool GetBooleanValue(uint hash) => _dataSet.Booleans[_keyData.GetTypeSpecificIndex(hash)];
 
-        public float GetFloatValue(uint hash) => DataSet.Floats[_keyData.GetTypeSpecificIndex(hash)];
+        public float GetFloatValue(uint hash) => _dataSet.Floats[_keyData.GetTypeSpecificIndex(hash)];
 
-        public int GetIntValue(uint hash) => DataSet.Integers[_keyData.GetTypeSpecificIndex(hash)];
+        public int GetIntValue(uint hash) => _dataSet.Integers[_keyData.GetTypeSpecificIndex(hash)];
 
-        public string GetStringValue(uint hash) => DataSet.Strings[_keyData.GetTypeSpecificIndex(hash)];
+        public string GetStringValue(uint hash) => _dataSet.Strings[_keyData.GetTypeSpecificIndex(hash)];
 
-        public Vector3 GetVectorValue(uint hash) => DataSet.Vectors[_keyData.GetTypeSpecificIndex(hash)];
+        public Vector3 GetVectorValue(uint hash) => _dataSet.Vectors[_keyData.GetTypeSpecificIndex(hash)];
 
         #endregion
 
@@ -85,31 +87,31 @@ namespace HiraCreatures.Components.Blackboard.Internal
 
         private void ChangeBoolValue(uint typeSpecificIndex, bool value)
         {
-            DataSet.Booleans[typeSpecificIndex] = value;
+            _dataSet.Booleans[typeSpecificIndex] = value;
             OnValueUpdate();
         }
 
         private void ChangeFloatValue(uint typeSpecificIndex, float value)
         {
-            DataSet.Floats[typeSpecificIndex] = value;
+            _dataSet.Floats[typeSpecificIndex] = value;
             OnValueUpdate();
         }
 
         private void ChangeIntValue(uint typeSpecificIndex, int value)
         {
-            DataSet.Integers[typeSpecificIndex] = value;
+            _dataSet.Integers[typeSpecificIndex] = value;
             OnValueUpdate();
         }
 
         private void ChangeStringValue(uint typeSpecificIndex, string value)
         {
-            DataSet.Strings[typeSpecificIndex] = value;
+            _dataSet.Strings[typeSpecificIndex] = value;
             OnValueUpdate();
         }
 
         private void ChangeVectorValue(uint typeSpecificIndex, Vector3 value)
         {
-            DataSet.Vectors[typeSpecificIndex] = value;
+            _dataSet.Vectors[typeSpecificIndex] = value;
             OnValueUpdate();
         }
 
