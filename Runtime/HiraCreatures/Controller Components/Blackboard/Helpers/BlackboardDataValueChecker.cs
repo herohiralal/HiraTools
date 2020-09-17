@@ -1,32 +1,36 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-
+// ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
+
 namespace HiraCreatures.Components.Blackboard.Helpers
 {
     public static class BlackboardDataValueChecker
     {
-        // ReSharper disable once MemberCanBePrivate.Global
-        // ReSharper disable once CompareOfFloatsByEqualityOperator
-        public static bool ContainsValue(this IReadOnlyBlackboardDataSet dataSet, IBlackboardValue value)
-        {
-            switch (value)
-            {
-                case IBlackboardValue<bool> booleanValue:
-                    return dataSet.GetBoolean(booleanValue.TypeSpecificIndex) == booleanValue.TargetValue;
-                case IBlackboardValue<float> floatValue:
-                    return dataSet.GetFloat(floatValue.TypeSpecificIndex) == floatValue.TargetValue;
-                case IBlackboardValue<int> intValue:
-                    return dataSet.GetInteger(intValue.TypeSpecificIndex) == intValue.TargetValue;
-                case IBlackboardValue<string> stringValue:
-                    return dataSet.GetString(stringValue.TypeSpecificIndex) == stringValue.TargetValue;
-                case IBlackboardValue<Vector3> vectorValue:
-                    return dataSet.GetVector(vectorValue.TypeSpecificIndex) == vectorValue.TargetValue;
-                default:
-                    throw new InvalidCastException($"Type {value.GetType().GetGenericArguments()[0].Name} is not supported.");
-            }
-        }
+        // .Satisfies(value)
+        public static bool Satisfies(this IReadOnlyBlackboardDataSet dataSet, IBlackboardValue value) => 
+            value.IsSatisfiedBy(dataSet);
 
-        public static bool IsContainedBy(this IBlackboardValue value, IReadOnlyBlackboardDataSet dataSet) => dataSet.ContainsValue(value);
+        public static bool Satisfies(this IBlackboardValueAccessor accessor, IBlackboardValue value) =>
+            value.IsSatisfiedBy(accessor.DataSet);
+        
+        // .Satisfies(values)
+        public static bool Satisfies(this IReadOnlyBlackboardDataSet dataSet, IEnumerable<IBlackboardValue> values) => 
+            values.All(dataSet.Satisfies);
+
+        public static bool Satisfies(this IBlackboardValueAccessor accessor, IEnumerable<IBlackboardValue> values) => 
+            values.All(accessor.DataSet.Satisfies);
+        
+        // value.IsSatisfiedBy
+        public static bool IsSatisfiedBy(this IBlackboardValue value, IBlackboardValueAccessor accessor) => 
+            value.IsSatisfiedBy(accessor.DataSet);
+
+        // values.IsSatisfiedBy
+        public static bool IsSatisfiedBy(this IEnumerable<IBlackboardValue> values,IReadOnlyBlackboardDataSet dataSet) => 
+            values.All(dataSet.Satisfies);
+
+        public static bool IsSatisfiedBy(this IEnumerable<IBlackboardValue> values,IBlackboardValueAccessor accessor) => 
+            values.All(accessor.DataSet.Satisfies);
     }
 }

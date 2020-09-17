@@ -7,6 +7,7 @@ using Assert = UnityEngine.Assertions.Assert;
 
 namespace Hiralal.Components.Blackboard.Tests
 {
+    [TestFixture]
     public class ValueSetConfirmations
     {
         private const string boolean_key = "Boolean";
