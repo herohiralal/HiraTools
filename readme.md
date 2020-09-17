@@ -18,9 +18,6 @@ https://www.github.com/herohiralal/HiraTools.git
  - ### **[Extension Methods](HiraTools/Extension%20Methods)**
  > A bunch of neat extension methods (some of them are plain static methods) to speed up certain things.
 
- - ### **[HiraBlackboard](HiraTools/HiraBlackboard)**
- > A blackboard API to use for HiraGOAP and HiraBT, but with the way it serializes its maps, it can be used with much more than just that.
-
  - ### **[HiraButtons](HiraTools/HiraButtons)**
  > A way to quickly add buttons to an editor for a MonoBehaviour.
 

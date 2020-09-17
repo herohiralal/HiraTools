@@ -1,18 +1,17 @@
-﻿namespace UnityEngine
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace UnityEngine
 {
     [AddComponentMenu("HiraTools/HiraCreatures/HiraCreature")]
-    public class HiraCreature : MonoBehaviour
+    public abstract class HiraCreature : MonoBehaviour, IEnumerable<IHiraCreatureComponent>
     {
         [SerializeField] private HiraController controller;
         public HiraController Controller => controller;
 
-        public virtual void InitializeAtSpawn<T>(in T spawnParameters)
-        {
-        }
+        public abstract void InitializeAtSpawn<T>(in T spawnParameters);
 
-        public virtual void Kill()
-        {
-        }
+        public abstract void Kill();
 
         public virtual void OnPossess(HiraController inController)
         {
@@ -23,6 +22,10 @@
         {
             controller = null;
         }
+
+        public abstract IEnumerator<IHiraCreatureComponent> GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 #if UNITY_EDITOR
         [SerializeField] private HiraControllerTemplate controllerTemplate = null;

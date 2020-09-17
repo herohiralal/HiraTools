@@ -7,7 +7,17 @@
             
         }
 
-        public virtual void Despawn()
+        public virtual void OnPossess(HiraController inController)
+        {
+            
+        }
+
+        public virtual void OnDispossess()
+        {
+            
+        }
+
+        public virtual void Kill()
         {
             
         }
