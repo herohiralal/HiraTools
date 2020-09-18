@@ -1,6 +1,5 @@
 ﻿using System;
 using HiraCreatures.Components.Blackboard.Helpers;
-using UnityEngine.Assertions;
 
 namespace UnityEngine
 {
@@ -15,7 +14,11 @@ namespace UnityEngine
 
         public override void OnPossess(HiraCreature inCreature)
         {
-            Assert.IsNotNull(keySet);
+            if (keySet == null)
+            {
+                Debug.LogError($"Key set missing on controller for creature {inCreature.gameObject.name}.", this);
+                return;
+            }
             _mainBlackboard = BlackboardTypes.GetMainValueAccessor(keySet);
         }
 
