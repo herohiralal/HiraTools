@@ -26,5 +26,8 @@ namespace UnityEngine
         public static IEnumerable<string> GetNamesOfSubclasses<TBase>() =>
             GetSubclasses<TBase>()
                 .GetNamesOfSubclasses();
+
+        public static string GetReflectionName(this Type type) =>
+            $"{type.FullName}, {type.Assembly.FullName}";
     }
 }

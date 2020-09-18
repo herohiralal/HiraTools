@@ -5,8 +5,11 @@ namespace HiraCreatures.Components.Blackboard.Helpers
 {
     public static class BlackboardTypes
     {
-        public static IReadWriteBlackboardDataSet GetWriteableDataSet(uint boolKeyCount, uint floatKeyCount, uint intKeyCount,
-            uint stringKeyCount, uint vectorKeyCount) =>
+        public static IReadWriteBlackboardDataSet GetWriteableDataSet(uint boolKeyCount = default,
+            uint floatKeyCount = default,
+            uint intKeyCount = default,
+            uint stringKeyCount = default,
+            uint vectorKeyCount = default) =>
             new DataSet(boolKeyCount, floatKeyCount, intKeyCount, stringKeyCount, vectorKeyCount);
 
         public static IInstanceSynchronizer GetSynchronizer() =>
@@ -22,5 +25,9 @@ namespace HiraCreatures.Components.Blackboard.Helpers
 
         public static IBlackboardValueAccessor GetMainValueAccessor(IBlackboardKeyData keyData) =>
             new MainValueAccessor(keyData);
+
+        public static IBlackboardValue GetValue(string typeString,
+            IBlackboardValueConstructorParams constructorParams) =>
+            BlackboardValueFactory.GetValue(typeString, constructorParams);
     }
 }

@@ -9,10 +9,11 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
         public abstract bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet);
     }
 
-    public abstract class TemplateValue<T> : TemplateValue
+    public abstract class TemplateValue<T> : TemplateValue, IBlackboardValueDefaultObject<T>
     {
         protected TemplateValue(uint typeSpecificIndex, T value) : base(typeSpecificIndex) => Value = value;
 
         protected T Value { get; }
+        public abstract IBlackboardValue GetNewObject(uint typeSpecificIndex, T value);
     }
 }

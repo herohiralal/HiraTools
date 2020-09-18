@@ -10,5 +10,8 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
 
         public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
             dataSet.GetBoolean(TypeSpecificIndex) == Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, bool value) => 
+            new BoolEqualsValue(typeSpecificIndex, value);
     }
 }

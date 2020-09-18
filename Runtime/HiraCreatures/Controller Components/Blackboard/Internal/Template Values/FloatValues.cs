@@ -10,6 +10,9 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
 
         public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
             dataSet.GetFloat(TypeSpecificIndex) > Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, float value) => 
+            new FloatGreaterThanValue(typeSpecificIndex, value);
     }
 
     public class FloatGreaterThanOrEqualToValue : TemplateValue<float>
@@ -20,6 +23,9 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
 
         public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
             dataSet.GetFloat(TypeSpecificIndex) >= Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, float value) => 
+            new FloatGreaterThanOrEqualToValue(typeSpecificIndex, value);
     }
 
     public class FloatLesserThanValue : TemplateValue<float>
@@ -30,6 +36,9 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
 
         public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
             dataSet.GetFloat(TypeSpecificIndex) < Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, float value) => 
+            new FloatLesserThanValue(typeSpecificIndex, value);
     }
 
     public class FloatLesserThanOrEqualToValue : TemplateValue<float>
@@ -40,5 +49,8 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
 
         public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
             dataSet.GetFloat(TypeSpecificIndex) <= Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, float value) => 
+            new FloatLesserThanOrEqualToValue(typeSpecificIndex, value);
     }
 }

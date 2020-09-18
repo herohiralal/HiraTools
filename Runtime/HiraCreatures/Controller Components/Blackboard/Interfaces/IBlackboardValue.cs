@@ -6,4 +6,9 @@ namespace HiraCreatures.Components.Blackboard
     {
         bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet);
     }
+
+    public interface IBlackboardValueDefaultObject<in T> : IBlackboardValue
+    {
+        IBlackboardValue GetNewObject(uint typeSpecificIndex, T value);
+    }
 }

@@ -10,6 +10,9 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
 
         public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
             dataSet.GetVector(TypeSpecificIndex) == Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, Vector3 value) => 
+            new VectorEqualsValue(typeSpecificIndex, value);
     }
 
     public class VectorDoesNotEqualValue : TemplateValue<Vector3>
@@ -20,5 +23,8 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
 
         public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
             dataSet.GetVector(TypeSpecificIndex) != Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, Vector3 value) => 
+            new VectorDoesNotEqualValue(typeSpecificIndex, value);
     }
 }

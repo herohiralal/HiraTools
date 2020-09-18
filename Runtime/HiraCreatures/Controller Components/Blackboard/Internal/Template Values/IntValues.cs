@@ -10,6 +10,9 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
 
         public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
             dataSet.GetInteger(TypeSpecificIndex) == Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, int value) => 
+            new IntEqualsValue(typeSpecificIndex, value);
     }
 
     public class IntDoesNotEqualValue : TemplateValue<int>
@@ -20,6 +23,9 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
 
         public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
             dataSet.GetInteger(TypeSpecificIndex) != Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, int value) => 
+            new IntDoesNotEqualValue(typeSpecificIndex, value);
     }
     
     public class IntGreaterThanValue : TemplateValue<int>
@@ -30,6 +36,9 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
 
         public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
             dataSet.GetInteger(TypeSpecificIndex) > Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, int value) => 
+            new IntGreaterThanValue(typeSpecificIndex, value);
     }
 
     public class IntGreaterThanOrEqualToValue : TemplateValue<int>
@@ -40,6 +49,9 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
 
         public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
             dataSet.GetInteger(TypeSpecificIndex) >= Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, int value) => 
+            new IntGreaterThanOrEqualToValue(typeSpecificIndex, value);
     }
 
     public class IntLesserThanValue : TemplateValue<int>
@@ -50,6 +62,9 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
 
         public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
             dataSet.GetInteger(TypeSpecificIndex) < Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, int value) => 
+            new IntLesserThanValue(typeSpecificIndex, value);
     }
 
     public class IntLesserThanOrEqualToValue : TemplateValue<int>
@@ -60,5 +75,8 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
 
         public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
             dataSet.GetInteger(TypeSpecificIndex) <= Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, int value) => 
+            new IntLesserThanOrEqualToValue(typeSpecificIndex, value);
     }
 }

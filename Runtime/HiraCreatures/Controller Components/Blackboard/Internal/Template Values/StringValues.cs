@@ -8,8 +8,24 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
         {
         }
 
-        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
+        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) =>
             dataSet.GetString(TypeSpecificIndex) == Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) =>
+            new StringEqualsValue(typeSpecificIndex, value);
+    }
+
+    public class StringDoesNotEqualValue : TemplateValue<string>
+    {
+        public StringDoesNotEqualValue(uint typeSpecificIndex, string value) : base(typeSpecificIndex, value)
+        {
+        }
+
+        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
+            dataSet.GetString(TypeSpecificIndex) != Value;
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) => 
+            new StringDoesNotEqualValue(typeSpecificIndex, value);
     }
 
     public class StringContainsValue : TemplateValue<string>
@@ -18,8 +34,11 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
         {
         }
 
-        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
+        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) =>
             dataSet.GetString(TypeSpecificIndex).Contains(Value);
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) =>
+            new StringContainsValue(typeSpecificIndex, value);
     }
 
     public class StringIncludedByValue : TemplateValue<string>
@@ -28,8 +47,11 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
         {
         }
 
-        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
+        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) =>
             Value.Contains(dataSet.GetString(TypeSpecificIndex));
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) =>
+            new StringIncludedByValue(typeSpecificIndex, value);
     }
 
     public class StringDoesNotContainValue : TemplateValue<string>
@@ -38,8 +60,11 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
         {
         }
 
-        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
+        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) =>
             !dataSet.GetString(TypeSpecificIndex).Contains(Value);
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) =>
+            new StringDoesNotContainValue(typeSpecificIndex, value);
     }
 
     public class StringNotContainedByValue : TemplateValue<string>
@@ -48,8 +73,11 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
         {
         }
 
-        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
+        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) =>
             !Value.Contains(dataSet.GetString(TypeSpecificIndex));
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) =>
+            new StringNotContainedByValue(typeSpecificIndex, value);
     }
 
     public class StringStartsWithValue : TemplateValue<string>
@@ -58,8 +86,11 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
         {
         }
 
-        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
+        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) =>
             dataSet.GetString(TypeSpecificIndex).StartsWith(Value);
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) =>
+            new StringStartsWithValue(typeSpecificIndex, value);
     }
 
     public class StringDoesNotStartWith : TemplateValue<string>
@@ -68,8 +99,11 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
         {
         }
 
-        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
+        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) =>
             !dataSet.GetString(TypeSpecificIndex).StartsWith(Value);
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) =>
+            new StringDoesNotStartWith(typeSpecificIndex, value);
     }
 
     public class StringEndsWith : TemplateValue<string>
@@ -78,8 +112,11 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
         {
         }
 
-        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
+        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) =>
             dataSet.GetString(TypeSpecificIndex).EndsWith(Value);
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) =>
+            new StringEndsWith(typeSpecificIndex, value);
     }
 
     public class StringDoesNotEndWith : TemplateValue<string>
@@ -88,7 +125,10 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
         {
         }
 
-        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) => 
+        public override bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) =>
             !dataSet.GetString(TypeSpecificIndex).EndsWith(Value);
+
+        public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) =>
+            new StringDoesNotEndWith(typeSpecificIndex, value);
     }
 }
