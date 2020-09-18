@@ -13,9 +13,10 @@ namespace Hiralal.Components.Blackboard.Tests
             [Random(0u, 20u, 2)] uint intCount,
             [Random(0u, 20u, 2)] uint stringCount,
             [Random(0u, 20u, 2)] uint vectorCount
-            )
+        )
         {
-            var dataSet = BlackboardTypes.GetWriteableDataSet(boolCount, floatCount, intCount, stringCount, vectorCount);
+            var dataSet =
+                BlackboardTypes.GetWriteableDataSet(boolCount, floatCount, intCount, stringCount, vectorCount);
             var duplicate = dataSet.GetDuplicate();
 
             Assert.AreNotSame(duplicate, dataSet);
@@ -33,21 +34,24 @@ namespace Hiralal.Components.Blackboard.Tests
 
         [Test]
         public void duplicating_a_data_set_should_duplicate_values(
-            [Random(float.MinValue, float.MaxValue, 2)] float first,
-            [Random(float.MinValue, float.MaxValue, 2)] float second,
-            [Random(float.MinValue, float.MaxValue, 2)] float third)
+            [Random(float.MinValue, float.MaxValue, 2)]
+            float first,
+            [Random(float.MinValue, float.MaxValue, 2)]
+            float second,
+            [Random(float.MinValue, float.MaxValue, 2)]
+            float third)
         {
-            var dataSet = BlackboardTypes.GetWriteableDataSet(0, 3, 0, 0, 0);
+            var dataSet = BlackboardTypes.GetWriteableDataSet(floatKeyCount: 3);
             (dataSet.Floats[0], dataSet.Floats[1], dataSet.Floats[2]) = (first, second, third);
 
             var duplicate = dataSet.GetDuplicate();
-            
+
             Assert.AreEqual(first, duplicate.Floats[0]);
             Assert.AreEqual(second, duplicate.Floats[1]);
             Assert.AreEqual(third, duplicate.Floats[2]);
 
             (dataSet.Floats[0], dataSet.Floats[1], dataSet.Floats[2]) = (third, first, second);
-            
+
             Assert.AreEqual(first, duplicate.Floats[0]);
             Assert.AreEqual(second, duplicate.Floats[1]);
             Assert.AreEqual(third, duplicate.Floats[2]);

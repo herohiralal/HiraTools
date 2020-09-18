@@ -41,9 +41,9 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
             new StringContainsValue(typeSpecificIndex, value);
     }
 
-    public class StringIncludedByValue : TemplateValue<string>
+    public class StringContainedByValue : TemplateValue<string>
     {
-        public StringIncludedByValue(uint typeSpecificIndex, string value) : base(typeSpecificIndex, value)
+        public StringContainedByValue(uint typeSpecificIndex, string value) : base(typeSpecificIndex, value)
         {
         }
 
@@ -51,7 +51,7 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
             Value.Contains(dataSet.GetString(TypeSpecificIndex));
 
         public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) =>
-            new StringIncludedByValue(typeSpecificIndex, value);
+            new StringContainedByValue(typeSpecificIndex, value);
     }
 
     public class StringDoesNotContainValue : TemplateValue<string>
@@ -93,9 +93,9 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
             new StringStartsWithValue(typeSpecificIndex, value);
     }
 
-    public class StringDoesNotStartWith : TemplateValue<string>
+    public class StringDoesNotStartWithValue : TemplateValue<string>
     {
-        public StringDoesNotStartWith(uint typeSpecificIndex, string value) : base(typeSpecificIndex, value)
+        public StringDoesNotStartWithValue(uint typeSpecificIndex, string value) : base(typeSpecificIndex, value)
         {
         }
 
@@ -103,12 +103,12 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
             !dataSet.GetString(TypeSpecificIndex).StartsWith(Value);
 
         public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) =>
-            new StringDoesNotStartWith(typeSpecificIndex, value);
+            new StringDoesNotStartWithValue(typeSpecificIndex, value);
     }
 
-    public class StringEndsWith : TemplateValue<string>
+    public class StringEndsWithValue : TemplateValue<string>
     {
-        public StringEndsWith(uint typeSpecificIndex, string value) : base(typeSpecificIndex, value)
+        public StringEndsWithValue(uint typeSpecificIndex, string value) : base(typeSpecificIndex, value)
         {
         }
 
@@ -116,12 +116,12 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
             dataSet.GetString(TypeSpecificIndex).EndsWith(Value);
 
         public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) =>
-            new StringEndsWith(typeSpecificIndex, value);
+            new StringEndsWithValue(typeSpecificIndex, value);
     }
 
-    public class StringDoesNotEndWith : TemplateValue<string>
+    public class StringDoesNotEndWithValue : TemplateValue<string>
     {
-        public StringDoesNotEndWith(uint typeSpecificIndex, string value) : base(typeSpecificIndex, value)
+        public StringDoesNotEndWithValue(uint typeSpecificIndex, string value) : base(typeSpecificIndex, value)
         {
         }
 
@@ -129,6 +129,6 @@ namespace HiraCreatures.Components.Blackboard.Internal.Values
             !dataSet.GetString(TypeSpecificIndex).EndsWith(Value);
 
         public override IBlackboardValue GetNewObject(uint typeSpecificIndex, string value) =>
-            new StringDoesNotEndWith(typeSpecificIndex, value);
+            new StringDoesNotEndWithValue(typeSpecificIndex, value);
     }
 }
