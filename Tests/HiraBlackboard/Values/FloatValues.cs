@@ -5,9 +5,9 @@ using UnityEngine;
 using static HiraCreatures.Components.Blackboard.Helpers.BlackboardTypes;
 using Assert = UnityEngine.Assertions.Assert;
 
-namespace Hiralal.Components.Blackboard.Tests.ValueTests
+namespace Hiralal.Tests.Components.Blackboard.Values
 {
-    public class FloatValueTests
+    public class FloatValues
     {
         private static IReadWriteBlackboardDataSet GetDataSetWithValue(uint index, float value)
         {

@@ -5,10 +5,10 @@ using NUnit.Framework;
 using UnityEngine;
 using Assert = UnityEngine.Assertions.Assert;
 
-namespace Hiralal.Components.Blackboard.Tests
+namespace Hiralal.Tests.Components.Blackboard
 {
     [TestFixture]
-    public class BlackboardValueFactoryTests
+    public class BlackboardValueFactory
     {
         [Test]
         public void factory_creates_float_objects_properly_provided_a_correct_string()

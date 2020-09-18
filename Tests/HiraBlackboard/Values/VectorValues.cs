@@ -5,9 +5,9 @@ using UnityEngine;
 using static HiraCreatures.Components.Blackboard.Helpers.BlackboardTypes;
 using Assert = UnityEngine.Assertions.Assert;
 
-namespace Hiralal.Components.Blackboard.Tests.ValueTests
+namespace Hiralal.Tests.Components.Blackboard.Values
 {
-    public class VectorValueTests
+    public class VectorValues
     {
         private static IReadWriteBlackboardDataSet GetDataSetWithValue(uint index, Vector3 value)
         {

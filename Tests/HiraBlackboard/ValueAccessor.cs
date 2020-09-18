@@ -3,12 +3,12 @@ using HiraCreatures.Components.Blackboard.Helpers;
 using NUnit.Framework;
 using UnityEngine;
 using Assert = UnityEngine.Assertions.Assert;
-using static Hiralal.Components.Blackboard.Tests.BlackboardTestsCommon;
+using static Hiralal.Tests.Components.Blackboard.BlackboardTestsCommon;
 
-namespace Hiralal.Components.Blackboard.Tests
+namespace Hiralal.Tests.Components.Blackboard
 {
     [TestFixture]
-    public class ValueAccessorTests
+    public class ValueAccessor
     {
         [Test]
         public void set_value_is_reflected_when_getting_it([Values(0, 1, 2, 99, 100)] int input)

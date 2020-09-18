@@ -1,10 +1,10 @@
 ﻿using HiraCreatures.Components.Blackboard.Helpers;
 using NUnit.Framework;
 
-namespace Hiralal.Components.Blackboard.Tests
+namespace Hiralal.Tests.Components.Blackboard
 {
     [TestFixture]
-    public class DataSetTests
+    public class DataSet
     {
         [Test]
         public void duplicating_a_data_set_should_give_a_new_object(

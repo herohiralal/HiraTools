@@ -5,9 +5,9 @@ using UnityEngine;
 using static HiraCreatures.Components.Blackboard.Helpers.BlackboardTypes;
 using Assert = UnityEngine.Assertions.Assert;
 
-namespace Hiralal.Components.Blackboard.Tests.ValueTests
+namespace Hiralal.Tests.Components.Blackboard.Values
 {
-    public class StringValueTests
+    public class StringValues
     {
         private const string garbage = "saf90xzjcc-=4j=";
 

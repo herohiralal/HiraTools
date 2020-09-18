@@ -3,7 +3,7 @@ using HiraCreatures.Components.Blackboard.Internal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Hiralal.Components.Blackboard.Tests
+namespace Hiralal.Tests.Components.Blackboard
 {
     public static class BlackboardTestsCommon
     {
