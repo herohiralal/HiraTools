@@ -15,7 +15,7 @@ using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace HiraSaves.Serialization.Surrogates
+namespace HiraEngine.HiraSaves.Serialization.Surrogates
 {
     [UsedImplicitly]
     internal class Vector3SerializationSurrogate : _SerializationSurrogateAbstract<Vector3>

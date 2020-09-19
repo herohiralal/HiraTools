@@ -1,7 +1,8 @@
+using HiraEngine.SOVariables.Core;
 using UnityEngine;
 using UnityEditor;
 
-namespace Hiralal.SOVariables.Core.Editor
+namespace HiraEditor.SOVariables
 {
     [CustomPropertyDrawer(typeof(ScriptableObjectVariableReference), true)]
     public class ScriptableObjectVariableReferenceDrawer : PropertyDrawer

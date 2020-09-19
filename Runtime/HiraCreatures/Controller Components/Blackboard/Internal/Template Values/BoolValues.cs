@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HiraCreatures.Components.Blackboard.Internal.Values
+namespace HiraEngine.Components.Blackboard.Internal
 {
     public class BoolEqualsValue : TemplateValue<bool>
     {

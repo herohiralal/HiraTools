@@ -1,10 +1,9 @@
 ﻿using System;
-using Hiralal.SOVariables.Core;
-using HiraTweener.Interpolations.Core;
+using HiraEngine.SOVariables.Core;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Hiralal.Tweeners
+namespace HiraEngine.Tweeners
 {
     public abstract class TweenerBase<T> : Tweener
     {

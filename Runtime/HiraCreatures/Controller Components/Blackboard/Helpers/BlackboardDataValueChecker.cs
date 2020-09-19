@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using HiraEngine.Components.Blackboard;
+
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 
-namespace HiraCreatures.Components.Blackboard.Helpers
+namespace UnityEngine
 {
     public static class BlackboardDataValueChecker
     {

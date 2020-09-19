@@ -1,4 +1,4 @@
-﻿namespace HiraCreatures.Components.Blackboard
+﻿namespace HiraEngine.Components.Blackboard
 {
     public delegate void OnBlackboardValueUpdate<in T>(uint typeSpecificIndex, T value);
 

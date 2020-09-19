@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using HiraEngine.Components.Blackboard;
 
-namespace HiraCreatures.Components.Blackboard.Helpers
+namespace UnityEngine
 {
     public static class BlackboardValueFactory
     {

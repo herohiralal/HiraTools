@@ -1,22 +1,21 @@
 ﻿using UnityEngine;
-using System.Diagnostics;
 
-namespace HiraCreatures.Components.Movement
+namespace HiraEngine.Components.Movement.Internal
 {
-    public class DirectionalMovementAssistant
+    public class DirectionalMovementAssistant : IDirectionalMovementAssistant
     {
-        public Rigidbody Rigidbody = null;
-        public Transform Transform = null;
+        public Rigidbody Rigidbody { private get; set; } = null;
+        public Transform Transform { private get; set; } = null;
 
-        public float Speed = 0f;
-        public float Gravity = 0f;
-        public float FallMultiplier = 0f;
-        public float AngularSpeed = 0f;
+        public float Speed { private get; set; } = 0f;
+        public float Gravity { private get; set; } = 0f;
+        public float FallMultiplier { private get; set; } = 0f;
+        public float AngularSpeed { private get; set; } = 0f;
 
-        public float RaycastSpaceRadius = 0.25f;
-        public float RaycastStartHeight = 1f;
-        public float RaycastLength = 1.5f;
-        public LayerMask FloorMask = default;
+        public float RaycastSpaceRadius { private get; set; } = 0.25f;
+        public float RaycastStartHeight { private get; set; } = 1f;
+        public float RaycastLength { private get; set; } = 1.5f;
+        public LayerMask FloorMask { private get; set; } = default;
 
         // floor detection pre-allocated memory
         private readonly Vector3[] _floorRaycastHitPoints = new Vector3[5];
@@ -134,9 +133,9 @@ namespace HiraCreatures.Components.Movement
                 : Vector3.zero;
         }
 
-        [Conditional("DRAW_CHARACTER_MOVEMENT")]
         public void DrawGizmos()
         {
+#if DRAW_CHARACTER_MOVEMENT
             Gizmos.color = Color.magenta;
 
             var startPoint = Transform.position + Transform.up * RaycastStartHeight;
@@ -154,6 +153,7 @@ namespace HiraCreatures.Components.Movement
             Gizmos.DrawLine(startPoint + modifier, endPoint + modifier); // right
             modifier = (-right) * RaycastSpaceRadius;
             Gizmos.DrawLine(startPoint + modifier, endPoint + modifier); // left
+#endif
         }
     }
 }

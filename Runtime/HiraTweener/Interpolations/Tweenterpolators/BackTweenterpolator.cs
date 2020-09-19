@@ -1,4 +1,4 @@
-﻿﻿/*
+﻿/*
  * Name: BackTweenterpolator.cs
  * Created By: Rohan Jadav
  * Description: Defines easing methods for Back Interpolation.
@@ -6,9 +6,8 @@
 
 using System;
 using UnityEngine;
-using HiraTweener.Interpolations.Core;
 
-namespace HiraTweener.Interpolations.Tweenterpolators
+namespace HiraEngine.Tweeners.Interpolations
 {
     internal static class BackTweenterpolator
     {

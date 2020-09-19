@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Hiralal.CoroutineTracker
+namespace HiraEngine.CoroutineTracker
 {
     internal class HiraCoroutineControlGeneric<T> : HiraCoroutineControl where T : HiraCoroutineControlGeneric<T>, new()
     {

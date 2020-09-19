@@ -1,7 +1,8 @@
 ﻿using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 
-namespace UnityEditor
+namespace HiraEditor.HiraButtons
 {
     [CustomPropertyDrawer(typeof(HiraButton))]
     public class HiraButtonDrawer : PropertyDrawer

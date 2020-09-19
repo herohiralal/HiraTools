@@ -1,4 +1,4 @@
-﻿﻿/*
+﻿/*
  * Name: HiraTweenterpolationType.cs
  * Created By: Rohan Jadav
  * Description: The exhaustive values of interpolation types.
@@ -6,7 +6,7 @@
 
 using System;
 
-namespace HiraTweener.Interpolations.Core
+namespace UnityEngine
 {
     [Serializable]
     public enum HiraTweenterpolationType

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Hiralal.CoroutineTracker
+namespace HiraEngine.CoroutineTracker
 {
     internal class HiraTimerControl : HiraCoroutineControlGeneric<HiraTimerControl>
     {

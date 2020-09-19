@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Hiralal.CoroutineTracker
+namespace HiraEngine.CoroutineTracker
 {
     [AddComponentMenu("HiraTools/HiraCoroutines")]
     public class HiraCoroutines : MonoBehaviour

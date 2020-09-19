@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace HiraBoilerplate.SerializedInstance
+namespace HiraEngine.SerializedInstance
 {
     /// <summary>
     /// Get a singleton instance of a class from a string that defines the type.

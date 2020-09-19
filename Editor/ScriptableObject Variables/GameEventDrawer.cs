@@ -1,6 +1,7 @@
-﻿﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 
-namespace UnityEditor
+namespace HiraEditor.SOVariables
 {
     [CustomPropertyDrawer(typeof(GameEvent))]
     public class GameEventDrawer : PropertyDrawer

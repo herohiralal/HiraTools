@@ -15,10 +15,10 @@
 using System;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using HiraSaves.Serialization.Surrogates;
-using HiraSaves.Utility;
+using HiraEngine.HiraSaves.Serialization.Surrogates;
+using HiraEngine.HiraSaves.Utility;
 
-namespace HiraSaves.Serialization
+namespace HiraEngine.HiraSaves.Serialization
 {
     internal static class FormatterUtility
     {

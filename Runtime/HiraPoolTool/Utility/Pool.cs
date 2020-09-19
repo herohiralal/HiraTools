@@ -1,9 +1,8 @@
-﻿﻿using System.Collections.Generic;
- using HiraPoolTool.Abstractions;
+﻿using System.Collections.Generic;
  using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace HiraPoolTool.Core
+namespace HiraEngine.PoolTool
 {
     internal readonly struct Pool : IPool
     {

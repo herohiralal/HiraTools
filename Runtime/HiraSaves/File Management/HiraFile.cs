@@ -11,10 +11,10 @@
  * * * * * * * * * * * * * * * * * * * * * * * * *
  * * * * * * * * * * * * * * * * * * * * * * * * */
 
-using HiraSaves.Serialization;
+using HiraEngine.HiraSaves.Serialization;
 // ReSharper disable UnusedMember.Global
 
-namespace HiraSaves.FileManagement
+namespace HiraEngine.HiraSaves.FileManagement
 {
     public class HiraFile<T> where T : class
     {

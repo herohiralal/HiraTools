@@ -1,8 +1,8 @@
-﻿using Hiralal.HiraWorlds;
+﻿using HiraEngine.HiraWorlds;
 using UnityEditor;
 using UnityEngine;
 
-namespace Hiralal.MenuItems
+namespace HiraEditor.MenuItems
 {
     internal static class GameObjectTemplates
     {

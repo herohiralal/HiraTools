@@ -6,9 +6,8 @@
 
 using System;
 using UnityEngine;
-using HiraTweener.Interpolations.Core;
 
-namespace HiraTweener.Interpolations.Tweenterpolators
+namespace HiraEngine.Tweeners.Interpolations
 {
     internal static class QuadTweenterpolator
     {

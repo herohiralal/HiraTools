@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using HiraCreatures.Components.Blackboard.Helpers;
 using UnityEngine;
 
-namespace HiraCreatures.Components.Blackboard.Internal
+namespace HiraEngine.Components.Blackboard.Internal
 {
     public class KeyData : IBlackboardKeyData
     {
-        public KeyData(SerializableKey[] keys) => _keys = keys;
+        public KeyData(SerializableBlackboardKey[] keys) => _keys = keys;
         
-        private readonly SerializableKey[] _keys;
+        private readonly SerializableBlackboardKey[] _keys;
         private Dictionary<string, uint> _hashes = null;
 
         public IReadOnlyInstanceSynchronizer InstanceSynchronizer { get; private set; }

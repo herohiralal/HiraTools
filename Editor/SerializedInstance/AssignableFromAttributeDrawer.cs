@@ -1,4 +1,4 @@
-﻿﻿/* * * * * * * * * * * * * * * * * * * * * * * * *
+﻿/* * * * * * * * * * * * * * * * * * * * * * * * *
  * * * * * * * * * * * * * * * * * * * * * * * * *
  * *  
  * *  File: SerializedInstanceDrawer.cs
@@ -13,9 +13,10 @@
 
 using System;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
-namespace UnityEditor
+namespace HiraEditor.SerializedInstance
 {
     [CustomPropertyDrawer(typeof(AssignableFromAttribute))]
     public class AssignableFromAttributeDrawer : PropertyDrawer

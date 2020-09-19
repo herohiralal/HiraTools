@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
-using HiraCreatures.Components.Blackboard.Internal;
+using HiraEngine.Components.Blackboard;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace HiraCreatures.Components.Blackboard.Editor.Helpers
+namespace HiraEditor.HiraEngine.Components.Blackboard.Helpers
 {
-    public static class SerializableValueDrawerDatabaseUtility
+    public static class SerializableBlackboardValueDrawerDatabaseUtility
     {
         private static readonly string[] bool_display_names = GetNames<bool>();
         private static readonly string[] float_display_names = GetNames<float>();
@@ -35,7 +35,7 @@ namespace HiraCreatures.Components.Blackboard.Editor.Helpers
         private static string[] GetReflectionNames<T>() => 
             typeof(IBlackboardValueDefaultObject<T>).GetSubclasses().Select(TypeExtensions.GetReflectionName).ToArray();
 
-        public static (string[], SerializableKey[]) BuildKeyData(this Object keySet)
+        public static (string[], SerializableBlackboardKey[]) BuildKeyData(this Object keySet)
         {
             if (!(keySet is HiraBlackboardKeySet hiraKeySet)) return (null, null);
             
@@ -47,7 +47,7 @@ namespace HiraCreatures.Components.Blackboard.Editor.Helpers
 
         public static (string[], string[]) BuildCalculationData(this Object key)
         {
-            if (!(key is SerializableKey sKey)) return (null, null);
+            if (!(key is SerializableBlackboardKey sKey)) return (null, null);
             
             switch (sKey.KeyType)
             {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace Hiralal.SOVariables.Core
+namespace HiraEngine.SOVariables.Core
 {
     public abstract class ScriptableObjectVariableListenerComponent : MonoBehaviour { }
 

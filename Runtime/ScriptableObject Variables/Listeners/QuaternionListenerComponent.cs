@@ -1,8 +1,8 @@
-﻿using Hiralal.SOVariables.Core;
+﻿using HiraEngine.SOVariables.Core;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Hiralal.SOVariables.ListenerComponents
+namespace HiraEngine.SOVariables.ListenerComponents
 {
     [AddComponentMenu("HiraTools/ScriptableObject Variables/Listeners/Quaternion Listener")]
     public class QuaternionListenerComponent : ScriptableObjectVariableListenerComponent<Quaternion>

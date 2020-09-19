@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HiraCreatures.Components.Blackboard.Internal
+namespace HiraEngine.Components.Blackboard.Internal
 {
     public class DataSet : IReadWriteBlackboardDataSet
     {

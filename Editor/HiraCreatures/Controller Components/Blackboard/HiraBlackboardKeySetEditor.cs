@@ -1,8 +1,7 @@
-﻿using HiraCreatures.Components.Blackboard.Internal;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace HiraCreatures.Components.Blackboard.Editor
+namespace HiraEditor.HiraEngine.Components.Blackboard
 {
     [CustomEditor(typeof(HiraBlackboardKeySet))]
     public class HiraBlackboardKeySetEditor : HiraCollectionEditor

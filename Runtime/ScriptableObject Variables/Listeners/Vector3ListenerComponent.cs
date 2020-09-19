@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
-using Hiralal.SOVariables.Core;
+using HiraEngine.SOVariables.Core;
 
-namespace Hiralal.SOVariables.ListenerComponents
+namespace HiraEngine.SOVariables.ListenerComponents
 {
     [AddComponentMenu("HiraTools/ScriptableObject Variables/Listeners/Vector3 Listener")]
     public class Vector3ListenerComponent : ScriptableObjectVariableListenerComponent<Vector3>

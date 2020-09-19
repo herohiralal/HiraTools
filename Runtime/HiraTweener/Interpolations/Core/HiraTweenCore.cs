@@ -6,9 +6,8 @@
 
 using System;
 using System.Collections;
-using Hiralal.CoroutineTracker;
-using HiraTweener.Interpolations.Core;
-using HiraTweener.Interpolations.Tweenterpolators;
+using HiraEngine.CoroutineTracker;
+using HiraEngine.Tweeners.Interpolations;
 
 namespace UnityEngine
 {

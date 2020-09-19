@@ -14,7 +14,7 @@
 using System;
 using System.Linq;
 
-namespace HiraSaves.Utility
+namespace HiraEngine.HiraSaves.Utility
 {
     internal static class ReflectionBoilerplate
     {

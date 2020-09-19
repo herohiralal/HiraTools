@@ -1,5 +1,4 @@
 ﻿using System;
-using HiraTweener.Interpolations.Core;
 using UnityEngine.Events;
 
 namespace UnityEngine

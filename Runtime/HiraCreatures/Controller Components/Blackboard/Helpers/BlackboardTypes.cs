@@ -1,7 +1,7 @@
-﻿using HiraCreatures.Components.Blackboard.Internal;
-using UnityEngine;
+﻿using HiraEngine.Components.Blackboard;
+using HiraEngine.Components.Blackboard.Internal;
 
-namespace HiraCreatures.Components.Blackboard.Helpers
+namespace UnityEngine
 {
     public static class BlackboardTypes
     {
@@ -20,12 +20,12 @@ namespace HiraCreatures.Components.Blackboard.Helpers
             IInstanceSynchronizer instanceSynchronizer) =>
             new KeySetValueAccessor(keyData, dataSet, instanceSynchronizer);
 
-        public static IBlackboardKeyData GetKeyData(SerializableKey[] keys) =>
+        public static IBlackboardKeyData GetKeyData(SerializableBlackboardKey[] keys) =>
             new KeyData(keys);
 
         public static IBlackboardValueAccessor GetMainValueAccessor(IBlackboardKeyData keyData) =>
             new MainValueAccessor(keyData);
-
+        
         public static IBlackboardValue GetValue(string typeString,
             IBlackboardValueConstructorParams constructorParams) =>
             BlackboardValueFactory.GetValue(typeString, constructorParams);

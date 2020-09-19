@@ -1,7 +1,7 @@
-﻿using HiraCreatures.Components.Blackboard.Helpers;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using UnityEngine;
 
-namespace Hiralal.Tests.Components.Blackboard
+namespace HiraTests.HiraEngine.Components.Blackboard
 {
     [TestFixture]
     public class DataSet

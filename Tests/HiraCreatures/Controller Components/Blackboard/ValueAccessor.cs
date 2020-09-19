@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using HiraCreatures.Components.Blackboard.Helpers;
 using NUnit.Framework;
 using UnityEngine;
 using Assert = UnityEngine.Assertions.Assert;
-using static Hiralal.Tests.Components.Blackboard.BlackboardTestsCommon;
+using static HiraTests.HiraEngine.Components.Blackboard.BlackboardTestsCommon;
 
-namespace Hiralal.Tests.Components.Blackboard
+namespace HiraTests.HiraEngine.Components.Blackboard
 {
     [TestFixture]
     public class ValueAccessor

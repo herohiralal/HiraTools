@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HiraCreatures.Components.Blackboard
+namespace HiraEngine.Components.Blackboard
 {
     public interface IBlackboardValue
     {

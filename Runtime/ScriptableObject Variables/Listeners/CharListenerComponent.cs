@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
-using Hiralal.SOVariables.Core;
+using HiraEngine.SOVariables.Core;
 
-namespace Hiralal.SOVariables.ListenerComponents
+namespace HiraEngine.SOVariables.ListenerComponents
 {
     [AddComponentMenu("HiraTools/ScriptableObject Variables/Listeners/Char Listener")]
     public class CharListenerComponent : ScriptableObjectVariableListenerComponent<char>

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace UnityEngine
+namespace System
 {
     public static class TypeExtensions
     {

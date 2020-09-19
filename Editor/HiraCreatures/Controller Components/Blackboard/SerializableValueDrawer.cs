@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Linq;
-using HiraCreatures.Components.Blackboard.Editor.Helpers;
-using HiraCreatures.Components.Blackboard.Internal;
+using HiraEditor.HiraEngine.Components.Blackboard.Helpers;
 using UnityEditor;
 using UnityEngine;
 
-namespace HiraCreatures.Components.Blackboard.Editor
+namespace HiraEditor.HiraEngine.Components.Blackboard
 {
-    [CustomPropertyDrawer(typeof(SerializableValue))]
-    public class SerializableValueDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(SerializableBlackboardValue))]
+    public class SerializableBlackboardValueDrawer : PropertyDrawer
     {
         private const string key_set_property_name = "keySet";
         private const string key_property_name = "key";
@@ -23,7 +22,8 @@ namespace HiraCreatures.Components.Blackboard.Editor
         {
             var height = 0f;
 
-            var keySet = (HiraBlackboardKeySet) property.FindPropertyRelative(key_set_property_name).objectReferenceValue;
+            var keySet =
+                (HiraBlackboardKeySet) property.FindPropertyRelative(key_set_property_name).objectReferenceValue;
             if (keySet != null && keySet.Keys.Length != 0)
                 height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative(key_property_name)) + 2;
 
@@ -44,7 +44,7 @@ namespace HiraCreatures.Components.Blackboard.Editor
             var keySetProperty = property.FindPropertyRelative(key_set_property_name);
             var parentKeySet = property.serializedObject.FindProperty(key_set_property_name)?.objectReferenceValue;
             keySetProperty.objectReferenceValue = parentKeySet;
-            
+
             var keyProperty = property.FindPropertyRelative(key_property_name);
             if (parentKeySet == null || ((HiraBlackboardKeySet) parentKeySet).Keys.Length == 0)
             {
@@ -77,8 +77,8 @@ namespace HiraCreatures.Components.Blackboard.Editor
                     keyProperty.objectReferenceValue = null;
                     return;
                 }
-                
-                var index = keys.Contains(keyProperty.objectReferenceValue)
+
+                var index = keyProperty.objectReferenceValue != null && keys.Contains(keyProperty.objectReferenceValue)
                     ? Array.IndexOf(keys, keyProperty.objectReferenceValue)
                     : 0;
 
@@ -111,7 +111,7 @@ namespace HiraCreatures.Components.Blackboard.Editor
                     typeStringProperty.stringValue = "";
                     return;
                 }
-            
+
                 var index = reflectionNames.Contains(typeStringProperty.stringValue)
                     ? Array.IndexOf(reflectionNames, typeStringProperty.stringValue)
                     : 0;
@@ -121,7 +121,7 @@ namespace HiraCreatures.Components.Blackboard.Editor
                     .KeepToTopFor((int) EditorGUI.GetPropertyHeight(typeStringProperty));
                 typeRect.x = firstLineRect.x;
                 typeRect.width = firstLineRect.width;
-            
+
                 typeStringProperty.stringValue = reflectionNames[EditorGUI.Popup(typeRect, index, displayNames)];
             }
 
@@ -133,7 +133,7 @@ namespace HiraCreatures.Components.Blackboard.Editor
         {
             var key = property.FindPropertyRelative(key_property_name).objectReferenceValue;
             if (key == null) return null;
-            if (!(key is SerializableKey serializableKey)) return null;
+            if (!(key is SerializableBlackboardKey serializableKey)) return null;
 
             string propertyName;
             switch (serializableKey.KeyType)

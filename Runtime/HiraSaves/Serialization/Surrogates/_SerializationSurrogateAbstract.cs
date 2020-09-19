@@ -17,7 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace HiraSaves.Serialization.Surrogates
+namespace HiraEngine.HiraSaves.Serialization.Surrogates
 {
     // ReSharper disable once InconsistentNaming
     public abstract class _SerializationSurrogateAbstract : ISerializationSurrogate

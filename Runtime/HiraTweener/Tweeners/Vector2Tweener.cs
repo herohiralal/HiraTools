@@ -1,9 +1,9 @@
 ﻿using System;
-using Hiralal.SOVariables.Core;
+using HiraEngine.SOVariables.Core;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Hiralal.Tweeners
+namespace HiraEngine.Tweeners
 {
     [AddComponentMenu("HiraTools/Tweeners/Vector2 Tweener")]
     public class Vector2Tweener : TweenerBase<Vector2>

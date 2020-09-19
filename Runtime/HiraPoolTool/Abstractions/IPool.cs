@@ -1,7 +1,6 @@
-﻿﻿using System;
-using UnityEngine;
+﻿using System;
 
-namespace HiraPoolTool.Abstractions
+namespace UnityEngine
 {
     public interface IPool : IDisposable
     {

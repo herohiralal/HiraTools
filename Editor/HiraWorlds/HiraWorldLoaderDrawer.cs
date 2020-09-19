@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Hiralal.HiraWorlds
+namespace HiraEditor.HiraWorlds
 {
     [CustomPropertyDrawer(typeof(HiraWorldLoader))]
     public class HiraWorldLoaderDrawer : PropertyDrawer

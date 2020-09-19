@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Hiralal.HiraWorlds
+namespace HiraEngine.HiraWorlds
 {
     [RequireComponent(typeof(Collider))]
     [AddComponentMenu("HiraTools/HiraWorlds/HiraWorld Volume")]

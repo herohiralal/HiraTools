@@ -1,8 +1,8 @@
 ﻿using System;
-using UnityEngine;
+using HiraEngine.Components.Movement;
 using UnityEngine.AI;
 
-namespace HiraCreatures.Components.Movement
+namespace UnityEngine
 {
     public class HiraCreatureMover : HiraCreatureComponent, IHiraCreatureMover
     {
@@ -24,7 +24,7 @@ namespace HiraCreatures.Components.Movement
         [SerializeField] private float raycastLength = 1.5f;
         [SerializeField] private LayerMaskReference floorMask = null;
 
-        private DirectionalMovementAssistant _directionalMovementAssistant = null;
+        private IDirectionalMovementAssistant _directionalMovementAssistant = null;
 
         private void OnValidate()
         {
@@ -71,7 +71,7 @@ namespace HiraCreatures.Components.Movement
                         targetNavMeshAgent.isStopped = false;
                         break;
                     case HiraCreatureMovementMode.Directional:
-                        _directionalMovementAssistant = new DirectionalMovementAssistant();
+                        _directionalMovementAssistant = MovementTypes.GetDirectionalMovementAssistant();
                         targetRigidbody.isKinematic = false;
                         UpdateDirectionalMovementAssistant();
                         break;

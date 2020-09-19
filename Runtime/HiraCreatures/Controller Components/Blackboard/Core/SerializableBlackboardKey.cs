@@ -1,11 +1,9 @@
-﻿using UnityEngine;
-
-namespace HiraCreatures.Components.Blackboard.Internal
+﻿namespace UnityEngine
 {
     [System.Serializable]
-    public class SerializableKey : ScriptableObject
+    public class SerializableBlackboardKey : ScriptableObject
     {
-        public SerializableKey Setup(string inName, BlackboardKeyType type, bool instanceSynced)
+        public SerializableBlackboardKey Setup(string inName, BlackboardKeyType type, bool instanceSynced)
         {
             (name, keyType, instanceSynchronized) = (new StringReference(inName), type, instanceSynced);
             return this;
@@ -20,15 +18,5 @@ namespace HiraCreatures.Components.Blackboard.Internal
         public bool InstanceSynchronized => instanceSynchronized;
 
         public uint TypeSpecificIndex { get; set; } = 0;
-    }
-
-    public enum BlackboardKeyType
-    {
-        Undefined,
-        Bool,
-        Float,
-        Int,
-        String,
-        Vector
     }
 }

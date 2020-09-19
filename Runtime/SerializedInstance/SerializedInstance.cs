@@ -1,5 +1,4 @@
 ﻿using System;
-using HiraBoilerplate.SerializedInstance;
 
 namespace UnityEngine
 {
@@ -11,6 +10,6 @@ namespace UnityEngine
         public T Get<T>(bool cachedInstance = true) => 
             string.IsNullOrEmpty(classData) 
                 ? default 
-                : SerializedInstanceFactory.Get<T>(classData, cachedInstance);
+                : HiraEngine.SerializedInstance.SerializedInstanceFactory.Get<T>(classData, cachedInstance);
     }
 }

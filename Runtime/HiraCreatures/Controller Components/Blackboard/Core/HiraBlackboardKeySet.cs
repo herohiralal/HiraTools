@@ -1,11 +1,9 @@
-﻿using HiraCreatures.Components.Blackboard;
-using HiraCreatures.Components.Blackboard.Internal;
-using HiraCreatures.Components.Blackboard.Helpers;
+﻿using HiraEngine.Components.Blackboard;
 
 namespace UnityEngine
 {
     [CreateAssetMenu(fileName = "New Blackboard Key Set", menuName = "Hiralal/HiraEngine/HiraCreatures/Blackboard Key Set")]
-    public class HiraBlackboardKeySet : HiraCollection<SerializableKey>, IBlackboardKeyData
+    public class HiraBlackboardKeySet : HiraCollection<SerializableBlackboardKey>, IBlackboardKeyData
     {
         private IBlackboardKeyData _mainKeyData = null;
         
@@ -30,6 +28,6 @@ namespace UnityEngine
 
         public IBlackboardValueAccessor ValueAccessor => _mainKeyData.ValueAccessor;
 
-        public SerializableKey[] Keys => collection;
+        public SerializableBlackboardKey[] Keys => collection;
     }
 }

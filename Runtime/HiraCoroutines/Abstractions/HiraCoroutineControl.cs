@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Hiralal.CoroutineTracker
+namespace HiraEngine.CoroutineTracker
 {
     internal abstract class HiraCoroutineControl
     {

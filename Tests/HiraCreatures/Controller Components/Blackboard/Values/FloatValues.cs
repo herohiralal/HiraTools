@@ -1,11 +1,11 @@
-﻿using HiraCreatures.Components.Blackboard;
-using HiraCreatures.Components.Blackboard.Internal.Values;
+﻿using HiraEngine.Components.Blackboard;
+using HiraEngine.Components.Blackboard.Internal;
 using NUnit.Framework;
 using UnityEngine;
-using static HiraCreatures.Components.Blackboard.Helpers.BlackboardTypes;
+using static UnityEngine.BlackboardTypes;
 using Assert = UnityEngine.Assertions.Assert;
 
-namespace Hiralal.Tests.Components.Blackboard.Values
+namespace HiraTests.HiraEngine.Components.Blackboard
 {
     public class FloatValues
     {

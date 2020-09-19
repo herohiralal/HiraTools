@@ -1,11 +1,10 @@
 ﻿using System;
-using HiraCreatures.Components.Blackboard.Helpers;
-using UnityEngine;
+using HiraEngine.Components.Blackboard;
 
-namespace HiraCreatures.Components.Blackboard.Internal
+namespace UnityEngine
 {
     [Serializable]
-    public class SerializableValue : IBlackboardValueConstructorParams
+    public class SerializableBlackboardValue : IBlackboardValueConstructorParams
     {
         [SerializeField] private HiraBlackboardKeySet keySet = null;
 
@@ -15,7 +14,7 @@ namespace HiraCreatures.Components.Blackboard.Internal
             set => keySet = value;
         }
 
-        [SerializeField] private SerializableKey key = null;
+        [SerializeField] private SerializableBlackboardKey key = null;
 
         [SerializeField] private string typeString = null;
 

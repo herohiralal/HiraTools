@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace SOEvents
+namespace HiraEngine.SOVariables
 {
     [AddComponentMenu("HiraTools/ScriptableObject Variables/Listeners/Game Event Listener")]
     public class GameEventListener : MonoBehaviour

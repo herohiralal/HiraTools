@@ -1,11 +1,12 @@
-﻿using HiraCreatures.Components.Blackboard;
-using HiraCreatures.Components.Blackboard.Helpers;
-using HiraCreatures.Components.Blackboard.Internal.Values;
+﻿using System;
+using HiraEngine.Components.Blackboard;
+using HiraEngine.Components.Blackboard.Internal;
 using NUnit.Framework;
 using UnityEngine;
+using static UnityEngine.BlackboardTypes;
 using Assert = UnityEngine.Assertions.Assert;
 
-namespace Hiralal.Tests.Components.Blackboard
+namespace HiraTests.HiraEngine.Components.Blackboard
 {
     [TestFixture]
     public class BlackboardValueFactory
@@ -18,7 +19,7 @@ namespace Hiralal.Tests.Components.Blackboard
             foreach (var type in types)
             {
                 var reflectionName = type.GetReflectionName();
-                var blackboardValue = BlackboardTypes.GetValue(reflectionName, new BlackboardValueConstructorParamsMock());
+                var blackboardValue = GetValue(reflectionName, new BlackboardValueConstructorParamsMock());
                 Assert.AreEqual(type, blackboardValue.GetType());
             }
         }
@@ -31,13 +32,13 @@ namespace Hiralal.Tests.Components.Blackboard
             var parameters = new BlackboardValueConstructorParamsMock(index, intValue: value);
             var typeString = typeof(IntEqualsValue).GetReflectionName();
 
-            var correctDataSet = BlackboardTypes.GetWriteableDataSet(intKeyCount: index + 1);
+            var correctDataSet = GetWriteableDataSet(intKeyCount: index + 1);
             correctDataSet.Integers[index] = value;
 
-            var incorrectDataSet = BlackboardTypes.GetWriteableDataSet(intKeyCount: index + 1);
+            var incorrectDataSet = GetWriteableDataSet(intKeyCount: index + 1);
             incorrectDataSet.Integers[index] = value + 1;
 
-            var templateValue = BlackboardTypes.GetValue(typeString, parameters);
+            var templateValue = GetValue(typeString, parameters);
             
             Assert.IsTrue(templateValue.IsSatisfiedBy(correctDataSet));
             Assert.IsFalse(templateValue.IsSatisfiedBy(incorrectDataSet));

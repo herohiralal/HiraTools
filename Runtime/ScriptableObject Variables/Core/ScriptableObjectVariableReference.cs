@@ -2,7 +2,7 @@
 using UnityEngine;
 // ReSharper disable Unity.RedundantSerializeFieldAttribute
 
-namespace Hiralal.SOVariables.Core
+namespace HiraEngine.SOVariables.Core
 {
     public abstract class ScriptableObjectVariableReference { }
 

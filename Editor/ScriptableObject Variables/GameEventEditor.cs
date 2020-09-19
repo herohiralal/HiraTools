@@ -1,6 +1,7 @@
-﻿﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 
-namespace UnityEditor
+namespace HiraEditor.SOVariables
 {
     [CustomEditor(typeof(GameEvent))]
     public class GameEventEditor : Editor

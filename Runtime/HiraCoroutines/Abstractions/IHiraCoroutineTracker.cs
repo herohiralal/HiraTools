@@ -1,4 +1,4 @@
-﻿namespace Hiralal.CoroutineTracker
+﻿namespace HiraEngine.CoroutineTracker
 {
     public interface IHiraCoroutineTracker
     {
