@@ -15,15 +15,12 @@ namespace HiraTests.HiraEngine.Components.Blackboard
             using (var resource = Resource)
             {
                 var keyData = BlackboardTypes.GetKeyData(resource.Keys);
-                keyData.Activate();
                 var mainAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
 
                 mainAccessor.SetIntValue(IntKey, input);
 
                 var value = mainAccessor.GetIntValue(IntKey);
                 Assert.AreEqual(input, value);
-
-                keyData.Deactivate();
             }
         }
 
@@ -35,15 +32,12 @@ namespace HiraTests.HiraEngine.Components.Blackboard
             using (var resource = Resource)
             {
                 var keyData = BlackboardTypes.GetKeyData(resource.Keys);
-                keyData.Activate();
                 var mainAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
                 var hash = mainAccessor.GetHash(StringKey);
 
                 mainAccessor.SetStringValue(hash, input);
 
                 Assert.AreEqual(input, mainAccessor.GetStringValue(StringKey));
-
-                keyData.Deactivate();
             }
         }
 
@@ -54,12 +48,9 @@ namespace HiraTests.HiraEngine.Components.Blackboard
             using (var resource = Resource)
             {
                 var keyData = BlackboardTypes.GetKeyData(resource.Keys);
-                keyData.Activate();
                 var mainAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
 
                 NUnit.Framework.Assert.Throws<KeyNotFoundException>(() => mainAccessor.GetStringValue(input));
-
-                keyData.Deactivate();
             }
         }
 
@@ -70,7 +61,6 @@ namespace HiraTests.HiraEngine.Components.Blackboard
             using (var resource = Resource)
             {
                 var keyData = BlackboardTypes.GetKeyData(resource.Keys);
-                keyData.Activate();
                 var firstAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
                 var secondAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
 
@@ -78,8 +68,6 @@ namespace HiraTests.HiraEngine.Components.Blackboard
 
                 Assert.AreEqual(input, firstAccessor.GetFloatValue(FloatKeyInstanceSynced));
                 Assert.AreEqual(input, secondAccessor.GetFloatValue(FloatKeyInstanceSynced));
-
-                keyData.Deactivate();
             }
         }
 
@@ -97,14 +85,11 @@ namespace HiraTests.HiraEngine.Components.Blackboard
             using (var resource = Resource)
             {
                 var keyData = BlackboardTypes.GetKeyData(resource.Keys);
-                keyData.Activate();
                 var mainAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
 
                 keyData.ValueAccessor.SetVectorValue(VectorKeyInstanceSynced, vector);
 
                 Assert.AreEqual(vector, mainAccessor.GetVectorValue(VectorKeyInstanceSynced));
-
-                keyData.Deactivate();
             }
         }
 
@@ -114,7 +99,6 @@ namespace HiraTests.HiraEngine.Components.Blackboard
             using (var resource = Resource)
             {
                 var keyData = BlackboardTypes.GetKeyData(resource.Keys);
-                keyData.Activate();
                 var mainAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
 
                 var checkedValue = false;
@@ -123,8 +107,6 @@ namespace HiraTests.HiraEngine.Components.Blackboard
                 mainAccessor.SetBooleanValue(BooleanKey, false);
 
                 Assert.AreEqual(true, checkedValue);
-
-                keyData.Deactivate();
             }
         }
 
@@ -135,7 +117,6 @@ namespace HiraTests.HiraEngine.Components.Blackboard
             using (var resource = Resource)
             {
                 var keyData = BlackboardTypes.GetKeyData(resource.Keys);
-                keyData.Activate();
                 var mainAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
                 var secondAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
 
@@ -145,8 +126,6 @@ namespace HiraTests.HiraEngine.Components.Blackboard
                 secondAccessor.SetFloatValue(FloatKeyInstanceSynced, input);
 
                 Assert.AreEqual(true, checkedValue);
-
-                keyData.Deactivate();
             }
         }
 
@@ -158,7 +137,6 @@ namespace HiraTests.HiraEngine.Components.Blackboard
             using (var resource = Resource)
             {
                 var keyData = BlackboardTypes.GetKeyData(resource.Keys);
-                keyData.Activate();
                 var mainAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
                 var secondAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
 
@@ -166,8 +144,6 @@ namespace HiraTests.HiraEngine.Components.Blackboard
 
                 Assert.AreEqual(input, mainAccessor.GetFloatValue(FloatKey));
                 Assert.AreEqual(input, secondAccessor.GetFloatValue(FloatKey));
-
-                keyData.Deactivate();
             }
         }
     }

@@ -7,15 +7,13 @@ namespace UnityEngine
     {
         private IBlackboardKeyData _mainKeyData = null;
         
-        public void Activate()
+        public virtual void Activate()
         {
             _mainKeyData = BlackboardTypes.GetKeyData(collection);
-            _mainKeyData.Activate();
         }
 
-        public void Deactivate()
+        public virtual void Deactivate()
         {
-            _mainKeyData.Deactivate();
             _mainKeyData = null;
         }
 

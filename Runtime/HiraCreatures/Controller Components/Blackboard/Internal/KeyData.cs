@@ -6,17 +6,9 @@ namespace HiraEngine.Components.Blackboard.Internal
 {
     public class KeyData : IBlackboardKeyData
     {
-        public KeyData(SerializableBlackboardKey[] keys) => _keys = keys;
-        
-        private readonly SerializableBlackboardKey[] _keys;
-        private Dictionary<string, uint> _hashes = null;
-
-        public IReadOnlyInstanceSynchronizer InstanceSynchronizer { get; private set; }
-
-        public IBlackboardValueAccessor ValueAccessor { get; private set; }
-
-        public void Activate()
+        public KeyData(SerializableBlackboardKey[] keys)
         {
+            _keys = keys;
             IReadWriteBlackboardDataSet dataSet;
             (dataSet, _hashes) = BuildCache();
             var instanceSynchronizer = BlackboardTypes.GetSynchronizer();
@@ -24,12 +16,19 @@ namespace HiraEngine.Components.Blackboard.Internal
             ValueAccessor = BlackboardTypes.GetKeySetValueAccessor(this, dataSet, instanceSynchronizer);
         }
 
-        public void Deactivate()
+        ~KeyData()
         {
             ValueAccessor = null;
             InstanceSynchronizer = null;
             _hashes = null;
         }
+
+        private readonly SerializableBlackboardKey[] _keys;
+        private Dictionary<string, uint> _hashes = null;
+
+        public IReadOnlyInstanceSynchronizer InstanceSynchronizer { get; private set; }
+
+        public IBlackboardValueAccessor ValueAccessor { get; private set; }
 
         #region Key Data
 
