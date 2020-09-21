@@ -25,9 +25,5 @@ namespace UnityEngine
 
         public static IBlackboardValueAccessor GetMainValueAccessor(IBlackboardKeyData keyData) =>
             new MainValueAccessor(keyData);
-        
-        public static IBlackboardValue GetValue(string typeString,
-            IBlackboardValueConstructorParams constructorParams) =>
-            BlackboardValueFactory.GetValue(typeString, constructorParams);
     }
 }
