@@ -2,24 +2,7 @@
 
 namespace HiraEngine.Components.Planner.Internal
 {
-    public class StringEqualsValue :  IBlackboardQueryDefaultObject<string>
-    {
-        public StringEqualsValue(uint typeSpecificIndex, string value)
-        {
-            (_typeSpecificIndex, _value) = (typeSpecificIndex, value);
-        }
-
-        private readonly uint _typeSpecificIndex;
-        private readonly string _value;
-
-        public bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) =>
-            dataSet.GetString(_typeSpecificIndex)== _value;
-
-        public IBlackboardQuery GetNewQueryObject(uint typeSpecificIndex, string value) =>
-            new StringEqualsValue(typeSpecificIndex, value);
-    }
-
-    public class StringDoesNotEqualValue :  IBlackboardQueryDefaultObject<string>
+    public readonly struct StringDoesNotEqualValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringDoesNotEqualValue(uint typeSpecificIndex, string value)
         {
@@ -36,7 +19,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringDoesNotEqualValue(typeSpecificIndex, value);
     }
 
-    public class StringContainsValue :  IBlackboardQueryDefaultObject<string>
+    public readonly struct StringContainsValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringContainsValue(uint typeSpecificIndex, string value)
         {
@@ -53,7 +36,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringContainsValue(typeSpecificIndex, value);
     }
 
-    public class StringContainedByValue :  IBlackboardQueryDefaultObject<string>
+    public readonly struct StringContainedByValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringContainedByValue(uint typeSpecificIndex, string value)
         {
@@ -70,7 +53,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringContainedByValue(typeSpecificIndex, value);
     }
 
-    public class StringDoesNotContainValue :  IBlackboardQueryDefaultObject<string>
+    public readonly struct StringDoesNotContainValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringDoesNotContainValue(uint typeSpecificIndex, string value)
         {
@@ -87,7 +70,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringDoesNotContainValue(typeSpecificIndex, value);
     }
 
-    public class StringNotContainedByValue :  IBlackboardQueryDefaultObject<string>
+    public readonly struct StringNotContainedByValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringNotContainedByValue(uint typeSpecificIndex, string value)
         {
@@ -104,7 +87,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringNotContainedByValue(typeSpecificIndex, value);
     }
 
-    public class StringStartsWithValue :  IBlackboardQueryDefaultObject<string>
+    public readonly struct StringStartsWithValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringStartsWithValue(uint typeSpecificIndex, string value)
         {
@@ -121,7 +104,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringStartsWithValue(typeSpecificIndex, value);
     }
 
-    public class StringDoesNotStartWithValue :  IBlackboardQueryDefaultObject<string>
+    public readonly struct StringDoesNotStartWithValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringDoesNotStartWithValue(uint typeSpecificIndex, string value)
         {
@@ -138,7 +121,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringDoesNotStartWithValue(typeSpecificIndex, value);
     }
 
-    public class StringEndsWithValue :  IBlackboardQueryDefaultObject<string>
+    public readonly struct StringEndsWithValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringEndsWithValue(uint typeSpecificIndex, string value)
         {
@@ -155,7 +138,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringEndsWithValue(typeSpecificIndex, value);
     }
 
-    public class StringDoesNotEndWithValue :  IBlackboardQueryDefaultObject<string>
+    public readonly struct StringDoesNotEndWithValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringDoesNotEndWithValue(uint typeSpecificIndex, string value)
         {

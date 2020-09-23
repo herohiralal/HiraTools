@@ -2,24 +2,7 @@
 
 namespace HiraEngine.Components.Planner.Internal
 {
-    public class VectorEqualsValue : IBlackboardQueryDefaultObject<Vector3>
-    {
-        public VectorEqualsValue(uint typeSpecificIndex, Vector3 value)
-        {
-            (_typeSpecificIndex, _value) = (typeSpecificIndex, value);
-        }
-
-        private readonly uint _typeSpecificIndex;
-        private readonly Vector3 _value;
-
-        public bool IsSatisfiedBy(IReadOnlyBlackboardDataSet dataSet) =>
-            dataSet.GetVector(_typeSpecificIndex) == _value;
-
-        public IBlackboardQuery GetNewQueryObject(uint typeSpecificIndex, Vector3 value) =>
-            new VectorEqualsValue(typeSpecificIndex, value);
-    }
-
-    public class VectorDoesNotEqualValue : IBlackboardQueryDefaultObject<Vector3>
+    public readonly struct VectorDoesNotEqualValue : IBlackboardQueryDefaultObject<Vector3>
     {
         public VectorDoesNotEqualValue(uint typeSpecificIndex, Vector3 value)
         {
@@ -36,7 +19,7 @@ namespace HiraEngine.Components.Planner.Internal
             new VectorDoesNotEqualValue(typeSpecificIndex, value);
     }
 
-    public class VectorIsParallelToValue : IBlackboardQueryDefaultObject<Vector3>
+    public readonly struct VectorIsParallelToValue : IBlackboardQueryDefaultObject<Vector3>
     {
         public VectorIsParallelToValue(uint typeSpecificIndex, Vector3 value)
         {
@@ -53,7 +36,7 @@ namespace HiraEngine.Components.Planner.Internal
             new VectorIsParallelToValue(typeSpecificIndex, _value);
     }
 
-    public class VectorIsNotParallelToValue : IBlackboardQueryDefaultObject<Vector3>
+    public readonly struct VectorIsNotParallelToValue : IBlackboardQueryDefaultObject<Vector3>
     {
         public VectorIsNotParallelToValue(uint typeSpecificIndex, Vector3 value)
         {
@@ -70,7 +53,7 @@ namespace HiraEngine.Components.Planner.Internal
             new VectorIsNotParallelToValue(typeSpecificIndex, value);
     }
 
-    public class VectorIsPerpendicularToValue : IBlackboardQueryDefaultObject<Vector3>
+    public readonly struct VectorIsPerpendicularToValue : IBlackboardQueryDefaultObject<Vector3>
     {
         public VectorIsPerpendicularToValue(uint typeSpecificIndex, Vector3 value)
         {
@@ -87,7 +70,7 @@ namespace HiraEngine.Components.Planner.Internal
             new VectorIsPerpendicularToValue(typeSpecificIndex, value);
     }
 
-    public class VectorIsNotPerpendicularToValue : IBlackboardQueryDefaultObject<Vector3>
+    public readonly struct VectorIsNotPerpendicularToValue : IBlackboardQueryDefaultObject<Vector3>
     {
         public VectorIsNotPerpendicularToValue(uint typeSpecificIndex, Vector3 value)
         {
@@ -104,7 +87,7 @@ namespace HiraEngine.Components.Planner.Internal
             new VectorIsNotPerpendicularToValue(typeSpecificIndex, value);
     }
 
-    public class VectorIsAntiParallelToValue : IBlackboardQueryDefaultObject<Vector3>
+    public readonly struct VectorIsAntiParallelToValue : IBlackboardQueryDefaultObject<Vector3>
     {
         public VectorIsAntiParallelToValue(uint typeSpecificIndex, Vector3 value)
         {
@@ -121,7 +104,7 @@ namespace HiraEngine.Components.Planner.Internal
             new VectorIsAntiParallelToValue(typeSpecificIndex, value);
     }
 
-    public class VectorIsNotAntiParallelToValue : IBlackboardQueryDefaultObject<Vector3>
+    public readonly struct VectorIsNotAntiParallelToValue : IBlackboardQueryDefaultObject<Vector3>
     {
         public VectorIsNotAntiParallelToValue(uint typeSpecificIndex, Vector3 value)
         {
@@ -138,7 +121,7 @@ namespace HiraEngine.Components.Planner.Internal
             new VectorIsNotAntiParallelToValue(typeSpecificIndex, value);
     }
 
-    public class VectorHasAHigherMagnitudeThanValue : IBlackboardQueryDefaultObject<Vector3>
+    public readonly struct VectorHasAHigherMagnitudeThanValue : IBlackboardQueryDefaultObject<Vector3>
     {
         public VectorHasAHigherMagnitudeThanValue(uint typeSpecificIndex, Vector3 value)
         {
@@ -155,7 +138,7 @@ namespace HiraEngine.Components.Planner.Internal
             new VectorHasAHigherMagnitudeThanValue(typeSpecificIndex, value);
     }
 
-    public class VectorHasALowerMagnitudeThanValue : IBlackboardQueryDefaultObject<Vector3>
+    public readonly struct VectorHasALowerMagnitudeThanValue : IBlackboardQueryDefaultObject<Vector3>
     {
         public VectorHasALowerMagnitudeThanValue(uint typeSpecificIndex, Vector3 value)
         {
@@ -172,7 +155,7 @@ namespace HiraEngine.Components.Planner.Internal
             new VectorHasALowerMagnitudeThanValue(typeSpecificIndex, value);
     }
 
-    public class VectorHasTheSameMagnitudeAsValue : IBlackboardQueryDefaultObject<Vector3>
+    public readonly struct VectorHasTheSameMagnitudeAsValue : IBlackboardQueryDefaultObject<Vector3>
     {
         public VectorHasTheSameMagnitudeAsValue(uint typeSpecificIndex, Vector3 value)
         {
@@ -189,7 +172,7 @@ namespace HiraEngine.Components.Planner.Internal
             new VectorHasTheSameMagnitudeAsValue(typeSpecificIndex, value);
     }
 
-    public class VectorDoesNotHaveTheSameMagnitudeAsValue : IBlackboardQueryDefaultObject<Vector3>
+    public readonly struct VectorDoesNotHaveTheSameMagnitudeAsValue : IBlackboardQueryDefaultObject<Vector3>
     {
         public VectorDoesNotHaveTheSameMagnitudeAsValue(uint typeSpecificIndex, Vector3 value)
         {

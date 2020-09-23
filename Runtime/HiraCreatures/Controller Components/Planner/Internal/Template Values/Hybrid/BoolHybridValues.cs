@@ -2,7 +2,7 @@
 
 namespace HiraEngine.Components.Planner.Internal
 {
-    public class BoolEqualsValue : IBlackboardHybridValueDefaultObject<bool>
+    public readonly struct BoolEqualsValue : IBlackboardHybridValueDefaultObject<bool>
     {
         public BoolEqualsValue(uint typeSpecificIndex, bool value)
         {
