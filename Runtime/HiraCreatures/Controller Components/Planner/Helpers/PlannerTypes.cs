@@ -1,4 +1,5 @@
 ﻿using HiraEngine.Components.Planner;
+using HiraEngine.Components.Planner.Internal;
 
 namespace UnityEngine
 {
@@ -15,5 +16,8 @@ namespace UnityEngine
         public static IBlackboardHybridValue GetHybridValue(string typeString,
             IBlackboardValueConstructorParams constructorParams) =>
             BlackboardHybridValueFactory.GetValue(typeString, constructorParams);
+        
+        public static IPlanner<T> GetPlanner<T>(IBlackboardValueAccessor valueAccessor) where T : IAction =>
+            new Planner<T>(valueAccessor);
     }
 }

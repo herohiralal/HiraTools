@@ -12,7 +12,7 @@ namespace UnityEngine
         bool IsActive { get; }
         IPlanner<T> Initialize();
         IPlanner<T> ForGoal(IEnumerable<IBlackboardQuery> goal);
-        IPlanner<T> WithAvailableTransitions(IEnumerable<T> transitions);
+        IPlanner<T> WithAvailableTransitions(IEnumerable<T> actions);
         IPlanner<T> WithMaxFScore(float maxFScore);
         IPlanner<T> WithCancellationToken(CancellationToken ct);
         void WithCallback(PlannerCompletionCallback<T> completionCallback);
