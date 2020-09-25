@@ -39,9 +39,9 @@ namespace HiraEngine.Components.Planner.Internal
             return this;
         }
 
-        public IPlanner<T> WithAvailableTransitions(IEnumerable<T> transitions)
+        public IPlanner<T> WithAvailableTransitions(IEnumerable<T> actions)
         {
-            _actions = transitions;
+            _actions = actions;
             return this;
         }
 
@@ -94,9 +94,14 @@ namespace HiraEngine.Components.Planner.Internal
             }
 
             OnPlannerFinish(result, _plan);
+            
             _plan = null;
+            _goal = null;
+            _actions = null;
+            _maxFScore = 0f;
             OnPlannerFinish = delegate { };
             _isActive.Value = false;
+            _ct = CancellationToken.None;
         }
 
         private int Heuristic => _goal.Count(_dataSet.DoesNotSatisfy);
