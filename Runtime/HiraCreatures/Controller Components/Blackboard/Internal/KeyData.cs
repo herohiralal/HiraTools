@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace HiraEngine.Components.Blackboard.Internal
@@ -58,7 +57,7 @@ namespace HiraEngine.Components.Blackboard.Internal
                 {
                     hashes.Add(_keys[i].Name, i);
 
-                    // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+                    // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                     switch (_keys[i].KeyType)
                     {
                         case BlackboardKeyType.Bool:
@@ -76,8 +75,6 @@ namespace HiraEngine.Components.Blackboard.Internal
                         case BlackboardKeyType.Vector:
                             _keys[i].TypeSpecificIndex = vectors++;
                             break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
                     }
                 }
             }

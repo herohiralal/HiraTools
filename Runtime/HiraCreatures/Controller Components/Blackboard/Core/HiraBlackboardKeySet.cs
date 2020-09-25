@@ -1,5 +1,4 @@
-﻿using System;
-using HiraEngine.Components.Blackboard;
+﻿using HiraEngine.Components.Blackboard;
 
 namespace UnityEngine
 {
