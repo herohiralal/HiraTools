@@ -1,4 +1,5 @@
-﻿using HiraEngine.Components.Blackboard;
+﻿using System;
+using HiraEngine.Components.Blackboard;
 
 namespace UnityEngine
 {
@@ -6,16 +7,12 @@ namespace UnityEngine
     public class HiraBlackboardKeySet : HiraCollection<SerializableBlackboardKey>, IBlackboardKeyData
     {
         private IBlackboardKeyData _mainKeyData = null;
-        
-        public virtual void Activate()
-        {
-            _mainKeyData = BlackboardTypes.GetKeyData(collection);
-        }
 
-        public virtual void Deactivate()
-        {
-            _mainKeyData = null;
-        }
+        private void Awake() => UpdateCache();
+
+        private void OnValidate() => UpdateCache();
+
+        private void UpdateCache() => _mainKeyData = BlackboardTypes.GetKeyData(collection);
 
         public IReadOnlyInstanceSynchronizer InstanceSynchronizer => _mainKeyData.InstanceSynchronizer;
         public uint GetHash(in string keyName) => _mainKeyData.GetHash(keyName);
