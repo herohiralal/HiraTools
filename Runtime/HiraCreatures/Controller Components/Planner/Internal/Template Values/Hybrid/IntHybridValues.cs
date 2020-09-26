@@ -2,7 +2,7 @@
 
 namespace HiraEngine.Components.Planner.Internal
 {
-    public readonly struct IntEqualsValue : IBlackboardHybridValueDefaultObject<int>
+    public class IntEqualsValue : IBlackboardHybridValueDefaultObject<int>
     {
         public IntEqualsValue(uint typeSpecificIndex, int value) => 
             (_typeSpecificIndex, _value) = (typeSpecificIndex, value);

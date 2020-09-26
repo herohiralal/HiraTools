@@ -2,7 +2,7 @@
 
 namespace HiraEngine.Components.Planner.Internal
 {
-    public readonly struct IntDoesNotEqualValue : IBlackboardQueryDefaultObject<int>
+    public class IntDoesNotEqualValue : IBlackboardQueryDefaultObject<int>
     {
         public IntDoesNotEqualValue(uint typeSpecificIndex, int value) => 
             (_typeSpecificIndex, _value) = (typeSpecificIndex, value);
@@ -17,7 +17,7 @@ namespace HiraEngine.Components.Planner.Internal
             new IntDoesNotEqualValue(typeSpecificIndex, value);
     }
 
-    public readonly struct IntGreaterThanValue : IBlackboardQueryDefaultObject<int>
+    public class IntGreaterThanValue : IBlackboardQueryDefaultObject<int>
     {
         public IntGreaterThanValue(uint typeSpecificIndex, int value) => 
             (_typeSpecificIndex, _value) = (typeSpecificIndex, value);
@@ -32,7 +32,7 @@ namespace HiraEngine.Components.Planner.Internal
             new IntGreaterThanValue(typeSpecificIndex, value);
     }
 
-    public readonly struct IntGreaterThanOrEqualToValue : IBlackboardQueryDefaultObject<int>
+    public class IntGreaterThanOrEqualToValue : IBlackboardQueryDefaultObject<int>
     {
         public IntGreaterThanOrEqualToValue(uint typeSpecificIndex, int value) => 
             (_typeSpecificIndex, _value) = (typeSpecificIndex, value);
@@ -47,7 +47,7 @@ namespace HiraEngine.Components.Planner.Internal
             new IntGreaterThanOrEqualToValue(typeSpecificIndex, value);
     }
 
-    public readonly struct IntLesserThanValue : IBlackboardQueryDefaultObject<int>
+    public class IntLesserThanValue : IBlackboardQueryDefaultObject<int>
     {
         public IntLesserThanValue(uint typeSpecificIndex, int value) => 
             (_typeSpecificIndex, _value) = (typeSpecificIndex, value);
@@ -62,7 +62,7 @@ namespace HiraEngine.Components.Planner.Internal
             new IntLesserThanValue(typeSpecificIndex, value);
     }
 
-    public readonly struct IntLesserThanOrEqualToValue : IBlackboardQueryDefaultObject<int>
+    public class IntLesserThanOrEqualToValue : IBlackboardQueryDefaultObject<int>
     {
         public IntLesserThanOrEqualToValue(uint typeSpecificIndex, int value) => 
             (_typeSpecificIndex, _value) = (typeSpecificIndex, value);

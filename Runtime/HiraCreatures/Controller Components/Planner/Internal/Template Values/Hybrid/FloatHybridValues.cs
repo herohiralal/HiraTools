@@ -2,7 +2,7 @@
 
 namespace HiraEngine.Components.Planner.Internal
 {
-    public readonly struct FloatEqualsValue : IBlackboardHybridValueDefaultObject<float>
+    public class FloatEqualsValue : IBlackboardHybridValueDefaultObject<float>
     {
         public FloatEqualsValue(uint typeSpecificIndex, float value) => 
             (_typeSpecificIndex, _value) = (typeSpecificIndex, value);

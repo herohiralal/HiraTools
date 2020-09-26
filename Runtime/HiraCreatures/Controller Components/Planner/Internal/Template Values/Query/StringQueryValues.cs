@@ -2,7 +2,7 @@
 
 namespace HiraEngine.Components.Planner.Internal
 {
-    public readonly struct StringDoesNotEqualValue :  IBlackboardQueryDefaultObject<string>
+    public class StringDoesNotEqualValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringDoesNotEqualValue(uint typeSpecificIndex, string value)
         {
@@ -19,7 +19,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringDoesNotEqualValue(typeSpecificIndex, value);
     }
 
-    public readonly struct StringContainsValue :  IBlackboardQueryDefaultObject<string>
+    public class StringContainsValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringContainsValue(uint typeSpecificIndex, string value)
         {
@@ -36,7 +36,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringContainsValue(typeSpecificIndex, value);
     }
 
-    public readonly struct StringContainedByValue :  IBlackboardQueryDefaultObject<string>
+    public class StringContainedByValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringContainedByValue(uint typeSpecificIndex, string value)
         {
@@ -53,7 +53,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringContainedByValue(typeSpecificIndex, value);
     }
 
-    public readonly struct StringDoesNotContainValue :  IBlackboardQueryDefaultObject<string>
+    public class StringDoesNotContainValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringDoesNotContainValue(uint typeSpecificIndex, string value)
         {
@@ -70,7 +70,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringDoesNotContainValue(typeSpecificIndex, value);
     }
 
-    public readonly struct StringNotContainedByValue :  IBlackboardQueryDefaultObject<string>
+    public class StringNotContainedByValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringNotContainedByValue(uint typeSpecificIndex, string value)
         {
@@ -87,7 +87,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringNotContainedByValue(typeSpecificIndex, value);
     }
 
-    public readonly struct StringStartsWithValue :  IBlackboardQueryDefaultObject<string>
+    public class StringStartsWithValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringStartsWithValue(uint typeSpecificIndex, string value)
         {
@@ -104,7 +104,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringStartsWithValue(typeSpecificIndex, value);
     }
 
-    public readonly struct StringDoesNotStartWithValue :  IBlackboardQueryDefaultObject<string>
+    public class StringDoesNotStartWithValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringDoesNotStartWithValue(uint typeSpecificIndex, string value)
         {
@@ -121,7 +121,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringDoesNotStartWithValue(typeSpecificIndex, value);
     }
 
-    public readonly struct StringEndsWithValue :  IBlackboardQueryDefaultObject<string>
+    public class StringEndsWithValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringEndsWithValue(uint typeSpecificIndex, string value)
         {
@@ -138,7 +138,7 @@ namespace HiraEngine.Components.Planner.Internal
             new StringEndsWithValue(typeSpecificIndex, value);
     }
 
-    public readonly struct StringDoesNotEndWithValue :  IBlackboardQueryDefaultObject<string>
+    public class StringDoesNotEndWithValue :  IBlackboardQueryDefaultObject<string>
     {
         public StringDoesNotEndWithValue(uint typeSpecificIndex, string value)
         {
