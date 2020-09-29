@@ -43,6 +43,8 @@ namespace UnityEngine
 
         public static IBlackboardModification GetValue(string typeString, IBlackboardValueConstructorParams constructorParams)
         {
+            if (string.IsNullOrWhiteSpace(typeString)) return null;
+            
             if (bool_default_objects.ContainsKey(typeString))
                 return bool_default_objects[typeString]
                     .GetNewModificationObject(constructorParams.TypeSpecificIndex, constructorParams.BoolValue);
