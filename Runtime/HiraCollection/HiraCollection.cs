@@ -10,6 +10,8 @@ namespace UnityEngine
         [SerializeField] protected T[] collection = null;
         public Type CollectionType => typeof(T);
 
+        public void Setup(T[] inCollection) => collection = inCollection;
+
         public IEnumerator<T> GetEnumerator() => (IEnumerator<T>) collection.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

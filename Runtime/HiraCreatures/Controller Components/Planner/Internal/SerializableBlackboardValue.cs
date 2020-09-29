@@ -6,6 +6,28 @@ namespace HiraEngine.Components.Planner.Internal
     [Serializable]
     public abstract class SerializableBlackboardValue : IBlackboardValueConstructorParams
     {
+        protected SerializableBlackboardValue()
+        {
+        }
+
+        public void Setup<T>(HiraBlackboardKeySet inKeySet,
+            SerializableBlackboardKey inKey,
+            BoolReference inBoolValue = default,
+            FloatReference inFloatValue = default,
+            IntReference inIntValue = default,
+            StringReference inStringValue = default,
+            Vector3Reference inVectorValue = default)
+        {
+            keySet = inKeySet;
+            key = inKey;
+            boolValue = inBoolValue;
+            floatValue = inFloatValue;
+            intValue = inIntValue;
+            stringValue = inStringValue;
+            vectorValue = inVectorValue;
+            typeString = typeof(T).GetReflectionName();
+        }
+
         [SerializeField] private HiraBlackboardKeySet keySet = null;
 
         public HiraBlackboardKeySet KeySet
