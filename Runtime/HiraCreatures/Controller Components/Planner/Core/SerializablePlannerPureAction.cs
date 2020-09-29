@@ -10,9 +10,9 @@ namespace UnityEngine
         private IBlackboardModification[] _effects = null;
         public override IReadOnlyList<IBlackboardModification> Effects => _effects;
 
-        protected override void UpdateCache()
+        public override void Initialize()
         {
-            base.UpdateCache();
+            base.Initialize();
             var effectsEnumerable = effects.Select(sbm => sbm.Modification);
             _effects = effectsEnumerable is IBlackboardModification[] effectsArray
                 ? effectsArray

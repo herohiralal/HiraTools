@@ -13,9 +13,9 @@ namespace UnityEngine
         public override IReadOnlyList<IBlackboardQuery> Targets => _targetableEffects;
         public override IReadOnlyList<IBlackboardModification> Effects => _targetableEffects;
 
-        protected override void UpdateCache()
+        public override void Initialize()
         {
-            base.UpdateCache();
+            base.Initialize();
             var targetableEffectsEnumerable = targetableEffects.Select(sbh => sbh.HybridValue);
             _targetableEffects = targetableEffectsEnumerable is IBlackboardHybridValue[] targetableEffectsArray
                 ? targetableEffectsArray

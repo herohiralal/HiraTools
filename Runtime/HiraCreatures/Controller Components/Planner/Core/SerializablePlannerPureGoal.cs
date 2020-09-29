@@ -10,9 +10,9 @@ namespace UnityEngine
         private IBlackboardQuery[] _targets = null;
         public override IReadOnlyList<IBlackboardQuery> Targets => _targets;
 
-        protected override void UpdateCache()
+        public override void Initialize()
         {
-            base.UpdateCache();
+            base.Initialize();
             var targetsEnumerable = target.Select(sbq => sbq.Query);
             _targets = targetsEnumerable is IBlackboardQuery[] targetsArray
                 ? targetsArray
