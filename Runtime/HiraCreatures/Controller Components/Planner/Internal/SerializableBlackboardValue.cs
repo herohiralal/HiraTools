@@ -6,10 +6,6 @@ namespace HiraEngine.Components.Planner.Internal
     [Serializable]
     public abstract class SerializableBlackboardValue : IBlackboardValueConstructorParams
     {
-        protected SerializableBlackboardValue()
-        {
-        }
-
         public void Setup<T>(HiraBlackboardKeySet inKeySet,
             SerializableBlackboardKey inKey,
             BoolReference inBoolValue = default,
