@@ -30,6 +30,7 @@ namespace UnityEngine
     {
         IReadOnlyList<IBlackboardQuery> Preconditions { get; }
         IReadOnlyList<IBlackboardModification> Effects { get; }
+        void BuildPrePlanCache();
         float Cost { get; }
     }
     public interface IBlackboardQuery

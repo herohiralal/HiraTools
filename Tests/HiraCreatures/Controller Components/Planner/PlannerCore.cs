@@ -21,7 +21,7 @@ namespace HiraTests.HiraEngine.Components.Planner
                 var planner = PlannerTypes.GetPlanner<Action>(keySet.Value.ValueAccessor);
                 planner.Initialize()
                     .ForGoal(keySet.GetOpenDoorGoal())
-                    .WithAvailableTransitions(new []
+                    .WithAvailableTransitions(new[]
                     {
                         keySet.GetOpenDoorAction(1),
                         keySet.GetGetKeyAction(1),
@@ -33,14 +33,15 @@ namespace HiraTests.HiraEngine.Components.Planner
                     .WithCallback((result, plan) =>
                     {
                         Assert.AreEqual(PlannerResult.Success, result);
-                        
-                        Assert.AreEqual(OpenBreakDoorKeySet.PickupKeyActionName, plan[0].Name);
-                        Assert.AreEqual(OpenBreakDoorKeySet.OpenDoorActionName, plan[1].Name);
+
+                        Assert.AreEqual(OpenBreakDoorKeySet.PICKUP_KEY_ACTION_NAME, plan[0].Name);
+                        Assert.AreEqual(OpenBreakDoorKeySet.OPEN_DOOR_ACTION_NAME, plan[1].Name);
                     });
-                
+
                 planner.GeneratePlan();
             }
         }
+
         [Test]
         public void inverted_open_break_door_test()
         {
@@ -49,7 +50,7 @@ namespace HiraTests.HiraEngine.Components.Planner
                 var planner = PlannerTypes.GetPlanner<Action>(keySet.Value.ValueAccessor);
                 planner.Initialize()
                     .ForGoal(keySet.GetOpenDoorGoal())
-                    .WithAvailableTransitions(new []
+                    .WithAvailableTransitions(new[]
                     {
                         keySet.GetOpenDoorAction(10),
                         keySet.GetGetKeyAction(1),
@@ -61,11 +62,11 @@ namespace HiraTests.HiraEngine.Components.Planner
                     .WithCallback((result, plan) =>
                     {
                         Assert.AreEqual(PlannerResult.Success, result);
-                        
-                        Assert.AreEqual(OpenBreakDoorKeySet.PickupCrowbarActionName, plan[0].Name);
-                        Assert.AreEqual(OpenBreakDoorKeySet.BreakDoorActionName, plan[1].Name);
+
+                        Assert.AreEqual(OpenBreakDoorKeySet.PICKUP_CROWBAR_ACTION_NAME, plan[0].Name);
+                        Assert.AreEqual(OpenBreakDoorKeySet.BREAK_DOOR_ACTION_NAME, plan[1].Name);
                     });
-                
+
                 planner.GeneratePlan();
             }
         }
@@ -78,7 +79,7 @@ namespace HiraTests.HiraEngine.Components.Planner
                 var planner = PlannerTypes.GetPlanner<Action>(keySet.Value.ValueAccessor);
                 planner.Initialize()
                     .ForGoal(keySet.GetOpenDoorGoal())
-                    .WithAvailableTransitions(new []
+                    .WithAvailableTransitions(new[]
                     {
                         keySet.GetOpenDoorAction(10),
                         keySet.GetGetKeyAction(1),
@@ -91,22 +92,21 @@ namespace HiraTests.HiraEngine.Components.Planner
                     .WithCallback((result, plan) =>
                     {
                         Assert.AreEqual(PlannerResult.Success, result);
-                        
+
                         try
                         {
-                            Assert.AreEqual(OpenBreakDoorKeySet.PickupCrowbarActionName, plan[0].Name);
-                            Assert.AreEqual(OpenBreakDoorKeySet.DrinkWaterActionName, plan[1].Name);
+                            Assert.AreEqual(OpenBreakDoorKeySet.PICKUP_CROWBAR_ACTION_NAME, plan[0].Name);
+                            Assert.AreEqual(OpenBreakDoorKeySet.DRINK_WATER_ACTION_NAME, plan[1].Name);
                         }
                         catch (AssertionException)
                         {
-                            
-                            Assert.AreEqual(OpenBreakDoorKeySet.DrinkWaterActionName, plan[0].Name);
-                            Assert.AreEqual(OpenBreakDoorKeySet.PickupCrowbarActionName, plan[1].Name);
+                            Assert.AreEqual(OpenBreakDoorKeySet.DRINK_WATER_ACTION_NAME, plan[0].Name);
+                            Assert.AreEqual(OpenBreakDoorKeySet.PICKUP_CROWBAR_ACTION_NAME, plan[1].Name);
                         }
 
-                        Assert.AreEqual(OpenBreakDoorKeySet.BreakDoorActionName, plan[2].Name);
+                        Assert.AreEqual(OpenBreakDoorKeySet.BREAK_DOOR_ACTION_NAME, plan[2].Name);
                     });
-                
+
                 planner.GeneratePlan();
             }
         }
@@ -114,12 +114,12 @@ namespace HiraTests.HiraEngine.Components.Planner
 
     internal class OpenBreakDoorKeySet : IDisposable
     {
-        public const string OpenDoorActionName = "Open Door";
-        public const string BreakDoorActionName = "Break Door";
-        public const string PickupKeyActionName = "Pickup Key";
-        public const string PickupCrowbarActionName = "Pickup Crowbar";
-        public const string DrinkWaterActionName = "Drink Water";
-        
+        public const string OPEN_DOOR_ACTION_NAME = "Open Door";
+        public const string BREAK_DOOR_ACTION_NAME = "Break Door";
+        public const string PICKUP_KEY_ACTION_NAME = "Pickup Key";
+        public const string PICKUP_CROWBAR_ACTION_NAME = "Pickup Crowbar";
+        public const string DRINK_WATER_ACTION_NAME = "Drink Water";
+
         public OpenBreakDoorKeySet()
         {
             DoorOpenKey = ScriptableObject.CreateInstance<SerializableBlackboardKey>();
@@ -168,7 +168,7 @@ namespace HiraTests.HiraEngine.Components.Planner
             var effect = new SerializableBlackboardModification();
             effect.Setup<BoolEqualsValue>(Value, HasKeyKey, new BoolReference(true));
 
-            return new Action(PickupKeyActionName, new[] {precondition.Query}, new[] {effect.Modification}, cost);
+            return new Action(PICKUP_KEY_ACTION_NAME, new[] {precondition.Query}, new[] {effect.Modification}, cost);
         }
 
         public Action GetGetCrowbarAction(float cost)
@@ -179,7 +179,7 @@ namespace HiraTests.HiraEngine.Components.Planner
             var effect = new SerializableBlackboardModification();
             effect.Setup<BoolEqualsValue>(Value, HasCrowbarKey, new BoolReference(true));
 
-            return new Action(PickupCrowbarActionName, new[] {precondition.Query}, new[] {effect.Modification}, cost);
+            return new Action(PICKUP_CROWBAR_ACTION_NAME, new[] {precondition.Query}, new[] {effect.Modification}, cost);
         }
 
         public Action GetOpenDoorAction(float cost)
@@ -193,7 +193,7 @@ namespace HiraTests.HiraEngine.Components.Planner
             var effect = new SerializableBlackboardModification();
             effect.Setup<BoolEqualsValue>(Value, DoorOpenKey, new BoolReference(true));
 
-            return new Action(OpenDoorActionName, new[] {precondition1.Query, precondition2.Query},
+            return new Action(OPEN_DOOR_ACTION_NAME, new[] {precondition1.Query, precondition2.Query},
                 new[] {effect.Modification}, cost);
         }
 
@@ -201,8 +201,8 @@ namespace HiraTests.HiraEngine.Components.Planner
         {
             var effect = new SerializableBlackboardModification();
             effect.Setup<BoolEqualsValue>(Value, HasStaminaKey, new BoolReference(true));
-            
-            return new Action(DrinkWaterActionName, new IBlackboardQuery[0], new[] {effect.Modification}, cost);
+
+            return new Action(DRINK_WATER_ACTION_NAME, new IBlackboardQuery[0], new[] {effect.Modification}, cost);
         }
 
         public Action GetBreakDoorActionRequiringStamina(float cost)
@@ -212,14 +212,15 @@ namespace HiraTests.HiraEngine.Components.Planner
 
             var precondition2 = new SerializableBlackboardQuery();
             precondition2.Setup<BoolEqualsValue>(Value, DoorOpenKey, new BoolReference(false));
-            
+
             var precondition3 = new SerializableBlackboardQuery();
             precondition3.Setup<BoolEqualsValue>(Value, HasStaminaKey, new BoolReference(true));
 
             var effect = new SerializableBlackboardModification();
             effect.Setup<BoolEqualsValue>(Value, DoorOpenKey, new BoolReference(true));
 
-            return new Action(BreakDoorActionName, new[] {precondition1.Query, precondition2.Query, precondition3.Query},
+            return new Action(BREAK_DOOR_ACTION_NAME,
+                new[] {precondition1.Query, precondition2.Query, precondition3.Query},
                 new[] {effect.Modification}, cost);
         }
 
@@ -234,7 +235,7 @@ namespace HiraTests.HiraEngine.Components.Planner
             var effect = new SerializableBlackboardModification();
             effect.Setup<BoolEqualsValue>(Value, DoorOpenKey, new BoolReference(true));
 
-            return new Action(BreakDoorActionName, new[] {precondition1.Query, precondition2.Query},
+            return new Action(BREAK_DOOR_ACTION_NAME, new[] {precondition1.Query, precondition2.Query},
                 new[] {effect.Modification}, cost);
         }
     }
@@ -253,6 +254,11 @@ namespace HiraTests.HiraEngine.Components.Planner
         public string Name { get; }
         public IReadOnlyList<IBlackboardQuery> Preconditions { get; }
         public IReadOnlyList<IBlackboardModification> Effects { get; }
+
+        public void BuildPrePlanCache()
+        {
+        }
+
         public float Cost { get; }
     }
 }

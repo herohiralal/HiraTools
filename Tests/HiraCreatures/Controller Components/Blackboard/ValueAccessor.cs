@@ -17,9 +17,9 @@ namespace HiraTests.HiraEngine.Components.Blackboard
                 var keyData = BlackboardTypes.GetKeyData(resource.Keys);
                 var mainAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
 
-                mainAccessor.SetIntValue(IntKey, input);
+                mainAccessor.SetIntValue(INT_KEY, input);
 
-                var value = mainAccessor.GetIntValue(IntKey);
+                var value = mainAccessor.GetIntValue(INT_KEY);
                 Assert.AreEqual(input, value);
             }
         }
@@ -33,11 +33,11 @@ namespace HiraTests.HiraEngine.Components.Blackboard
             {
                 var keyData = BlackboardTypes.GetKeyData(resource.Keys);
                 var mainAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
-                var hash = mainAccessor.GetHash(StringKey);
+                var hash = mainAccessor.GetHash(STRING_KEY);
 
                 mainAccessor.SetStringValue(hash, input);
 
-                Assert.AreEqual(input, mainAccessor.GetStringValue(StringKey));
+                Assert.AreEqual(input, mainAccessor.GetStringValue(STRING_KEY));
             }
         }
 
@@ -64,10 +64,10 @@ namespace HiraTests.HiraEngine.Components.Blackboard
                 var firstAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
                 var secondAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
 
-                firstAccessor.SetFloatValue(FloatKeyInstanceSynced, input);
+                firstAccessor.SetFloatValue(FLOAT_KEY_INSTANCE_SYNCED, input);
 
-                Assert.AreEqual(input, firstAccessor.GetFloatValue(FloatKeyInstanceSynced));
-                Assert.AreEqual(input, secondAccessor.GetFloatValue(FloatKeyInstanceSynced));
+                Assert.AreEqual(input, firstAccessor.GetFloatValue(FLOAT_KEY_INSTANCE_SYNCED));
+                Assert.AreEqual(input, secondAccessor.GetFloatValue(FLOAT_KEY_INSTANCE_SYNCED));
             }
         }
 
@@ -87,9 +87,9 @@ namespace HiraTests.HiraEngine.Components.Blackboard
                 var keyData = BlackboardTypes.GetKeyData(resource.Keys);
                 var mainAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
 
-                keyData.ValueAccessor.SetVectorValue(VectorKeyInstanceSynced, vector);
+                keyData.ValueAccessor.SetVectorValue(VECTOR_KEY_INSTANCE_SYNCED, vector);
 
-                Assert.AreEqual(vector, mainAccessor.GetVectorValue(VectorKeyInstanceSynced));
+                Assert.AreEqual(vector, mainAccessor.GetVectorValue(VECTOR_KEY_INSTANCE_SYNCED));
             }
         }
 
@@ -104,7 +104,7 @@ namespace HiraTests.HiraEngine.Components.Blackboard
                 var checkedValue = false;
                 mainAccessor.OnValueUpdate += () => checkedValue = true;
 
-                mainAccessor.SetBooleanValue(BooleanKey, false);
+                mainAccessor.SetBooleanValue(BOOLEAN_KEY, false);
 
                 Assert.AreEqual(true, checkedValue);
             }
@@ -123,7 +123,7 @@ namespace HiraTests.HiraEngine.Components.Blackboard
                 var checkedValue = false;
                 mainAccessor.OnValueUpdate += () => checkedValue = true;
 
-                secondAccessor.SetFloatValue(FloatKeyInstanceSynced, input);
+                secondAccessor.SetFloatValue(FLOAT_KEY_INSTANCE_SYNCED, input);
 
                 Assert.AreEqual(true, checkedValue);
             }
@@ -140,10 +140,10 @@ namespace HiraTests.HiraEngine.Components.Blackboard
                 var mainAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
                 var secondAccessor = BlackboardTypes.GetMainValueAccessor(keyData);
 
-                keyData.ValueAccessor.SetFloatValue(FloatKey, input);
+                keyData.ValueAccessor.SetFloatValue(FLOAT_KEY, input);
 
-                Assert.AreEqual(input, mainAccessor.GetFloatValue(FloatKey));
-                Assert.AreEqual(input, secondAccessor.GetFloatValue(FloatKey));
+                Assert.AreEqual(input, mainAccessor.GetFloatValue(FLOAT_KEY));
+                Assert.AreEqual(input, secondAccessor.GetFloatValue(FLOAT_KEY));
             }
         }
     }

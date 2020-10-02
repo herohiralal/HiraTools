@@ -6,24 +6,24 @@ namespace HiraTests.HiraEngine.Components.Blackboard
 {
     public static class BlackboardTestsCommon
     {
-        internal const string BooleanKey = "Boolean";
-        internal const string FloatKey = "Float";
-        internal const string IntKey = "Integer";
-        internal const string StringKey = "String";
-        internal const string VectorKey = "Vector";
-        internal const string FloatKeyInstanceSynced = "InstanceSyncedFloat";
-        internal const string VectorKeyInstanceSynced = "InstanceSyncedVector";
+        internal const string BOOLEAN_KEY = "Boolean";
+        internal const string FLOAT_KEY = "Float";
+        internal const string INT_KEY = "Integer";
+        internal const string STRING_KEY = "String";
+        internal const string VECTOR_KEY = "Vector";
+        internal const string FLOAT_KEY_INSTANCE_SYNCED = "InstanceSyncedFloat";
+        internal const string VECTOR_KEY_INSTANCE_SYNCED = "InstanceSyncedVector";
 
         private static SerializableBlackboardKey[] Keys =>
             new[]
             {
-                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(BooleanKey, BlackboardKeyType.Bool, false),
-                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(FloatKey, BlackboardKeyType.Float, false),
-                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(IntKey, BlackboardKeyType.Int, false),
-                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(StringKey, BlackboardKeyType.String, false),
-                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(VectorKey, BlackboardKeyType.Vector, false),
-                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(FloatKeyInstanceSynced, BlackboardKeyType.Float, true),
-                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(VectorKeyInstanceSynced, BlackboardKeyType.Vector, true)
+                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(BOOLEAN_KEY, BlackboardKeyType.Bool, false),
+                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(FLOAT_KEY, BlackboardKeyType.Float, false),
+                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(INT_KEY, BlackboardKeyType.Int, false),
+                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(STRING_KEY, BlackboardKeyType.String, false),
+                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(VECTOR_KEY, BlackboardKeyType.Vector, false),
+                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(FLOAT_KEY_INSTANCE_SYNCED, BlackboardKeyType.Float, true),
+                ScriptableObject.CreateInstance<SerializableBlackboardKey>().Setup(VECTOR_KEY_INSTANCE_SYNCED, BlackboardKeyType.Vector, true)
             };
 
         internal static KeysResource Resource => new KeysResource(Keys);

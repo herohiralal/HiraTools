@@ -42,6 +42,7 @@ namespace HiraEngine.Components.Planner.Internal
         public IPlanner<T> WithAvailableTransitions(IEnumerable<T> actions)
         {
             _actions = actions;
+            foreach (var action in _actions) action.BuildPrePlanCache();
             return this;
         }
 
