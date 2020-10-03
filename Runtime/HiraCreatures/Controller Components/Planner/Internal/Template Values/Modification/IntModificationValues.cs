@@ -21,6 +21,8 @@ namespace HiraEngine.Components.Planner.Internal
             return new IntEqualsValue(_typeSpecificIndex, original);
         }
 
+        public void Apply(IReadWriteBlackboardDataSet dataSet) => dataSet.Integers[_typeSpecificIndex] += _value;
+
         public void ApplyTo(IBlackboardValueAccessor valueAccessor)
         {
             var value = valueAccessor.GetIntValueWithTypeSpecificIndex(_typeSpecificIndex);
@@ -45,6 +47,8 @@ namespace HiraEngine.Components.Planner.Internal
             dataSet.Integers[_typeSpecificIndex] *= _value;
             return new IntEqualsValue(_typeSpecificIndex, original);
         }
+
+        public void Apply(IReadWriteBlackboardDataSet dataSet) => dataSet.Integers[_typeSpecificIndex] *= _value;
 
         public void ApplyTo(IBlackboardValueAccessor valueAccessor)
         {

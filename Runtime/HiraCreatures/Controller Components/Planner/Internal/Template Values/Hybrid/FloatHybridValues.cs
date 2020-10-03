@@ -22,6 +22,8 @@ namespace HiraEngine.Components.Planner.Internal
         public IBlackboardModification GetNewModificationObject(uint typeSpecificIndex, float value) => 
             new FloatEqualsValue(typeSpecificIndex, value);
 
+        public void Apply(IReadWriteBlackboardDataSet dataSet) => dataSet.Floats[_typeSpecificIndex] = _value;
+
         public IBlackboardModification ApplyTo(IReadWriteBlackboardDataSet dataSet)
         {
             var original = dataSet.Floats[_typeSpecificIndex];

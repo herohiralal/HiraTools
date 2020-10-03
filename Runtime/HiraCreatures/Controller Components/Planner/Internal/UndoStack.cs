@@ -5,6 +5,7 @@ namespace HiraEngine.Components.Planner.Internal
 {
     public readonly struct UndoStack
     {
+        // TODO: Get rid of this class.
         public UndoStack(IReadOnlyList<IBlackboardModification> stack) => _stack = stack;
         private readonly IReadOnlyList<IBlackboardModification> _stack;
 

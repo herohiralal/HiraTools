@@ -18,7 +18,7 @@ namespace HiraTests.HiraEngine.Components.Planner
         {
             using (var keySet = new OpenBreakDoorKeySet())
             {
-                var planner = PlannerTypes.GetPlanner<Action>(keySet.Value.ValueAccessor);
+                var planner = PlannerTypes.GetPlanner<Action>(keySet.Value.ValueAccessor, 10);
                 planner.Initialize()
                     .ForGoal(keySet.GetOpenDoorGoal())
                     .WithAvailableTransitions(new[]
@@ -47,7 +47,7 @@ namespace HiraTests.HiraEngine.Components.Planner
         {
             using (var keySet = new OpenBreakDoorKeySet())
             {
-                var planner = PlannerTypes.GetPlanner<Action>(keySet.Value.ValueAccessor);
+                var planner = PlannerTypes.GetPlanner<Action>(keySet.Value.ValueAccessor, 5);
                 planner.Initialize()
                     .ForGoal(keySet.GetOpenDoorGoal())
                     .WithAvailableTransitions(new[]
@@ -76,7 +76,7 @@ namespace HiraTests.HiraEngine.Components.Planner
         {
             using (var keySet = new OpenBreakDoorKeySet())
             {
-                var planner = PlannerTypes.GetPlanner<Action>(keySet.Value.ValueAccessor);
+                var planner = PlannerTypes.GetPlanner<Action>(keySet.Value.ValueAccessor, 10);
                 planner.Initialize()
                     .ForGoal(keySet.GetOpenDoorGoal())
                     .WithAvailableTransitions(new[]

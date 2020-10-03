@@ -17,7 +17,7 @@ namespace UnityEngine
             IBlackboardValueConstructorParams constructorParams) =>
             BlackboardHybridValueFactory.GetValue(typeString, constructorParams);
         
-        public static IPlanner<T> GetPlanner<T>(IBlackboardValueAccessor valueAccessor) where T : IAction =>
-            new Planner<T>(valueAccessor);
+        public static IPlanner<T> GetPlanner<T>(IBlackboardValueAccessor valueAccessor, byte length) where T : IAction =>
+            new Planner<T>(valueAccessor, length);
     }
 }
