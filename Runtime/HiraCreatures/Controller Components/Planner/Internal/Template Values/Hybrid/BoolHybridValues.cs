@@ -30,5 +30,8 @@ namespace HiraEngine.Components.Planner.Internal
             dataSet.Booleans[_typeSpecificIndex] = _value;
             return new BoolEqualsValue(_typeSpecificIndex, original);
         }
+
+        public void ApplyTo(IBlackboardValueAccessor valueAccessor) => 
+            valueAccessor.SetBooleanValueWithTypeSpecificIndex(_typeSpecificIndex, _value);
     }
 }

@@ -28,5 +28,8 @@ namespace HiraEngine.Components.Planner.Internal
             dataSet.Strings[_typeSpecificIndex] = _value;
             return new StringEqualsValue(_typeSpecificIndex, original);
         }
+
+        public void ApplyTo(IBlackboardValueAccessor valueAccessor) => 
+            valueAccessor.SetStringValueWithTypeSpecificIndex(_typeSpecificIndex, _value);
     }
 }

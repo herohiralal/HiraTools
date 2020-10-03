@@ -28,5 +28,8 @@ namespace HiraEngine.Components.Planner.Internal
             dataSet.Floats[_typeSpecificIndex] = _value;
             return new FloatEqualsValue(_typeSpecificIndex, original);
         }
+
+        public void ApplyTo(IBlackboardValueAccessor valueAccessor) => 
+            valueAccessor.SetFloatValueWithTypeSpecificIndex(_typeSpecificIndex, _value);
     }
 }

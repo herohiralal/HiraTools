@@ -51,8 +51,6 @@ namespace UnityEditor
                 onAddCallback = OnAddCallback,
                 onChangedCallback = OnChangedCallback,
                 onRemoveCallback = OnRemoveCallback,
-                // onReorderCallback = OnReorderCallback,
-                // onReorderCallbackWithDetails = OnReorderCallbackWithDetails,
                 drawNoneElementCallback = OnNoneElementCallback,
                 onAddDropdownCallback = OnAddDropDownCallback,
                 onCanAddCallback = OnCanAddCallback,
@@ -104,26 +102,6 @@ namespace UnityEditor
             }
 
             CollectionProperty.DeleteArrayElementAtIndex(list.index);
-            serializedObject.ApplyModifiedProperties();
-        }
-
-        protected virtual void OnReorderCallback(ReorderableList list)
-        {
-            serializedObject.ApplyModifiedProperties();
-        }
-
-        private void OnReorderCallbackWithDetails(ReorderableList list, int oldIndex, int newIndex)
-        {
-            var current = ObjectAtIndex(oldIndex);
-
-            if (oldIndex < newIndex)
-                for (var i = oldIndex; i < newIndex; i++)
-                    ElementAtIndex(i).objectReferenceValue = ObjectAtIndex(i + 1);
-            else
-                for (var i = oldIndex; i > newIndex; i--)
-                    ElementAtIndex(i).objectReferenceValue = ObjectAtIndex(i - 1);
-
-            ElementAtIndex(newIndex).objectReferenceValue = current;
             serializedObject.ApplyModifiedProperties();
         }
 

@@ -41,5 +41,6 @@ namespace UnityEngine
     public interface IBlackboardModification
     {
         IBlackboardModification ApplyTo(IReadWriteBlackboardDataSet dataSet);
+        void ApplyTo(IBlackboardValueAccessor valueAccessor);
     }
 }

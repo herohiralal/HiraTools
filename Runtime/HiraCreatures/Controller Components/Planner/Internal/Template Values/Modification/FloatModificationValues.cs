@@ -20,6 +20,12 @@ namespace HiraEngine.Components.Planner.Internal
             dataSet.Floats[_typeSpecificIndex] += _value;
             return new FloatEqualsValue(_typeSpecificIndex, original);
         }
+
+        public void ApplyTo(IBlackboardValueAccessor valueAccessor)
+        {
+            var value = valueAccessor.GetFloatValueWithTypeSpecificIndex(_typeSpecificIndex);
+            valueAccessor.SetFloatValueWithTypeSpecificIndex(_typeSpecificIndex, value + _value);
+        }
     }
 
     public class FloatMultipliedByValue : IBlackboardModificationDefaultObject<float>
@@ -38,6 +44,12 @@ namespace HiraEngine.Components.Planner.Internal
             var original = dataSet.Floats[_typeSpecificIndex];
             dataSet.Floats[_typeSpecificIndex] *= _value;
             return new FloatEqualsValue(_typeSpecificIndex, original);
+        }
+
+        public void ApplyTo(IBlackboardValueAccessor valueAccessor)
+        {
+            var value = valueAccessor.GetFloatValueWithTypeSpecificIndex(_typeSpecificIndex);
+            valueAccessor.SetFloatValueWithTypeSpecificIndex(_typeSpecificIndex, value * _value);
         }
     }
 }

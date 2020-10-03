@@ -20,6 +20,12 @@ namespace HiraEngine.Components.Planner.Internal
             dataSet.Integers[_typeSpecificIndex] += _value;
             return new IntEqualsValue(_typeSpecificIndex, original);
         }
+
+        public void ApplyTo(IBlackboardValueAccessor valueAccessor)
+        {
+            var value = valueAccessor.GetIntValueWithTypeSpecificIndex(_typeSpecificIndex);
+            valueAccessor.SetIntValueWithTypeSpecificIndex(_typeSpecificIndex, value + _value);
+        }
     }
 
     public class IntMultipliedByValue : IBlackboardModificationDefaultObject<int>
@@ -38,6 +44,12 @@ namespace HiraEngine.Components.Planner.Internal
             var original = dataSet.Integers[_typeSpecificIndex];
             dataSet.Integers[_typeSpecificIndex] *= _value;
             return new IntEqualsValue(_typeSpecificIndex, original);
+        }
+
+        public void ApplyTo(IBlackboardValueAccessor valueAccessor)
+        {
+            var value = valueAccessor.GetIntValueWithTypeSpecificIndex(_typeSpecificIndex);
+            valueAccessor.SetIntValueWithTypeSpecificIndex(_typeSpecificIndex, value * _value);
         }
     }
 }
