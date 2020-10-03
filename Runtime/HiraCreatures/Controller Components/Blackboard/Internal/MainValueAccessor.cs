@@ -37,15 +37,16 @@ namespace HiraEngine.Components.Blackboard.Internal
 
         #region Getters
 
-        public bool GetBooleanValue(uint hash) => _dataSet.Booleans[_keyData.GetTypeSpecificIndex(hash)];
-
-        public float GetFloatValue(uint hash) => _dataSet.Floats[_keyData.GetTypeSpecificIndex(hash)];
-
-        public int GetIntValue(uint hash) => _dataSet.Integers[_keyData.GetTypeSpecificIndex(hash)];
-
-        public string GetStringValue(uint hash) => _dataSet.Strings[_keyData.GetTypeSpecificIndex(hash)];
-
-        public Vector3 GetVectorValue(uint hash) => _dataSet.Vectors[_keyData.GetTypeSpecificIndex(hash)];
+        public bool GetBooleanValue(uint hash) => GetBooleanValueWithTypeSpecificIndex(_keyData.GetTypeSpecificIndex(hash));
+        public bool GetBooleanValueWithTypeSpecificIndex(uint typeSpecificIndex) => _dataSet.Booleans[typeSpecificIndex];
+        public float GetFloatValue(uint hash) => GetFloatValueWithTypeSpecificIndex(_keyData.GetTypeSpecificIndex(hash));
+        public float GetFloatValueWithTypeSpecificIndex(uint typeSpecificIndex) => _dataSet.Floats[typeSpecificIndex];
+        public int GetIntValue(uint hash) => GetIntValueWithTypeSpecificIndex(_keyData.GetTypeSpecificIndex(hash));
+        public int GetIntValueWithTypeSpecificIndex(uint typeSpecificIndex) => _dataSet.Integers[typeSpecificIndex];
+        public string GetStringValue(uint hash) => GetStringValueWithTypeSpecificIndex(_keyData.GetTypeSpecificIndex(hash));
+        public string GetStringValueWithTypeSpecificIndex(uint typeSpecificIndex) => _dataSet.Strings[typeSpecificIndex];
+        public Vector3 GetVectorValue(uint hash) => GetVectorValueWithTypeSpecificIndex(_keyData.GetTypeSpecificIndex(hash));
+        public Vector3 GetVectorValueWithTypeSpecificIndex(uint typeSpecificIndex) => _dataSet.Vectors[typeSpecificIndex];
 
         #endregion
 
@@ -57,10 +58,24 @@ namespace HiraEngine.Components.Blackboard.Internal
             else ChangeBoolValue(_keyData.GetTypeSpecificIndex(hash), value);
         }
 
+        public void SetBooleanValueWithTypeSpecificIndex(uint typeSpecificIndex, bool value)
+        {
+            if (_keyData.IsBooleanKeyInstanceSynchronized(typeSpecificIndex))
+                _keyData.ValueAccessor.SetBooleanValueWithTypeSpecificIndex(typeSpecificIndex, value);
+            else ChangeBoolValue(typeSpecificIndex, value);
+        }
+
         public void SetFloatValue(uint hash, float value)
         {
             if (_keyData.IsInstanceSynchronized(hash)) _keyData.ValueAccessor.SetFloatValue(hash, value);
             else ChangeFloatValue(_keyData.GetTypeSpecificIndex(hash), value);
+        }
+
+        public void SetFloatValueWithTypeSpecificIndex(uint typeSpecificIndex, float value)
+        {
+            if (_keyData.IsFloatKeyInstanceSynchronized(typeSpecificIndex))
+                _keyData.ValueAccessor.SetFloatValueWithTypeSpecificIndex(typeSpecificIndex, value);
+            else ChangeFloatValue(typeSpecificIndex, value);
         }
 
         public void SetIntValue(uint hash, int value)
@@ -69,16 +84,37 @@ namespace HiraEngine.Components.Blackboard.Internal
             else ChangeIntValue(_keyData.GetTypeSpecificIndex(hash), value);
         }
 
+        public void SetIntValueWithTypeSpecificIndex(uint typeSpecificIndex, int value)
+        {
+            if (_keyData.IsIntKeyInstanceSynchronized(typeSpecificIndex))
+                _keyData.ValueAccessor.SetIntValueWithTypeSpecificIndex(typeSpecificIndex, value);
+            else ChangeIntValue(typeSpecificIndex, value);
+        }
+
         public void SetStringValue(uint hash, string value)
         {
             if (_keyData.IsInstanceSynchronized(hash)) _keyData.ValueAccessor.SetStringValue(hash, value);
             else ChangeStringValue(_keyData.GetTypeSpecificIndex(hash), value);
         }
 
+        public void SetStringValueWithTypeSpecificIndex(uint typeSpecificIndex, string value)
+        {
+            if (_keyData.IsStringKeyInstanceSynchronized(typeSpecificIndex))
+                _keyData.ValueAccessor.SetStringValueWithTypeSpecificIndex(typeSpecificIndex, value);
+            else ChangeStringValue(typeSpecificIndex, value);
+        }
+
         public void SetVectorValue(uint hash, Vector3 value)
         {
             if (_keyData.IsInstanceSynchronized(hash)) _keyData.ValueAccessor.SetVectorValue(hash, value);
             else ChangeVectorValue(_keyData.GetTypeSpecificIndex(hash), value);
+        }
+
+        public void SetVectorValueWithTypeSpecificIndex(uint typeSpecificIndex, Vector3 value)
+        {
+            if (_keyData.IsVectorKeyInstanceSynchronized(typeSpecificIndex))
+                _keyData.ValueAccessor.SetVectorValueWithTypeSpecificIndex(typeSpecificIndex, value);
+            else ChangeVectorValue(typeSpecificIndex, value);
         }
 
         #endregion

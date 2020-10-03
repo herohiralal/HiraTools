@@ -21,6 +21,16 @@ namespace UnityEngine
         void SetIntValue(uint hash, int value);
         void SetStringValue(uint hash, string value);
         void SetVectorValue(uint hash, Vector3 value);
+        bool GetBooleanValueWithTypeSpecificIndex(uint typeSpecificIndex);
+        float GetFloatValueWithTypeSpecificIndex(uint typeSpecificIndex);
+        int GetIntValueWithTypeSpecificIndex(uint typeSpecificIndex);
+        string GetStringValueWithTypeSpecificIndex(uint typeSpecificIndex);
+        Vector3 GetVectorValueWithTypeSpecificIndex(uint typeSpecificIndex);
+        void SetBooleanValueWithTypeSpecificIndex(uint typeSpecificIndex, bool value);
+        void SetFloatValueWithTypeSpecificIndex(uint typeSpecificIndex, float value);
+        void SetIntValueWithTypeSpecificIndex(uint typeSpecificIndex, int value);
+        void SetStringValueWithTypeSpecificIndex(uint typeSpecificIndex, string value);
+        void SetVectorValueWithTypeSpecificIndex(uint typeSpecificIndex, Vector3 value);
     }
 
     public interface IReadOnlyBlackboardDataSet

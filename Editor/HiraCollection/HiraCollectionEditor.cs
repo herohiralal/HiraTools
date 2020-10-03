@@ -51,8 +51,8 @@ namespace UnityEditor
                 onAddCallback = OnAddCallback,
                 onChangedCallback = OnChangedCallback,
                 onRemoveCallback = OnRemoveCallback,
-                onReorderCallback = OnReorderCallback,
-                onReorderCallbackWithDetails = OnReorderCallbackWithDetails,
+                // onReorderCallback = OnReorderCallback,
+                // onReorderCallbackWithDetails = OnReorderCallbackWithDetails,
                 drawNoneElementCallback = OnNoneElementCallback,
                 onAddDropdownCallback = OnAddDropDownCallback,
                 onCanAddCallback = OnCanAddCallback,
@@ -112,18 +112,19 @@ namespace UnityEditor
             serializedObject.ApplyModifiedProperties();
         }
 
-        private void OnReorderCallbackWithDetails(ReorderableList list, int oldindex, int newindex)
+        private void OnReorderCallbackWithDetails(ReorderableList list, int oldIndex, int newIndex)
         {
-            var current = ObjectAtIndex(oldindex);
+            var current = ObjectAtIndex(oldIndex);
 
-            if (oldindex < newindex)
-                for (var i = oldindex; i < newindex; i++)
+            if (oldIndex < newIndex)
+                for (var i = oldIndex; i < newIndex; i++)
                     ElementAtIndex(i).objectReferenceValue = ObjectAtIndex(i + 1);
             else
-                for (var i = oldindex; i > newindex; i--)
+                for (var i = oldIndex; i > newIndex; i--)
                     ElementAtIndex(i).objectReferenceValue = ObjectAtIndex(i - 1);
 
-            ElementAtIndex(newindex).objectReferenceValue = current;
+            ElementAtIndex(newIndex).objectReferenceValue = current;
+            serializedObject.ApplyModifiedProperties();
         }
 
         protected virtual void OnNoneElementCallback(Rect rect)

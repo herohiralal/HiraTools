@@ -19,6 +19,21 @@ namespace UnityEngine
 
         public IBlackboardValueAccessor ValueAccessor => _mainKeyData.ValueAccessor;
 
+        public bool IsBooleanKeyInstanceSynchronized(uint typeSpecificIndex) =>
+            _mainKeyData.IsBooleanKeyInstanceSynchronized(typeSpecificIndex);
+
+        public bool IsFloatKeyInstanceSynchronized(uint typeSpecificIndex) =>
+            _mainKeyData.IsFloatKeyInstanceSynchronized(typeSpecificIndex);
+
+        public bool IsIntKeyInstanceSynchronized(uint typeSpecificIndex) =>
+            _mainKeyData.IsIntKeyInstanceSynchronized(typeSpecificIndex);
+
+        public bool IsStringKeyInstanceSynchronized(uint typeSpecificIndex) =>
+            _mainKeyData.IsStringKeyInstanceSynchronized(typeSpecificIndex);
+
+        public bool IsVectorKeyInstanceSynchronized(uint typeSpecificIndex) =>
+            _mainKeyData.IsVectorKeyInstanceSynchronized(typeSpecificIndex);
+
         public SerializableBlackboardKey[] Keys => collection;
     }
 }

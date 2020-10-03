@@ -7,5 +7,10 @@
         uint GetTypeSpecificIndex(uint hash);
         bool IsInstanceSynchronized(uint hash);
         UnityEngine.IBlackboardValueAccessor ValueAccessor { get; }
+        bool IsBooleanKeyInstanceSynchronized(uint typeSpecificIndex);
+        bool IsFloatKeyInstanceSynchronized(uint typeSpecificIndex);
+        bool IsIntKeyInstanceSynchronized(uint typeSpecificIndex);
+        bool IsStringKeyInstanceSynchronized(uint typeSpecificIndex);
+        bool IsVectorKeyInstanceSynchronized(uint typeSpecificIndex);
     }
 }
