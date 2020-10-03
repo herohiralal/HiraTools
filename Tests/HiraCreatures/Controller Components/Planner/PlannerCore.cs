@@ -18,7 +18,7 @@ namespace HiraTests.HiraEngine.Components.Planner
         {
             using (var keySet = new OpenBreakDoorKeySet())
             {
-                var planner = PlannerTypes.GetPlanner<Action>(keySet.Value.ValueAccessor, 10);
+                var planner = PlannerTypes.GetPlanner<Action>(keySet.Value.ValueAccessor, 2);
                 planner.Initialize()
                     .ForGoal(keySet.GetOpenDoorGoal())
                     .WithAvailableTransitions(new[]
@@ -105,6 +105,58 @@ namespace HiraTests.HiraEngine.Components.Planner
                         }
 
                         Assert.AreEqual(OpenBreakDoorKeySet.BREAK_DOOR_ACTION_NAME, plan[2].Name);
+                    });
+
+                planner.GeneratePlan();
+            }
+        }
+
+        [Test]
+        public void plan_failure_on_action_limit_cross()
+        {
+            using (var keySet = new OpenBreakDoorKeySet())
+            {
+                var planner = PlannerTypes.GetPlanner<Action>(keySet.Value.ValueAccessor, 1);
+                planner.Initialize()
+                    .ForGoal(keySet.GetOpenDoorGoal())
+                    .WithAvailableTransitions(new[]
+                    {
+                        keySet.GetOpenDoorAction(1),
+                        keySet.GetGetKeyAction(1),
+                        keySet.GetGetCrowbarAction(1),
+                        keySet.GetBreakDoorAction(5)
+                    })
+                    .WithCancellationToken(CancellationToken.None)
+                    .WithMaxFScore(1000)
+                    .WithCallback((result, plan) =>
+                    {
+                        Assert.AreEqual(PlannerResult.FScoreOverflow, result);
+                    });
+
+                planner.GeneratePlan();
+            }
+        }
+
+        [Test]
+        public void plan_failure_on_f_score_crossed()
+        {
+            using (var keySet = new OpenBreakDoorKeySet())
+            {
+                var planner = PlannerTypes.GetPlanner<Action>(keySet.Value.ValueAccessor, 3);
+                planner.Initialize()
+                    .ForGoal(keySet.GetOpenDoorGoal())
+                    .WithAvailableTransitions(new[]
+                    {
+                        keySet.GetOpenDoorAction(1),
+                        keySet.GetGetKeyAction(1),
+                        keySet.GetGetCrowbarAction(1),
+                        keySet.GetBreakDoorAction(5)
+                    })
+                    .WithCancellationToken(CancellationToken.None)
+                    .WithMaxFScore(1)
+                    .WithCallback((result, plan) =>
+                    {
+                        Assert.AreEqual(PlannerResult.FScoreOverflow, result);
                     });
 
                 planner.GeneratePlan();
