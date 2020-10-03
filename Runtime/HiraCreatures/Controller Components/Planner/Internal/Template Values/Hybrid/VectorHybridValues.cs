@@ -22,14 +22,7 @@ namespace HiraEngine.Components.Planner.Internal
         public IBlackboardModification GetNewModificationObject(uint typeSpecificIndex, Vector3 value) => 
             new VectorEqualsValue(typeSpecificIndex, value);
 
-        public void Apply(IReadWriteBlackboardDataSet dataSet) => dataSet.Vectors[_typeSpecificIndex] = _value;
-
-        public IBlackboardModification ApplyTo(IReadWriteBlackboardDataSet dataSet)
-        {
-            var original = dataSet.Vectors[_typeSpecificIndex];
-            dataSet.Vectors[_typeSpecificIndex] = _value;
-            return new VectorEqualsValue(_typeSpecificIndex, original);
-        }
+        public void ApplyTo(IReadWriteBlackboardDataSet dataSet) => dataSet.Vectors[_typeSpecificIndex] = _value;
 
         public void ApplyTo(IBlackboardValueAccessor valueAccessor) => 
             valueAccessor.SetVectorValueWithTypeSpecificIndex(_typeSpecificIndex, _value);

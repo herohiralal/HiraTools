@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using UnityEngine;
 
 namespace HiraEngine.Components.Planner.Internal
@@ -21,8 +19,8 @@ namespace HiraEngine.Components.Planner.Internal
         private readonly IBlackboardValueAccessor _valueAccessor;
         private readonly IReadWriteBlackboardDataSet[] _dataSets;
 
-        private IEnumerable<IBlackboardQuery> _goal = null;
-        private IEnumerable<T> _actions = null;
+        private IBlackboardQuery[] _goal = null;
+        private T[] _actions = null;
 
         private float _maxFScore = 0f;
         private CancellationToken _ct = CancellationToken.None;
@@ -35,16 +33,16 @@ namespace HiraEngine.Components.Planner.Internal
             return this;
         }
 
-        public IPlanner<T> ForGoal(IEnumerable<IBlackboardQuery> goal)
+        public IPlanner<T> ForGoal(IBlackboardQuery[] goal)
         {
             _goal = goal;
             return this;
         }
 
-        public IPlanner<T> WithAvailableTransitions(IEnumerable<T> actions)
+        public IPlanner<T> WithAvailableTransitions(T[] actions)
         {
             _actions = actions;
-            foreach (var action in _actions) action.BuildPrePlanCache();
+            for (var i = 0; i < _actions.Length; i++) _actions[i].BuildPrePlanCache();
             return this;
         }
 
@@ -109,7 +107,17 @@ namespace HiraEngine.Components.Planner.Internal
             _ct = CancellationToken.None;
         }
 
-        private int GetHeuristic(int index) => _goal.Count(_dataSets[index].DoesNotSatisfy);
+        private int GetHeuristic(int index)
+        {
+            var (length, count) = (_goal.Length, 0);
+            for (var i = 0; i < length; i++)
+            {
+                count += _goal[i].IsSatisfiedBy(_dataSets[index])
+                    ? 0
+                    : 1;
+            }
+            return count;
+        }
 
         private float? PerformHeuristicEstimatedSearch(int index, float cost, float threshold)
         {
@@ -126,8 +134,9 @@ namespace HiraEngine.Components.Planner.Internal
             if (index == _dataSets.Length) return float.MaxValue;
 
             var min = float.MaxValue;
-            foreach (var action in _actions)
+            for (var i = 0; i < _actions.Length; i++)
             {
+                var action = _actions[i];
                 if (action.Preconditions.IsNotSatisfiedBy(_dataSets[index - 1])) continue;
 
                 _dataSets[index - 1].CopyTo(_dataSets[index]);

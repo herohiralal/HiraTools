@@ -8,7 +8,7 @@ namespace UnityEngine
     {
         [SerializeField] private SerializableBlackboardModification[] effects = null;
         private IBlackboardModification[] _effects = null;
-        public override IReadOnlyList<IBlackboardModification> Effects => _effects;
+        public override IBlackboardModification[] Effects => _effects;
 
         public override void Initialize()
         {

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 
 namespace UnityEngine
 {
@@ -11,8 +10,8 @@ namespace UnityEngine
     {
         bool IsActive { get; }
         IPlanner<T> Initialize();
-        IPlanner<T> ForGoal(IEnumerable<IBlackboardQuery> goal);
-        IPlanner<T> WithAvailableTransitions(IEnumerable<T> actions);
+        IPlanner<T> ForGoal(IBlackboardQuery[] goal);
+        IPlanner<T> WithAvailableTransitions(T[] actions);
         IPlanner<T> WithMaxFScore(float maxFScore);
         IPlanner<T> WithCancellationToken(CancellationToken ct);
         void WithCallback(PlannerCompletionCallback<T> completionCallback);
@@ -28,8 +27,8 @@ namespace UnityEngine
 
     public interface IAction
     {
-        IReadOnlyList<IBlackboardQuery> Preconditions { get; }
-        IReadOnlyList<IBlackboardModification> Effects { get; }
+        IBlackboardQuery[] Preconditions { get; }
+        IBlackboardModification[] Effects { get; }
         void BuildPrePlanCache();
         float Cost { get; }
     }
@@ -40,8 +39,7 @@ namespace UnityEngine
     
     public interface IBlackboardModification
     {
-        void Apply(IReadWriteBlackboardDataSet dataSet);
-        IBlackboardModification ApplyTo(IReadWriteBlackboardDataSet dataSet);
+        void ApplyTo(IReadWriteBlackboardDataSet dataSet);
         void ApplyTo(IBlackboardValueAccessor valueAccessor);
     }
 }

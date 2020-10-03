@@ -8,7 +8,7 @@ namespace UnityEngine
     {
         [SerializeField] private SerializableBlackboardQuery[] target = null;
         private IBlackboardQuery[] _targets = null;
-        public override IReadOnlyList<IBlackboardQuery> Targets => _targets;
+        public override IBlackboardQuery[] Targets => _targets;
 
         public override void Initialize()
         {

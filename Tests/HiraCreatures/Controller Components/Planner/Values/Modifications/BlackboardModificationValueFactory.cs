@@ -40,13 +40,9 @@ namespace HiraTests.HiraEngine.Components.Planner
             Assert.AreNotEqual(dataSet.Integers[index], value);
 
             var templateValue = PlannerTypes.GetModification(typeString, parameters);
-            var undo = templateValue.ApplyTo(dataSet);
+            templateValue.ApplyTo(dataSet);
 
             Assert.AreEqual(dataSet.Integers[index], value);
-
-            undo.ApplyTo(dataSet);
-
-            Assert.AreNotEqual(dataSet.Integers[index], value);
         }
     }
 }

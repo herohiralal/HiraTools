@@ -13,19 +13,18 @@ namespace UnityEngine
 #endif
         [SerializeField] private float baseCost = default;
         [SerializeField] private SerializableBlackboardQuery[] preconditions = null;
-        private IBlackboardQuery[] _preconditions = null;
 
         public virtual void Initialize()
         {
             var preconditionsEnumerable = preconditions.Select(sbq => sbq.Query);
-            _preconditions = preconditionsEnumerable is IBlackboardQuery[] preconditionsArray
+            Preconditions = preconditionsEnumerable is IBlackboardQuery[] preconditionsArray
                 ? preconditionsArray
                 : preconditionsEnumerable.ToArray();
         }
 
-        public IReadOnlyList<IBlackboardQuery> Preconditions => _preconditions;
+        public IBlackboardQuery[] Preconditions { get; private set; } = null;
         public float BaseCost => baseCost;
-        public virtual IReadOnlyList<IBlackboardQuery> Targets { get; } = null;
-        public virtual IReadOnlyList<IBlackboardModification> Effects { get; } = null;
+        public virtual IBlackboardQuery[] Targets { get; } = null;
+        public virtual IBlackboardModification[] Effects { get; } = null;
     }
 }

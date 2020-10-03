@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using HiraEngine.Components.Planner.Internal;
 using NUnit.Framework;
@@ -205,7 +204,7 @@ namespace HiraTests.HiraEngine.Components.Planner
             foreach (var key in _keys) Object.DestroyImmediate(key);
         }
 
-        public IEnumerable<IBlackboardQuery> GetOpenDoorGoal()
+        public IBlackboardQuery[] GetOpenDoorGoal()
         {
             var goal = new SerializableBlackboardQuery();
             goal.Setup<BoolEqualsValue>(Value, DoorOpenKey, new BoolReference(true));
@@ -294,8 +293,7 @@ namespace HiraTests.HiraEngine.Components.Planner
 
     internal readonly struct Action : IAction
     {
-        public Action(string name, IReadOnlyList<IBlackboardQuery> preconditions,
-            IReadOnlyList<IBlackboardModification> effects, float cost)
+        public Action(string name, IBlackboardQuery[] preconditions, IBlackboardModification[] effects, float cost)
         {
             Name = name;
             Preconditions = preconditions;
@@ -304,8 +302,8 @@ namespace HiraTests.HiraEngine.Components.Planner
         }
 
         public string Name { get; }
-        public IReadOnlyList<IBlackboardQuery> Preconditions { get; }
-        public IReadOnlyList<IBlackboardModification> Effects { get; }
+        public IBlackboardQuery[] Preconditions { get; }
+        public IBlackboardModification[] Effects { get; }
 
         public void BuildPrePlanCache()
         {

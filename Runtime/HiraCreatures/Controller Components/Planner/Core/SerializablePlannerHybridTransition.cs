@@ -10,8 +10,10 @@ namespace UnityEngine
     {
         [SerializeField] private SerializableBlackboardHybridValue[] targetableEffects = null;
         private IBlackboardHybridValue[] _targetableEffects = null;
-        public override IReadOnlyList<IBlackboardQuery> Targets => _targetableEffects;
-        public override IReadOnlyList<IBlackboardModification> Effects => _targetableEffects;
+        // ReSharper disable once CoVariantArrayConversion
+        public override IBlackboardQuery[] Targets => _targetableEffects;
+        // ReSharper disable once CoVariantArrayConversion
+        public override IBlackboardModification[] Effects => _targetableEffects;
 
         public override void Initialize()
         {

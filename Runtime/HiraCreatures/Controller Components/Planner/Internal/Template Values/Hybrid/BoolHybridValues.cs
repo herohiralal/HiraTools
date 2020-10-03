@@ -24,14 +24,7 @@ namespace HiraEngine.Components.Planner.Internal
         public IBlackboardModification GetNewModificationObject(uint typeSpecificIndex, bool value) => 
             new BoolEqualsValue(typeSpecificIndex, value);
 
-        public void Apply(IReadWriteBlackboardDataSet dataSet) => dataSet.Booleans[_typeSpecificIndex] = _value;
-
-        public IBlackboardModification ApplyTo(IReadWriteBlackboardDataSet dataSet)
-        {
-            var original = dataSet.Booleans[_typeSpecificIndex];
-            dataSet.Booleans[_typeSpecificIndex] = _value;
-            return new BoolEqualsValue(_typeSpecificIndex, original);
-        }
+        public void ApplyTo(IReadWriteBlackboardDataSet dataSet) => dataSet.Booleans[_typeSpecificIndex] = _value;
 
         public void ApplyTo(IBlackboardValueAccessor valueAccessor) => 
             valueAccessor.SetBooleanValueWithTypeSpecificIndex(_typeSpecificIndex, _value);
