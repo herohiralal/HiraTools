@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -31,9 +32,32 @@ namespace UnityEditor
             serializedObject.Update();
             _reorderableList.DoLayoutList();
             serializedObject.ApplyModifiedProperties();
-            EditorGUI.LabelField(EditorGUILayout.GetControlRect().KeepToRightFor(130), "Made by Rohan Jadav.");
+            EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Make Main Asset"))
                 AssetDatabase.SetMainObject(target, AssetDatabase.GetAssetPath(target));
+            if (GUILayout.Button("Clean Up"))
+                CleanUp();
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private void CleanUp()
+        {
+            var assets = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(target));
+            
+            var length = CollectionProperty.arraySize;
+            var elements = new Object[length];
+            for (var i = 0; i < length; i++) elements[i] = ObjectAtIndex(i);
+
+            for (var i = assets.Length - 1; i > -1; i--)
+            {
+                var asset = assets[i];
+                
+                if (elements.Contains(asset) || target == asset) continue;
+                AssetDatabase.RemoveObjectFromAsset(asset);
+                Debug.Log($"Deleted {asset.name}.");
+                DestroyImmediate(asset);
+                assets[i] = null;
+            }
         }
 
         protected virtual ReorderableList BuildReorderableList()
