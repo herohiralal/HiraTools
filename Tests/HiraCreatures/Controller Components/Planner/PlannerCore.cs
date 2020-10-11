@@ -129,7 +129,7 @@ namespace HiraTests.HiraEngine.Components.Planner
                     .WithMaxFScore(1000)
                     .WithCallback((result, plan) =>
                     {
-                        Assert.AreEqual(PlannerResult.FScoreOverflow, result);
+                        Assert.AreEqual(PlannerResult.Failure, result);
                     });
 
                 planner.GeneratePlan();
@@ -155,7 +155,7 @@ namespace HiraTests.HiraEngine.Components.Planner
                     .WithMaxFScore(1)
                     .WithCallback((result, plan) =>
                     {
-                        Assert.AreEqual(PlannerResult.FScoreOverflow, result);
+                        Assert.AreEqual(PlannerResult.Failure, result);
                     });
 
                 planner.GeneratePlan();

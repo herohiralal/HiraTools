@@ -83,7 +83,7 @@ namespace HiraEngine.Components.Planner.Internal
 
                 if (score.Value > _maxFScore)
                 {
-                    result = PlannerResult.FScoreOverflow;
+                    result = PlannerResult.Failure;
                     break;
                 }
 

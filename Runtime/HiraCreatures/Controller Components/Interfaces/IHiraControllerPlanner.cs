@@ -22,7 +22,7 @@ namespace UnityEngine
 
     public enum PlannerResult
     {
-        None, Success, FScoreOverflow, Cancelled
+        None, Success, Failure, Cancelled
     }
 
     public interface IAction
