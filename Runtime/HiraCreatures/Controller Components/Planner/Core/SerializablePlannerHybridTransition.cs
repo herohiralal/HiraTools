@@ -5,7 +5,7 @@ namespace UnityEngine
 {
     [CreateAssetMenu(fileName = "New Planner Hybrid Transition",
         menuName = "Hiralal/HiraEngine/HiraCreatures/Planner Hybrid Transition")]
-    public class SerializablePlannerHybridTransition : SerializablePlannerTransition
+    public class SerializablePlannerHybridTransition : SerializablePlannerTransition, IAction
     {
         [SerializeField] private SerializableBlackboardHybridValue[] targetableEffects = null;
         private IBlackboardHybridValue[] _targetableEffects = null;
@@ -13,6 +13,11 @@ namespace UnityEngine
         public override IBlackboardQuery[] Targets => _targetableEffects;
         // ReSharper disable once CoVariantArrayConversion
         public override IBlackboardModification[] Effects => _targetableEffects;
+        public void BuildPrePlanCache()
+        {
+        }
+
+        public float Cost => BaseCost;
 
         public override void Initialize()
         {
