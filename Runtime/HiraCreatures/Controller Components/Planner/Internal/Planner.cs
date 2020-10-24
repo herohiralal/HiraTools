@@ -24,8 +24,9 @@ namespace HiraEngine.Components.Planner.Internal
 
         private float _maxFScore = 0f;
         private CancellationToken _ct = CancellationToken.None;
-        private event PlannerCompletionCallback<T> OnPlannerFinish = delegate { };
+        private PlannerCompletionCallback<T> _onPlannerFinish = null;
         private T[] _plan = null;
+        private PlannerResult _result;
 
         public IPlanner<T> Initialize()
         {
@@ -60,13 +61,11 @@ namespace HiraEngine.Components.Planner.Internal
 
         public void WithCallback(PlannerCompletionCallback<T> completionCallback)
         {
-            OnPlannerFinish = completionCallback;
+            _onPlannerFinish = completionCallback;
         }
 
         public void GeneratePlan(object obj = null)
         {
-            PlannerResult result;
-
             float threshold = GetHeuristic(0);
 
             while (true)
@@ -77,34 +76,44 @@ namespace HiraEngine.Components.Planner.Internal
 
                 if (!score.HasValue)
                 {
-                    result = PlannerResult.Success;
+                    _result = PlannerResult.Success;
                     break;
                 }
 
                 if (score.Value > _maxFScore)
                 {
-                    result = PlannerResult.Failure;
+                    _result = PlannerResult.Failure;
                     break;
                 }
 
                 if (score.Value < 0)
                 {
-                    result = PlannerResult.Cancelled;
+                    _result = PlannerResult.Cancelled;
                     break;
                 }
 
                 threshold = score.Value;
             }
 
-            OnPlannerFinish(result, _plan);
+            MainThreadDispatcher.Schedule(ExecuteCallbackAndCleanup);
+        }
+
+        private void ExecuteCallbackAndCleanup()
+        {
+            var plan = _plan;
+            var result = _ct.IsCancellationRequested ? PlannerResult.Cancelled : _result;
+            var callback = _onPlannerFinish;
 
             _plan = null;
             _goal = null;
             _actions = null;
             _maxFScore = 0f;
-            OnPlannerFinish = delegate { };
-            _isActive.Value = false;
+            _onPlannerFinish = null;
             _ct = CancellationToken.None;
+            _result = PlannerResult.None;
+            _isActive.Value = false;
+            
+            callback.Invoke(result, plan);
         }
 
         private int GetHeuristic(int index)
