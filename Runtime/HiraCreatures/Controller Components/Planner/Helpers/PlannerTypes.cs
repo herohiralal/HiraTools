@@ -20,7 +20,7 @@ namespace UnityEngine
         public static IPlanner<T> GetPlanner<T>(IBlackboardValueAccessor valueAccessor, byte length) where T : IAction =>
             new Planner<T>(valueAccessor, length);
         
-        public static IPlanStack<T> GetPlanStack<T>(int length) where T : IAction =>
+        public static IPlanStack<T> GetPlanStack<T>(byte length) where T : IAction =>
             new PlanStack<T>(length);
     }
 }

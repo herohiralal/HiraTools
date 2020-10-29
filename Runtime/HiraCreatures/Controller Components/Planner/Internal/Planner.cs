@@ -61,9 +61,10 @@ namespace HiraEngine.Components.Planner.Internal
             return this;
         }
 
-        public void WithCallback(PlannerCompletionCallback<T> completionCallback)
+        public IPlanner<T> WithCallback(PlannerCompletionCallback<T> completionCallback)
         {
             _onPlannerFinish = completionCallback;
+            return this;
         }
 
         public void Run()

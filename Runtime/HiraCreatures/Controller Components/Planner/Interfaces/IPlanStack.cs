@@ -7,5 +7,6 @@ namespace HiraEngine.Components.Planner
         T Pop();
         void Consume(T[] actions, int planSize);
         bool HasActions { get; }
+        void Invalidate();
     }
 }

@@ -4,7 +4,7 @@ namespace HiraEngine.Components.Planner.Internal
 {
     public class PlanStack<T> : IPlanStack<T> where T : IAction
     {
-        public PlanStack(int length) => _actions = new T[length];
+        public PlanStack(byte length) => _actions = new T[length];
         
         private readonly T[] _actions = null;
         private int _planSize = 0;
@@ -23,6 +23,8 @@ namespace HiraEngine.Components.Planner.Internal
         public T Pop() => _actions[_currentIndex--];
 
         public bool HasActions => _currentIndex > -1;
+
+        public void Invalidate() => _currentIndex = -1;
 
         public override string ToString()
         {

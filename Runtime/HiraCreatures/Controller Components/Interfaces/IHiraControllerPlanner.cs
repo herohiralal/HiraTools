@@ -14,7 +14,7 @@ namespace UnityEngine
         IPlanner<T> WithAvailableTransitions(T[] actions);
         IPlanner<T> WithMaxFScore(float maxFScore);
         IPlanner<T> WithCancellationToken(CancellationToken ct);
-        void WithCallback(PlannerCompletionCallback<T> completionCallback);
+        IPlanner<T> WithCallback(PlannerCompletionCallback<T> completionCallback);
         void Run();
         void RunMultiThreaded();
     }
