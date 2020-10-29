@@ -28,6 +28,7 @@ namespace UnityEngine
 
     public interface IAction
     {
+        string Name { get; }
         IBlackboardQuery[] Preconditions { get; }
         IBlackboardModification[] Effects { get; }
         void BuildPrePlanCache();

@@ -18,6 +18,7 @@ namespace UnityEngine
         }
 
         public float Cost => BaseCost;
+        public string Name => name;
 
         public override void Initialize()
         {
