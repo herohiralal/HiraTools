@@ -15,10 +15,11 @@ namespace UnityEngine
         IPlanner<T> WithMaxFScore(float maxFScore);
         IPlanner<T> WithCancellationToken(CancellationToken ct);
         void WithCallback(PlannerCompletionCallback<T> completionCallback);
-        void GeneratePlan(object obj = null);
+        void Run();
+        void RunMultiThreaded();
     }
 
-    public delegate void PlannerCompletionCallback<in T>(PlannerResult result, T[] plan) where T : IAction;
+    public delegate void PlannerCompletionCallback<in T>(PlannerResult result, T[] plan, int planLength) where T : IAction;
 
     public enum PlannerResult
     {

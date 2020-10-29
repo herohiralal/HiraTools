@@ -29,7 +29,7 @@ namespace HiraTests.HiraEngine.Components.Planner
                     })
                     .WithCancellationToken(CancellationToken.None)
                     .WithMaxFScore(1000)
-                    .WithCallback((result, plan) =>
+                    .WithCallback((result, plan, planLength) =>
                     {
                         Assert.AreEqual(PlannerResult.Success, result);
 
@@ -37,7 +37,7 @@ namespace HiraTests.HiraEngine.Components.Planner
                         Assert.AreEqual(OpenBreakDoorKeySet.OPEN_DOOR_ACTION_NAME, plan[1].Name);
                     });
 
-                planner.GeneratePlan();
+                planner.Run();
             }
         }
 
@@ -58,7 +58,7 @@ namespace HiraTests.HiraEngine.Components.Planner
                     })
                     .WithCancellationToken(CancellationToken.None)
                     .WithMaxFScore(1000)
-                    .WithCallback((result, plan) =>
+                    .WithCallback((result, plan, planLength) =>
                     {
                         Assert.AreEqual(PlannerResult.Success, result);
 
@@ -66,7 +66,7 @@ namespace HiraTests.HiraEngine.Components.Planner
                         Assert.AreEqual(OpenBreakDoorKeySet.BREAK_DOOR_ACTION_NAME, plan[1].Name);
                     });
 
-                planner.GeneratePlan();
+                planner.Run();
             }
         }
 
@@ -88,7 +88,7 @@ namespace HiraTests.HiraEngine.Components.Planner
                     })
                     .WithCancellationToken(CancellationToken.None)
                     .WithMaxFScore(1000)
-                    .WithCallback((result, plan) =>
+                    .WithCallback((result, plan, planLength) =>
                     {
                         Assert.AreEqual(PlannerResult.Success, result);
 
@@ -106,7 +106,7 @@ namespace HiraTests.HiraEngine.Components.Planner
                         Assert.AreEqual(OpenBreakDoorKeySet.BREAK_DOOR_ACTION_NAME, plan[2].Name);
                     });
 
-                planner.GeneratePlan();
+                planner.Run();
             }
         }
 
@@ -127,12 +127,12 @@ namespace HiraTests.HiraEngine.Components.Planner
                     })
                     .WithCancellationToken(CancellationToken.None)
                     .WithMaxFScore(1000)
-                    .WithCallback((result, plan) =>
+                    .WithCallback((result, plan, planLength) =>
                     {
                         Assert.AreEqual(PlannerResult.Failure, result);
                     });
 
-                planner.GeneratePlan();
+                planner.Run();
             }
         }
 
@@ -153,12 +153,12 @@ namespace HiraTests.HiraEngine.Components.Planner
                     })
                     .WithCancellationToken(CancellationToken.None)
                     .WithMaxFScore(1)
-                    .WithCallback((result, plan) =>
+                    .WithCallback((result, plan, planLength) =>
                     {
                         Assert.AreEqual(PlannerResult.Failure, result);
                     });
 
-                planner.GeneratePlan();
+                planner.Run();
             }
         }
     }

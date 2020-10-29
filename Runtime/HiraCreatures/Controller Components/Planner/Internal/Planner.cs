@@ -5,16 +5,17 @@ namespace HiraEngine.Components.Planner.Internal
 {
     public class Planner<T> : IPlanner<T> where T : IAction
     {
-        public Planner(IBlackboardValueAccessor valueAccessor, byte planLength)
+        public Planner(IBlackboardValueAccessor valueAccessor, byte maxPlanLength)
         {
             _valueAccessor = valueAccessor;
-            _dataSets = new IReadWriteBlackboardDataSet[planLength + 1];
+            _dataSets = new IReadWriteBlackboardDataSet[maxPlanLength + 1];
             _dataSets[0] = valueAccessor.DataSet.GetDuplicate();
-            for (var i = 1; i < planLength + 1; i++) _dataSets[i] = _dataSets[0].GetDuplicate();
+            for (var i = 1; i < maxPlanLength + 1; i++) _dataSets[i] = _dataSets[0].GetDuplicate();
+            
+            _plan = new T[maxPlanLength];
         }
 
-        private readonly ThreadSafeObject<bool> _isActive = new ThreadSafeObject<bool>(false);
-        public bool IsActive => _isActive.Value;
+        public bool IsActive { get; private set; } = false;
 
         private readonly IBlackboardValueAccessor _valueAccessor;
         private readonly IReadWriteBlackboardDataSet[] _dataSets;
@@ -25,7 +26,8 @@ namespace HiraEngine.Components.Planner.Internal
         private float _maxFScore = 0f;
         private CancellationToken _ct = CancellationToken.None;
         private PlannerCompletionCallback<T> _onPlannerFinish = null;
-        private T[] _plan = null;
+        private readonly T[] _plan = null;
+        private int _planLength = 0;
         private PlannerResult _result;
 
         public IPlanner<T> Initialize()
@@ -43,7 +45,7 @@ namespace HiraEngine.Components.Planner.Internal
         public IPlanner<T> WithAvailableTransitions(T[] actions)
         {
             _actions = actions;
-            for (var i = 0; i < _actions.Length; i++) _actions[i].BuildPrePlanCache();
+            foreach (var action in _actions) action.BuildPrePlanCache();
             return this;
         }
 
@@ -64,7 +66,20 @@ namespace HiraEngine.Components.Planner.Internal
             _onPlannerFinish = completionCallback;
         }
 
-        public void GeneratePlan(object obj = null)
+        public void Run()
+        {
+            IsActive = true;
+            GeneratePlan();
+            ExecuteCallbackAndCleanup();
+        }
+
+        public void RunMultiThreaded()
+        {
+            IsActive = true;
+            ThreadPool.QueueUserWorkItem(GeneratePlanMultiThreaded);
+        }
+
+        private void GeneratePlan(object obj = null)
         {
             float threshold = GetHeuristic(0);
 
@@ -94,26 +109,28 @@ namespace HiraEngine.Components.Planner.Internal
 
                 threshold = score.Value;
             }
+        }
 
+        private void GeneratePlanMultiThreaded(object obj = null)
+        {
+            GeneratePlan();
             MainThreadDispatcher.Schedule(ExecuteCallbackAndCleanup);
         }
 
         private void ExecuteCallbackAndCleanup()
         {
-            var plan = _plan;
             var result = _ct.IsCancellationRequested ? PlannerResult.Cancelled : _result;
             var callback = _onPlannerFinish;
 
-            _plan = null;
             _goal = null;
             _actions = null;
             _maxFScore = 0f;
             _onPlannerFinish = null;
             _ct = CancellationToken.None;
             _result = PlannerResult.None;
-            _isActive.Value = false;
+            IsActive = false;
             
-            callback.Invoke(result, plan);
+            callback.Invoke(result, _plan, _planLength);
         }
 
         private int GetHeuristic(int index)
@@ -136,16 +153,15 @@ namespace HiraEngine.Components.Planner.Internal
 
             if (heuristic == 0)
             {
-                _plan = new T[index - 1];
+                _planLength = index - 1;
                 return null;
             }
 
             if (index == _dataSets.Length) return float.MaxValue;
 
             var min = float.MaxValue;
-            for (var i = 0; i < _actions.Length; i++)
+            foreach (var action in _actions)
             {
-                var action = _actions[i];
                 if (action.Preconditions.IsNotSatisfiedBy(_dataSets[index - 1])) continue;
 
                 _dataSets[index - 1].CopyTo(_dataSets[index]);
