@@ -26,6 +26,8 @@ namespace HiraEngine.Components.Planner.Internal
 
         public void Invalidate() => _currentIndex = -1;
 
+        public void Restart() => _currentIndex = _planSize - 1;
+
         public override string ToString()
         {
             var data = "";
