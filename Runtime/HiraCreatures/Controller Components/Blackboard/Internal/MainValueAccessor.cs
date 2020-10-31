@@ -7,7 +7,7 @@ namespace HiraEngine.Components.Blackboard.Internal
     {
         public MainValueAccessor(IBlackboardKeyData keyData)
         {
-            var dataSet = keyData.ValueAccessor.DataSet.GetDuplicate();
+            var dataSet = keyData.ValueAccessor.DataSet.GetPooledDuplicate();
             (_keyData, _dataSet, _instanceSynchronizer) = (keyData, dataSet, keyData.InstanceSynchronizer);
 
             _instanceSynchronizer.OnSyncInstanceValueUpdateBoolean += ChangeBoolValue;
@@ -24,6 +24,8 @@ namespace HiraEngine.Components.Blackboard.Internal
             _instanceSynchronizer.OnSyncInstanceValueUpdateInteger -= ChangeIntValue;
             _instanceSynchronizer.OnSyncInstanceValueUpdateFloat -= ChangeFloatValue;
             _instanceSynchronizer.OnSyncInstanceValueUpdateBoolean -= ChangeBoolValue;
+
+            _keyData.ValueAccessor.DataSet.Return(_dataSet);
         }
 
         private readonly IBlackboardKeyData _keyData;

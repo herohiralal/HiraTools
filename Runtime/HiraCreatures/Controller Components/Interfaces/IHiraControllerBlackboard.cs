@@ -41,8 +41,10 @@ namespace UnityEngine
         int GetInteger(uint index);
         string GetString(uint index);
         Vector3 GetVector(uint index);
-        IReadWriteBlackboardDataSet GetDuplicate();
+        IReadWriteBlackboardDataSet GetPooledDuplicateWithoutCopyingData();
+        IReadWriteBlackboardDataSet GetPooledDuplicate();
         void CopyTo(IReadWriteBlackboardDataSet duplicate);
+        void Return(IReadWriteBlackboardDataSet readWriteDataSet);
     }
 
     public interface IReadWriteBlackboardDataSet : IReadOnlyBlackboardDataSet

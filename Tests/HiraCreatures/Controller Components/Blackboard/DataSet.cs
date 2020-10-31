@@ -17,7 +17,7 @@ namespace HiraTests.HiraEngine.Components.Blackboard
         {
             var dataSet =
                 BlackboardTypes.GetWriteableDataSet(boolCount, floatCount, intCount, stringCount, vectorCount);
-            var duplicate = dataSet.GetDuplicate();
+            var duplicate = dataSet.GetPooledDuplicate();
 
             Assert.AreNotSame(duplicate, dataSet);
             Assert.AreNotSame(duplicate.Booleans, dataSet.Booleans);
@@ -30,6 +30,8 @@ namespace HiraTests.HiraEngine.Components.Blackboard
             Assert.AreEqual(intCount, duplicate.Integers.Length);
             Assert.AreEqual(stringCount, duplicate.Strings.Length);
             Assert.AreEqual(vectorCount, duplicate.Vectors.Length);
+
+            dataSet.Return(duplicate);
         }
 
         [Test]
@@ -44,7 +46,7 @@ namespace HiraTests.HiraEngine.Components.Blackboard
             var dataSet = BlackboardTypes.GetWriteableDataSet(floatKeyCount: 3);
             (dataSet.Floats[0], dataSet.Floats[1], dataSet.Floats[2]) = (first, second, third);
 
-            var duplicate = dataSet.GetDuplicate();
+            var duplicate = dataSet.GetPooledDuplicate();
 
             Assert.AreEqual(first, duplicate.Floats[0]);
             Assert.AreEqual(second, duplicate.Floats[1]);
@@ -55,6 +57,8 @@ namespace HiraTests.HiraEngine.Components.Blackboard
             Assert.AreEqual(first, duplicate.Floats[0]);
             Assert.AreEqual(second, duplicate.Floats[1]);
             Assert.AreEqual(third, duplicate.Floats[2]);
+
+            dataSet.Return(duplicate);
         }
     }
 }

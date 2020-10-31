@@ -9,8 +9,8 @@ namespace HiraEngine.Components.Planner.Internal
         {
             _valueAccessor = valueAccessor;
             _dataSets = new IReadWriteBlackboardDataSet[maxPlanLength + 1];
-            _dataSets[0] = valueAccessor.DataSet.GetDuplicate();
-            for (var i = 1; i < maxPlanLength + 1; i++) _dataSets[i] = _dataSets[0].GetDuplicate();
+            // _dataSets[0] = valueAccessor.DataSet.GetPooledDuplicate();
+            // for (var i = 1; i < maxPlanLength + 1; i++) _dataSets[i] = _dataSets[0].GetDuplicate();
             
             _plan = new T[maxPlanLength];
         }
@@ -32,6 +32,7 @@ namespace HiraEngine.Components.Planner.Internal
 
         public IPlanner<T> Initialize()
         {
+            for (var i = 0; i < _dataSets.Length; i++) _dataSets[i] = _valueAccessor.DataSet.GetPooledDuplicateWithoutCopyingData();
             _valueAccessor.DataSet.CopyTo(_dataSets[0]);
             return this;
         }
@@ -123,6 +124,11 @@ namespace HiraEngine.Components.Planner.Internal
             var result = _ct.IsCancellationRequested ? PlannerResult.Cancelled : _result;
             var callback = _onPlannerFinish;
 
+            for (var i = 0; i < _dataSets.Length; i++)
+            {
+                _valueAccessor.DataSet.Return(_dataSets[i]);
+                _dataSets[i] = null;
+            }
             _goal = null;
             _actions = null;
             _maxFScore = 0f;
