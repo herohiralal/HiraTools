@@ -31,10 +31,10 @@ namespace HiraEngine.Components.Planner.Internal
         public override string ToString()
         {
             var data = "";
-            for (var i = 0; i < _planSize; i++)
+            for (var i = _planSize - 1; i > -1; i--)
             {
                 data += _actions[i].Name;
-                data += _currentIndex == i ? " <--\n" : "    \n";
+                data += _currentIndex + 1 == i ? " <--\n" : "    \n";
             }
             return data;
         }
