@@ -17,6 +17,8 @@ namespace HiraEngine.Components.Blackboard.Internal
         public IReadOnlyBlackboardDataSet DataSet => _dataSet;
         public event Action OnValueUpdate = delegate { };
 
+        public void Reset() => _dataSet.Reset();
+
         public uint GetHash(in string keyName) => _keyData.GetHash(keyName);
 
         public bool GetBooleanValue(uint hash) => GetBooleanValueWithTypeSpecificIndex(_keyData.GetTypeSpecificIndex(hash));

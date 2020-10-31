@@ -17,30 +17,13 @@ namespace HiraEngine.Components.Movement.Internal
         public float RaycastLength { private get; set; } = 1.5f;
         public LayerMask FloorMask { private get; set; } = default;
 
-        // floor detection pre-allocated memory
         private readonly Vector3[] _floorRaycastHitPoints = new Vector3[5];
+        
         private Vector3 _effectiveGravity = Vector3.zero;
-        private Vector3 _rigidbodyPosition = Vector3.zero;
-        private Vector3 _floorPosition = Vector3.zero;
-        private RaycastHit _hit = default;
-        private Vector3 _raycastStartPoint = Vector3.zero;
-        private Vector3 _raycastEndPoint = Vector3.zero;
-        private float _floorAverage = 0f;
-        private int _positiveRaycastsCount = 0;
         private float _timeSinceFalling = 0f;
-
-        // Rigidbody directions pre-allocated memory
-        private Vector3 _right = Vector3.zero;
-        private Vector3 _up = Vector3.zero;
-        private Vector3 _forward = Vector3.zero;
-
-        // Rotation pre-allocated memory
-        private float _currentYaw = 0;
-        private float _targetYaw = 0;
 
         public void MoveTowards(in Vector3 direction)
         {
-            CalculateDirections();
             CalculateFloorDistances();
 
             if (_floorRaycastHitPoints[0] == Vector3.zero)
@@ -52,16 +35,14 @@ namespace HiraEngine.Components.Movement.Internal
 
             Rigidbody.velocity = (Speed * direction) + _effectiveGravity;
 
-            UpdateFloorAverage();
+            var floorAverage = FloorAverage;
 
-            _rigidbodyPosition = Rigidbody.position;
-            _floorPosition.x = _rigidbodyPosition.x;
-            _floorPosition.y = _floorAverage;
-            _floorPosition.z = _rigidbodyPosition.z;
+            var rigidbodyPosition = Rigidbody.position;
+            var floorPosition = new Vector3(rigidbodyPosition.x, floorAverage, rigidbodyPosition.z);
 
-            if (_floorRaycastHitPoints[0] != Vector3.zero && _floorPosition != Rigidbody.position)
+            if (_floorRaycastHitPoints[0] != Vector3.zero && Mathf.Abs(rigidbodyPosition.y - floorAverage) > 0.01f)
             {
-                Rigidbody.MovePosition(_floorPosition);
+                Rigidbody.MovePosition(floorPosition);
                 _effectiveGravity = Vector3.zero;
                 _timeSinceFalling = 0f;
             }
@@ -69,67 +50,59 @@ namespace HiraEngine.Components.Movement.Internal
 
         public void RotateTo(in Vector3 direction)
         {
-            _currentYaw = Transform.eulerAngles.y.AsDegrees360();
-            _targetYaw = Quaternion.LookRotation(direction).eulerAngles.y.AsDegrees360();
+            var currentYaw = Transform.eulerAngles.y.AsDegrees360();
+            var targetYaw = Quaternion.LookRotation(direction).eulerAngles.y.AsDegrees360();
 
-            if ((_targetYaw - _currentYaw).AsDegrees360() < 180)
-            {
-                _currentYaw = (_currentYaw + Mathf.Min(AngularSpeed * Time.deltaTime, (_targetYaw - _currentYaw).AsDegrees360()))
-                    .AsDegrees360();
-            }
-            else
-            {
-                _currentYaw = (_currentYaw - Mathf.Min(AngularSpeed * Time.deltaTime, (_currentYaw - _targetYaw).AsDegrees360()))
-                    .AsDegrees360();
-            }
+            currentYaw = (targetYaw - currentYaw).AsDegrees360() < 180
+                ? (currentYaw + Mathf.Min(AngularSpeed * Time.deltaTime, (targetYaw - currentYaw).AsDegrees360()))
+                .AsDegrees360()
+                : (currentYaw - Mathf.Min(AngularSpeed * Time.deltaTime, (currentYaw - targetYaw).AsDegrees360()))
+                .AsDegrees360();
 
-            Transform.rotation = Quaternion.Euler(0, _currentYaw, 0);
-        }
-
-        private void CalculateDirections()
-        {
-            _right = Transform.right;
-            _up = Transform.up;
-            _forward = Transform.forward;
+            Transform.rotation = Quaternion.Euler(0, currentYaw, 0);
         }
 
         private void CalculateFloorDistances()
         {
-            _floorRaycastHitPoints[0] = FloorRaycast(Vector3.zero);
-            _floorRaycastHitPoints[1] = FloorRaycast(_forward);
-            _floorRaycastHitPoints[2] = FloorRaycast(-_forward);
-            _floorRaycastHitPoints[3] = FloorRaycast(_right);
-            _floorRaycastHitPoints[4] = FloorRaycast(-_right);
+            var right = Transform.right;
+            var up = Transform.up;
+            var forward = Transform.forward;
+            _floorRaycastHitPoints[0] = FloorRaycast(Vector3.zero, in up);
+            _floorRaycastHitPoints[1] = FloorRaycast(forward, in up);
+            _floorRaycastHitPoints[2] = FloorRaycast(-forward, in up);
+            _floorRaycastHitPoints[3] = FloorRaycast(right, in up);
+            _floorRaycastHitPoints[4] = FloorRaycast(-right, in up);
         }
 
-        private void UpdateFloorAverage()
+        private float FloorAverage
         {
-            _floorAverage = 0;
-            _positiveRaycastsCount = 0;
-
-            foreach (var floorRaycastHitPoint in _floorRaycastHitPoints)
+            get
             {
-                if (floorRaycastHitPoint == Vector3.zero) continue;
+                var floorAverage = 0f;
+                var positiveRaycastsCount = 0;
 
-                _floorAverage += floorRaycastHitPoint.y;
-                _positiveRaycastsCount++;
+                foreach (var floorRaycastHitPoint in _floorRaycastHitPoints)
+                {
+                    if (floorRaycastHitPoint == Vector3.zero) continue;
+
+                    floorAverage += floorRaycastHitPoint.y;
+                    positiveRaycastsCount++;
+                }
+
+                return floorAverage / positiveRaycastsCount;
             }
-
-            _floorAverage /= _positiveRaycastsCount;
         }
 
-        private Vector3 FloorRaycast(Vector3 offset)
+        private Vector3 FloorRaycast(Vector3 offset, in Vector3 upDirection)
         {
-            _up = Transform.up;
+            var raycastStartPoint = Transform.position + // position
+                                    (upDirection * RaycastStartHeight) + // start height
+                                    (offset * RaycastSpaceRadius); // radius
 
-            _raycastStartPoint = Transform.position + // position
-                                 (_up * RaycastStartHeight) + // start height
-                                 (offset * RaycastSpaceRadius); // radius
+            var raycastEndPoint = raycastStartPoint - (upDirection * RaycastLength); // down stroke
 
-            _raycastEndPoint = _raycastStartPoint - (_up * RaycastLength); // down stroke
-
-            return Physics.Linecast(_raycastStartPoint, _raycastEndPoint, out _hit, FloorMask)
-                ? _hit.point
+            return Physics.Linecast(raycastStartPoint, raycastEndPoint, out var hit, FloorMask)
+                ? hit.point
                 : Vector3.zero;
         }
 

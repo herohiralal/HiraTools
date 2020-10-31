@@ -80,7 +80,7 @@ namespace HiraEngine.Components.Planner.Internal
             ThreadPool.QueueUserWorkItem(GeneratePlanMultiThreaded);
         }
 
-        private void GeneratePlan(object obj = null)
+        private void GeneratePlan()
         {
             float threshold = GetHeuristic(0);
 

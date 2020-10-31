@@ -35,6 +35,8 @@ namespace HiraEngine.Components.Blackboard.Internal
 
         public uint GetHash(in string keyName) => _keyData.GetHash(keyName);
 
+        public void Reset() => _keyData.ValueAccessor.DataSet.CopyTo(_dataSet);
+
         #region Getters
 
         public bool GetBooleanValue(uint hash) => GetBooleanValueWithTypeSpecificIndex(_keyData.GetTypeSpecificIndex(hash));

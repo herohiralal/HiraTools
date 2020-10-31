@@ -9,35 +9,33 @@ namespace UnityEngine
 
         public override void Initialize<T>(in T spawnParameters)
         {
+            _mainBlackboard = BlackboardTypes.GetMainValueAccessor(keySet);
         }
 
         public override void OnPossess(HiraCreature inCreature)
         {
-            if (keySet == null)
-            {
-                Debug.LogError($"Key set missing on controller for creature {inCreature.gameObject.name}.", this);
-                return;
-            }
-
-            _mainBlackboard = BlackboardTypes.GetMainValueAccessor(keySet);
         }
 
         public override void OnDispossess()
         {
-            _mainBlackboard = null;
+            _mainBlackboard.Reset();
         }
 
         public override void Stop()
         {
+            _mainBlackboard = null;
         }
 
         public IReadOnlyBlackboardDataSet DataSet => _mainBlackboard.DataSet;
+
 
         public event Action OnValueUpdate
         {
             add => _mainBlackboard.OnValueUpdate += value;
             remove => _mainBlackboard.OnValueUpdate -= value;
         }
+
+        public void Reset() => _mainBlackboard.Reset();
 
         #region Getters
 
