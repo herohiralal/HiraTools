@@ -10,7 +10,7 @@ namespace UnityEngine
     {
         IReadOnlyBlackboardDataSet DataSet { get; }
         event Action OnValueUpdate;
-        void Reset();
+        void ResetValues();
         uint GetHash(in string keyName);
         bool GetBooleanValue(uint hash);
         float GetFloatValue(uint hash);

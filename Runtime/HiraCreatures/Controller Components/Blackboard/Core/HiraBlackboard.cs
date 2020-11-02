@@ -18,7 +18,7 @@ namespace UnityEngine
 
         public override void OnDispossess()
         {
-            _mainBlackboard.Reset();
+            _mainBlackboard.ResetValues();
         }
 
         public override void Stop()
@@ -35,7 +35,43 @@ namespace UnityEngine
             remove => _mainBlackboard.OnValueUpdate -= value;
         }
 
-        public void Reset() => _mainBlackboard.Reset();
+        public void ResetValues() => _mainBlackboard.ResetValues();
+
+        public override void DoGUI()
+        {
+            GUILayout.BeginVertical();
+            var data = "Blackboard -\n";
+            var keys = keySet.Keys;
+            foreach (var key in keys)
+            {
+                var keyName = key.Name;
+                switch (key.KeyType)
+                {
+                    case BlackboardKeyType.Undefined:
+                        break;
+                    case BlackboardKeyType.Bool:
+                        data += $"{keyName}: {this.GetBooleanValue(keyName)}\n";
+                        break;
+                    case BlackboardKeyType.Float:
+                        data += $"{keyName}: {this.GetFloatValue(keyName)}\n";
+                        break;
+                    case BlackboardKeyType.Int:
+                        data += $"{keyName}: {this.GetIntValue(keyName)}\n";
+                        break;
+                    case BlackboardKeyType.String:
+                        data += $"{keyName}: {this.GetStringValue(keyName)}\n";
+                        break;
+                    case BlackboardKeyType.Vector:
+                        data += $"{keyName}: {this.GetVectorValue(keyName)}\n";
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            GUILayout.Label(data);
+            GUILayout.EndVertical();
+        }
 
         #region Getters
 

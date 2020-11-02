@@ -17,5 +17,7 @@
         public virtual void Stop()
         {
         }
+
+        public abstract void DoGUI();
     }
 }

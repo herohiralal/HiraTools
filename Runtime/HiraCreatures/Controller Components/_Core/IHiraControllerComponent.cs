@@ -6,5 +6,6 @@
         void OnPossess(HiraCreature inCreature);
         void OnDispossess();
         void Stop();
+        void DoGUI();
     }
 }

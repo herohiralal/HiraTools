@@ -37,7 +37,7 @@ namespace HiraEngine.Components.Blackboard.Internal
 
         public uint GetHash(in string keyName) => _keyData.GetHash(keyName);
 
-        public void Reset() => _keyData.ValueAccessor.DataSet.CopyTo(_dataSet);
+        public void ResetValues() => _keyData.ValueAccessor.DataSet.CopyTo(_dataSet);
 
         #region Getters
 

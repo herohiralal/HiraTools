@@ -2,7 +2,7 @@
 {
     public static class DatasetHelper
     {
-        public static void Reset(this IReadWriteBlackboardDataSet dataSet)
+        public static void ResetValues(this IReadWriteBlackboardDataSet dataSet)
         {
             dataSet.Booleans.ResetArray(false);
             dataSet.Floats.ResetArray(0f);
