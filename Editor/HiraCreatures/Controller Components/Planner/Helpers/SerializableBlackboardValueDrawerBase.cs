@@ -78,7 +78,7 @@ namespace HiraEditor.HiraEngine.Components.Planner.Helpers
                 }
 
                 var index = keyProperty.objectReferenceValue != null && keys.Contains(keyProperty.objectReferenceValue)
-                    ? Array.IndexOf(keys, keyProperty.objectReferenceValue)
+                    ? Array.IndexOf(keys, (SerializableBlackboardKey) keyProperty.objectReferenceValue)
                     : 0;
 
                 keyProperty.objectReferenceValue = keys[EditorGUI.Popup(firstLineRect, index, names)];

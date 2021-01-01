@@ -8,7 +8,7 @@ namespace HiraEditor.SOVariables
     public class ScriptableObjectVariableReferenceDrawer : PropertyDrawer
     {
         private const string use_constant_property_name = "useConstant";
-        private const string constant_value_property_name = "_constant";
+        private const string constant_value_property_name = "constant";
         private const string variable_value_property_name = "variable";
         
         private static readonly string[] popup_options = { "Use Constant", "Use Variable" };

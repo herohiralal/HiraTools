@@ -10,10 +10,10 @@ namespace HiraEngine.SOVariables.Core
     public abstract class ScriptableObjectVariableReference<T> : ScriptableObjectVariableReference
     {
         protected ScriptableObjectVariableReference() { }
-        protected ScriptableObjectVariableReference(T value) => (useConstant, _constant) = (true, value);
+        protected ScriptableObjectVariableReference(T value) => (useConstant, constant) = (true, value);
 
         [SerializeField] private bool useConstant = false;
-        [SerializeField] private T _constant = default;
+        [SerializeField] private T constant = default;
         public abstract ScriptableObjectVariable<T> Variable { get; }
 
         public event Action<T> OnValueChange
@@ -24,10 +24,10 @@ namespace HiraEngine.SOVariables.Core
 
         public T Value
         {
-            get => useConstant ? _constant : Variable.Value;
+            get => useConstant ? constant : Variable.Value;
             set
             {
-                if (useConstant) _constant = value; 
+                if (useConstant) constant = value; 
                 else Variable.Value = value;
             }
         }
