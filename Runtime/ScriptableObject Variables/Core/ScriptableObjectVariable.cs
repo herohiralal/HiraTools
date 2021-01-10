@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-// ReSharper disable Unity.RedundantSerializeFieldAttribute
+// ReSharper disable InconsistentNaming
 
 namespace HiraEngine.SOVariables.Core
 {
