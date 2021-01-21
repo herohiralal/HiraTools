@@ -9,32 +9,47 @@ namespace HiraEditor
 {
     public class DoCreateHiraScript : EndNameEditAction
     {
-        [MenuItem("Assets/Create/CreateScript")]
+        [MenuItem("Assets/Convert to Script")]
         private static void Create()
         {
-            var scriptCreator = (HiraScriptCreator) Selection.activeObject;
-            var icon = (Texture2D) EditorGUIUtility.IconContent("cs Script Icon").image;
-            var sourcePath = AssetDatabase.GetAssetPath(scriptCreator);
-            var sourceDir = Path.GetDirectoryName(sourcePath)?.Replace('\\', '/');
-            var classPath = $"{sourceDir}/{scriptCreator.FileName}.cs";
+            var activeObject = Selection.activeObject;
+            var scriptCreator = (IHiraScriptCreator) activeObject;
+            var fileData = scriptCreator.FileData;
+            
             var creator = CreateInstance<DoCreateHiraScript>();
+            
+            var sourceDir = Path
+                .GetDirectoryName(AssetDatabase.GetAssetPath(activeObject))
+                ?.Replace('\\', '/');
+            var classPath = $"{sourceDir}/{scriptCreator.FileName}.cs";
 
-            if (File.Exists(classPath))
-                ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0, creator,
-                    classPath, icon, scriptCreator.FileData);
+            if (classPath != scriptCreator.CachedFilePath)
+            {
+                creator.toDelete = scriptCreator.CachedFilePath;
+                scriptCreator.CachedFilePath = classPath;
+            }
+            
+            if (AssetDatabase.LoadMainAssetAtPath(classPath) == null)
+                ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                    creator,
+                    classPath,
+                    (Texture2D) EditorGUIUtility.IconContent("cs Script Icon").image,
+                    fileData);
             else
             {
-                creator.Action(0, classPath, scriptCreator.FileData);
+                creator.Action(0, classPath, fileData);
                 creator.CleanUp();
             }
         }
 
-        [MenuItem("Assets/Create/CreateScript", true)]
+        [MenuItem("Assets/Convert to Script", true)]
         private static bool ValidateCreation()
         {
             var activeObject = Selection.activeObject;
-            return activeObject != null && activeObject is HiraScriptCreator;
+            return activeObject != null && activeObject is IHiraScriptCreator;
         }
+
+        [SerializeField] private string toDelete = "";
 
         public override void Action(int instanceId, string pathName, string resourceFile)
         {
@@ -44,6 +59,9 @@ namespace HiraEditor
             
             var o = AssetDatabase.LoadAssetAtPath(pathName, typeof(Object));
             ProjectWindowUtil.ShowCreatedAsset(o);
+
+            if (!string.IsNullOrWhiteSpace(toDelete) && AssetDatabase.LoadMainAssetAtPath(toDelete) != null)
+                AssetDatabase.DeleteAsset(toDelete);
         }
 
         private static string FixLineEndings(string content)
