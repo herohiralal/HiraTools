@@ -1,166 +1,52 @@
 ﻿using System;
-using System.Linq;
-using UnityEditorInternal;
+using HiraEditor.HiraCollection;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace UnityEditor
 {
     [CustomEditor(typeof(HiraCollection<>), true)]
     public class HiraCollectionEditor : Editor
     {
-        private const string collection_property_name = "collection";
-        protected SerializedProperty CollectionProperty => serializedObject.FindProperty(collection_property_name);
-        protected SerializedProperty ElementAtIndex(int i) => CollectionProperty.GetArrayElementAtIndex(i);
-        protected Object ObjectAtIndex(int i) => ElementAtIndex(i).objectReferenceValue;
-        private Type CollectionType => (Type) target.GetType().GetProperty("CollectionType")?.GetValue(target);
-
-        private ReorderableList _reorderableList = null;
+        private IHiraCollectionTargetArrayEditor _targetArray;
 
         private void OnEnable()
         {
-            _reorderableList = BuildReorderableList();
+            _targetArray = (IHiraCollectionTargetArrayEditor) Activator.CreateInstance(
+                typeof(HiraCollectionTargetArrayEditor<>).MakeGenericType(TargetType), new object[] {this});
+            _targetArray.Init(target, serializedObject, "collection");
         }
 
         private void OnDisable()
         {
-            _reorderableList = null;
+            _targetArray?.Clear();
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-            _reorderableList.DoLayoutList();
-            serializedObject.ApplyModifiedProperties();
-            EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Make Main Asset"))
-                AssetDatabase.SetMainObject(target, AssetDatabase.GetAssetPath(target));
-            if (GUILayout.Button("Clean Up"))
-                CleanUp();
-            EditorGUILayout.EndHorizontal();
-        }
-
-        private void CleanUp()
-        {
-            var assets = AssetDatabase.LoadAllAssetsAtPath(AssetDatabase.GetAssetPath(target));
-            
-            var length = CollectionProperty.arraySize;
-            var elements = new Object[length];
-            for (var i = 0; i < length; i++) elements[i] = ObjectAtIndex(i);
-
-            for (var i = assets.Length - 1; i > -1; i--)
-            {
-                var asset = assets[i];
-                
-                if (elements.Contains(asset) || target == asset) continue;
-                AssetDatabase.RemoveObjectFromAsset(asset);
-                Debug.Log($"Deleted {asset.name}.");
-                DestroyImmediate(asset);
-                assets[i] = null;
-            }
-        }
-
-        protected virtual ReorderableList BuildReorderableList()
-        {
-            return new ReorderableList(serializedObject,
-                CollectionProperty,
-                true,
-                true,
-                true,
-                true)
-            {
-                drawElementCallback = DrawElementCallback,
-                drawHeaderCallback = DrawHeaderCallback,
-                elementHeightCallback = ElementHeightCallback,
-                onAddCallback = OnAddCallback,
-                onChangedCallback = OnChangedCallback,
-                onRemoveCallback = OnRemoveCallback,
-                drawNoneElementCallback = OnNoneElementCallback,
-                onAddDropdownCallback = OnAddDropDownCallback,
-                onCanAddCallback = OnCanAddCallback,
-                onCanRemoveCallback = OnCanRemoveCallback
-            };
-        }
-
-        protected virtual void DrawElementCallback(Rect rect, int index, bool isActive, bool isFocused)
-        {
-            EditorGUI.LabelField(rect.KeepToLeftFor(30), $"{index}.");
-
-            var oldName = ObjectAtIndex(index).name;
-            var newName = EditorGUI.TextField(rect.ShiftToRightBy(45).ShiftToLeftBy(100), oldName);
-            if (oldName != newName)
-            {
-                var currentObject = ObjectAtIndex(index);
-                AssetDatabase.RemoveObjectFromAsset(currentObject);
-                currentObject.name = newName;
-                AssetDatabase.AddObjectToAsset(currentObject, target);
-            }
-
-            EditorGUI.PropertyField(rect.KeepToRightFor(100), ElementAtIndex(index), GUIContent.none);
-        }
-
-        protected virtual void DrawHeaderCallback(Rect rect)
-        {
-            EditorGUI.LabelField(rect.ShiftToRightBy(15).KeepToLeftFor(30), "No.", EditorStyles.boldLabel);
-            EditorGUI.LabelField(rect.ShiftToRightBy(60).ShiftToLeftBy(75), "Name", EditorStyles.boldLabel);
-            EditorGUI.LabelField(rect.KeepToRightFor(75), "Reference", EditorStyles.boldLabel);
-        }
-
-        protected virtual void OnAddCallback(ReorderableList list)
-        {
+            _targetArray.OnGUI();
             serializedObject.ApplyModifiedProperties();
         }
 
-        protected virtual void OnChangedCallback(ReorderableList list)
+        private Type TargetType
         {
-        }
-
-        protected virtual void OnRemoveCallback(ReorderableList list)
-        {
-            var toRemove = ObjectAtIndex(list.index);
-            if (toRemove != null)
+            get
             {
-                ElementAtIndex(list.index).objectReferenceValue = null;
-                AssetDatabase.RemoveObjectFromAsset(toRemove);
-                DestroyImmediate(toRemove);
-            }
+                var currentType = target.GetType();
 
-            CollectionProperty.DeleteArrayElementAtIndex(list.index);
-            serializedObject.ApplyModifiedProperties();
-        }
-
-        protected virtual void OnNoneElementCallback(Rect rect)
-        {
-        }
-
-        protected virtual void OnAddDropDownCallback(Rect buttonRect, ReorderableList list)
-        {
-            var menu = new GenericMenu();
-            var types = CollectionType.GetSubclasses();
-
-            foreach (var type in types)
-            {
-                menu.AddItem(new GUIContent(type.Name), false, () =>
+                while ((currentType = currentType.BaseType) != null)
                 {
-                    var so = CreateInstance(type);
-                    so.name = $"New{type.Name}";
-                    AssetDatabase.AddObjectToAsset(so, AssetDatabase.GetAssetPath(target));
+                    if (!currentType.IsGenericType) continue;
+                    
+                    var generic = currentType.GetGenericTypeDefinition();
+                    if (generic == typeof(HiraCollection<>))
+                    {
+                        return currentType.GenericTypeArguments[0];
+                    }
+                }
 
-                    var newIndex = CollectionProperty.arraySize;
-                    CollectionProperty.InsertArrayElementAtIndex(newIndex);
-                    ElementAtIndex(newIndex).objectReferenceValue = so;
-                    serializedObject.ApplyModifiedProperties();
-                });
+                return null;
             }
-
-            menu.ShowAsContext();
         }
-
-        protected virtual float ElementHeightCallback(int index) =>
-            EditorGUI.GetPropertyHeight(ElementAtIndex(index));
-
-        protected virtual bool OnCanAddCallback(ReorderableList list) => true;
-
-        protected virtual bool OnCanRemoveCallback(ReorderableList list) => true;
     }
 }
