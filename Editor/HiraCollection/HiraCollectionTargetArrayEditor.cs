@@ -18,7 +18,6 @@ namespace HiraEditor.HiraCollection
     }
 
     internal sealed class HiraCollectionTargetArrayEditor<T> : IHiraCollectionTargetArrayEditor
-        where T : ScriptableObject
     {
         private ScriptableObject _asset;
 
@@ -68,11 +67,11 @@ namespace HiraEditor.HiraCollection
             for (var i = 0; i < length; i++)
             {
                 var currentElement = _objectsProperty.GetArrayElementAtIndex(i);
-                CreateEditor((T) currentElement.objectReferenceValue, currentElement);
+                CreateEditor((ScriptableObject) currentElement.objectReferenceValue, currentElement);
             }
         }
 
-        private void CreateEditor(T targetObject, SerializedProperty property, int index = -1)
+        private void CreateEditor(ScriptableObject targetObject, SerializedProperty property, int index = -1)
         {
             var targetObjectType = targetObject.GetType();
             if (!_editorTypes.TryGetValue(targetObjectType, out var editorType))
@@ -175,12 +174,13 @@ namespace HiraEditor.HiraCollection
                     var menu = new GenericMenu();
 
                     var targetType = typeof(T);
-                    if (!targetType.IsAbstract)
+                    if (!targetType.IsAbstract && !targetType.IsInterface && typeof(ScriptableObject).IsAssignableFrom(targetType))
                     {
                         menu.AddItem(targetType.Name.GetGUIContent(), false, () => AddNewObject(targetType));
                     }
 
-                    var types = TypeCache.GetTypesDerivedFrom<T>().Where(t => !t.IsAbstract);
+                    var types = TypeCache.GetTypesDerivedFrom<T>()
+                        .Where(t => !t.IsAbstract && !t.IsInterface && typeof(ScriptableObject).IsAssignableFrom(t));
                     foreach (var type in types)
                     {
                         menu.AddItem(type.Name.GetGUIContent(), false, () => AddNewObject(type));
@@ -281,9 +281,9 @@ namespace HiraEditor.HiraCollection
             AssetDatabase.SaveAssets();
         }
 
-        private T CreateNewObject(Type type, int index)
+        private ScriptableObject CreateNewObject(Type type, int index)
         {
-            var createdObject = (T) ScriptableObject.CreateInstance(type);
+            var createdObject = ScriptableObject.CreateInstance(type);
             createdObject.hideFlags = HideFlags.HideInInspector | HideFlags.HideInHierarchy;
             createdObject.name = type.Name;
 
