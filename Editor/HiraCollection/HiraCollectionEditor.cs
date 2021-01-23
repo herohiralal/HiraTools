@@ -7,22 +7,34 @@ namespace UnityEditor
     [CustomEditor(typeof(HiraCollection<>), true)]
     public class HiraCollectionEditor : Editor
     {
-        private IHiraCollectionTargetArrayEditor _targetArray;
+        private IHiraCollectionTargetArrayEditor[] _targetArrays;
         private HiraCollectionEditorRefresher _refresher;
 
         private void OnEnable()
         {
             _refresher = new HiraCollectionEditorRefresher(this);
             _refresher.Init(target, serializedObject);
+
+            var targetTypes = TargetTypes;
+            var length = targetTypes.Length;
+            _targetArrays = new IHiraCollectionTargetArrayEditor[length];
             
-            _targetArray = (IHiraCollectionTargetArrayEditor) Activator.CreateInstance(
-                typeof(HiraCollectionTargetArrayEditor<>).MakeGenericType(TargetType), new object[] {this});
-            _targetArray.Init(target, serializedObject, "collection");
+            for (var i = 0; i < length; i++)
+            {
+                var editor = (IHiraCollectionTargetArrayEditor) Activator.CreateInstance(
+                    typeof(HiraCollectionTargetArrayEditor<>).MakeGenericType(targetTypes[i]), new object[] {this});
+                editor.Init(target, serializedObject, $"collection{i+1}");
+                
+                _targetArrays[i] = editor;
+            }
         }
 
         private void OnDisable()
         {
-            _targetArray?.Clear();
+            if (_targetArrays != null)
+                foreach (var targetArray in _targetArrays)
+                    targetArray.Clear();
+            
             _refresher.OnDisable();
         }
 
@@ -31,15 +43,19 @@ namespace UnityEditor
             serializedObject.Update();
             if (_refresher.RequiresRefresh)
             {
-                _targetArray.Refresh();
-                
+                foreach (var targetArray in _targetArrays) 
+                    targetArray.Refresh();
+
                 _refresher.Refreshed();
             }
-            _targetArray.OnGUI();
+            
+            foreach (var targetArray in _targetArrays) 
+                targetArray.OnGUI();
+            
             serializedObject.ApplyModifiedProperties();
         }
 
-        private Type TargetType
+        private Type[] TargetTypes
         {
             get
             {
@@ -50,9 +66,9 @@ namespace UnityEditor
                     if (!currentType.IsGenericType) continue;
                     
                     var generic = currentType.GetGenericTypeDefinition();
-                    if (generic == typeof(HiraCollection<>))
+                    if (generic == typeof(HiraCollection<>) || generic == typeof(HiraCollection<,>))
                     {
-                        return currentType.GenericTypeArguments[0];
+                        return currentType.GenericTypeArguments;
                     }
                 }
 
