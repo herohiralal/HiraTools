@@ -1,10 +1,10 @@
 {
   "name": "com.rohanjadav.hiraengine",
-  "version": "1.4.2",
+  "version": "1.5",
   "displayName": "HiraEngine",
   "description": "A bunch of tools that cut down significantly on the boilerplate you might need to write.\n\nAnd as of the later versions, much much more.",
-  "unity": "2019.4",
-  "unityRelease": "8f1",
+  "unity": "2020.2",
+  "unityRelease": "1f1",
   "keywords": [
     "HiraEngine"
   ],
