@@ -5,24 +5,11 @@ using System.Text;
 namespace UnityEngine
 {
 	[CreateAssetMenu]
-	public class Blackboard : ScriptableObject, IHiraScriptCreator
+	public class Blackboard : HiraCollection<BlackboardKey>, IHiraScriptCreator
 	{
 		[SerializeField] private Blackboard parent = null;
-		[SerializeField] private KeyData[] keyData = null;
 		[SerializeField] [HideInInspector] private string cachedFilePath = "";
-		[SerializeField] [HideInInspector] private Object[] dependencies = new Object[0];
-
-		[Serializable]
-		private struct KeyData
-		{
-			public string keyName;
-
-			[StringDropdown(false, "bool", "float", "int", "string")]
-			public string type;
-		}
-
-		public bool HasDependencies => dependencies.Length > 0;
-		public IEnumerable<Object> Dependencies => dependencies;
+		
 		public string CachedFilePath
 		{
 			get => cachedFilePath;
@@ -36,7 +23,9 @@ namespace UnityEngine
 				var sb = new StringBuilder(5000);
 				sb
 					.AppendLine(@"using System;")
-					.AppendLine(@"");
+					.AppendLine(@"using UnityEngine;")
+					.AppendLine(@"")
+					.AppendLine(@"[Serializable]");
 
 				if (parent == null)
 				{
@@ -53,35 +42,12 @@ namespace UnityEngine
 						.AppendLine(@"{");
 				}
 
-				foreach (var data in keyData)
-				{
-					var formattedKeyName = FormatToPrivateField(data.keyName);
-					sb
-						.AppendLine($"    private {data.type} {formattedKeyName} = default;")
-						.AppendLine($"    public {data.type} {data.keyName}")
-						.AppendLine(@"    {")
-						.AppendLine($"        get => {formattedKeyName};")
-						.AppendLine(@"        set")
-						.AppendLine(@"        {")
-						.AppendLine(@"            RaiseValueUpdateEvent();")
-						.AppendLine($"            {formattedKeyName} = value;")
-						.AppendLine(@"        }")
-						.AppendLine(@"    }")
-						.AppendLine(@"    ");
-				}
+				foreach (var data in collection1) 
+					sb.Append(data.Code);
 
 				return sb.AppendLine(@"}")
 					.ToString();
 			}
-		}
-
-		private static string FormatToPrivateField(string name)
-		{
-			if (string.IsNullOrWhiteSpace(name)) return "";
-
-			var characters = name.ToCharArray();
-			characters[0] = char.ToLower(characters[0]);
-			return "_" + new string(characters);
 		}
 	}
 }
