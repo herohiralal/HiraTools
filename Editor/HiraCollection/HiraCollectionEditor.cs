@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using HiraEditor.HiraCollection;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace UnityEditor
     {
         private IHiraCollectionTargetArrayEditor[] _targetArrays;
         private HiraCollectionEditorRefresher _refresher;
+        private string[] _collectionProperties;
 
         private void OnEnable()
         {
@@ -18,14 +20,18 @@ namespace UnityEditor
             var targetTypes = TargetTypes;
             var length = targetTypes.Length;
             _targetArrays = new IHiraCollectionTargetArrayEditor[length];
+            _collectionProperties = new string[length];
             
             for (var i = 0; i < length; i++)
             {
+                var collectionProperty = $"collection{i + 1}";
+                
                 var editor = (IHiraCollectionTargetArrayEditor) Activator.CreateInstance(
                     typeof(HiraCollectionTargetArrayEditor<>).MakeGenericType(targetTypes[i]), new object[] {this});
-                editor.Init(target, serializedObject, $"collection{i+1}");
+                editor.Init(target, serializedObject, collectionProperty);
                 
                 _targetArrays[i] = editor;
+                _collectionProperties[i] = collectionProperty;
             }
         }
 
@@ -40,7 +46,21 @@ namespace UnityEditor
 
         public override void OnInspectorGUI()
         {
+            if (_targetArrays == null)
+            {
+                EditorGUILayout.HelpBox("An error has occured.", MessageType.Error);
+                return;
+            }
+            
             serializedObject.Update();
+
+            // basic properties
+            var iterator = serializedObject.GetIterator();
+            iterator.NextVisible(true);
+            while (iterator.NextVisible(false))
+                if (_collectionProperties.All(s => s != iterator.name))
+                    EditorGUILayout.PropertyField(iterator);
+
             if (_refresher.RequiresRefresh)
             {
                 foreach (var targetArray in _targetArrays) 
