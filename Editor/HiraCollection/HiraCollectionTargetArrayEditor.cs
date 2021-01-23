@@ -129,6 +129,13 @@ namespace HiraEditor.HiraCollection
             using (new EditorGUI.DisabledScope(!isEditable))
             {
                 EditorGUILayout.LabelField("Contents".GetGUIContent(), EditorStyles.boldLabel);
+                
+                bool showAll = false, hideAll = false;
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    showAll = GUILayout.Button("Show All", EditorStyles.miniButton);
+                    hideAll = GUILayout.Button("Hide All", EditorStyles.miniButton);
+                }
 
                 var editorsCount = _editors.Count;
                 for (var i = 0; i < editorsCount; i++)
@@ -144,12 +151,19 @@ namespace HiraEditor.HiraCollection
                     Action moveDown = null;
                     if (i != editorsCount - 1) moveDown = () => MoveDown(id);
 
-                    if (HiraCollectionEditorHelperLibrary.DrawHeader(editor.BaseProperty, editor.SerializedObject,
+                    if (showAll)
+                        editor.BaseProperty.isExpanded = true;
+                    else if (hideAll)
+                        editor.BaseProperty.isExpanded = false;
+
+                    var expanded = HiraCollectionEditorHelperLibrary.DrawHeader(editor.BaseProperty, editor.SerializedObject,
                         () => ResetObject(editor.Target.GetType(), id),
                         () => RemoveObject(id),
                         moveUp,
                         moveDown,
-                        ref editor.RenameMode))
+                        ref editor.RenameMode);
+                    
+                    if ((expanded))
                     {
                         editor.OnInternalInspectorGUI();
                     }

@@ -82,7 +82,7 @@ namespace HiraEditor.HiraCollection
 			EditorGUI.DrawRect(backgroundRect, HiraCollectionStyling.HeaderColor);
 
 			// renameMode = EditorGUI.Toggle(toggleRect, "I", renameMode, EditorStyles.miniButton);
-			if (GUI.Button(toggleRect, "I", EditorStyles.miniButton))
+			if (GUI.Button(toggleRect, "R", EditorStyles.miniButton))
 			{
 				renameMode = !renameMode;
 			}
