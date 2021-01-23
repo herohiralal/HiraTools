@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace UnityEngine
+﻿namespace UnityEngine
 {
     public interface ICollectionAwareTarget<T> where T : ScriptableObject
     {
@@ -23,9 +19,16 @@ namespace UnityEngine
         public T[] FirstCollection => collection;
         
         public void Setup(T[] inCollection) => collection = inCollection;
+    }
 
-        public IEnumerator<T> GetEnumerator() => (IEnumerator<T>) collection.GetEnumerator();
+    public abstract class HiraCollection<T1, T2> : HiraCollection<T1>
+        where T1 : ScriptableObject
+        where T2 : ScriptableObject
+    {
+        [SerializeField] protected T2[] secondCollection = { };
+        public T2[] SecondCollection => secondCollection;
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public void Setup(T1[] inCollection1, T2[] inCollection2) =>
+            (collection, secondCollection) = (inCollection1, inCollection2);
     }
 }
