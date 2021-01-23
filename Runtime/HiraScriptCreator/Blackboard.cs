@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace UnityEngine
@@ -42,7 +40,7 @@ namespace UnityEngine
 						.AppendLine(@"{");
 				}
 
-				foreach (var data in collection1) 
+				foreach (var data in (BlackboardKey[]) collection1) 
 					sb.Append(data.Code);
 
 				return sb.AppendLine(@"}")
