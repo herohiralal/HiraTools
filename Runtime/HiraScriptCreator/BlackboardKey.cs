@@ -15,16 +15,15 @@ namespace UnityEngine
             {
                 var sb = new StringBuilder(100);
                 var privateFormattedName = PrivateFormattedName;
-                var validDefault = string.IsNullOrWhiteSpace(defaultValue) ? "default" : defaultValue;
                 var serialize = unitySerialization ? "[SerializeField]" : "";
                 return sb
-                    .AppendLine($"    {serialize} private {keyType} {privateFormattedName} = {validDefault};")
+                    .AppendLine($"    {serialize} private {keyType} {privateFormattedName};")
                     .AppendLine($"    public {keyType} {name}")
                     .AppendLine(@"    {")
                     .AppendLine($"        get => {privateFormattedName};")
                     .AppendLine(@"        set")
                     .AppendLine(@"        {")
-                    .AppendLine(@"            RaiseValueUpdateEvent();")
+                    .AppendLine(@"            OnValueUpdate.Invoke();")
                     .AppendLine($"            {privateFormattedName} = value;")
                     .AppendLine(@"        }")
                     .AppendLine(@"    }")
@@ -32,6 +31,15 @@ namespace UnityEngine
                     .ToString();
             }
         }
+
+        public string Initializer =>
+            $"{PrivateFormattedName} = {(string.IsNullOrWhiteSpace(defaultValue) ? "default" : defaultValue)};";
+
+        public string AppendGetter(string type) =>
+            type == keyType ? $"if (keyName == \"{name}\") return {PrivateFormattedName};" : null;
+
+        public string AppendSetter(string type) =>
+            type == keyType ? $"if (keyName == \"{name}\") {{ {PrivateFormattedName} = newValue; return; }}" : null;
 
         private string PrivateFormattedName
         {
