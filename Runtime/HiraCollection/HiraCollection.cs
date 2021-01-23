@@ -28,4 +28,13 @@
         public void Setup(T1[] inCollection1, T2[] inCollection2) => 
             (collection1, collection2) = (inCollection1, inCollection2);
     }
+
+    public abstract class HiraCollection<T1, T2, T3> : HiraCollection<T1, T2>
+    {
+        [SerializeField] protected T3[] collection3 = { };
+        public T3[] Collection3 => collection3;
+
+        public void Setup(T1[] inCollection1, T2[] inCollection2, T3[] inCollection3) =>
+            (collection1, collection2, collection3) = (inCollection1, inCollection2, inCollection3);
+    }
 }

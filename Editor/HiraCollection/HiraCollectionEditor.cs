@@ -86,7 +86,7 @@ namespace UnityEditor
                     if (!currentType.IsGenericType) continue;
                     
                     var generic = currentType.GetGenericTypeDefinition();
-                    if (generic == typeof(HiraCollection<>) || generic == typeof(HiraCollection<,>))
+                    if (generic == typeof(HiraCollection<>) || generic == typeof(HiraCollection<,>) || generic == typeof(HiraCollection<,,>))
                     {
                         return currentType.GenericTypeArguments;
                     }
