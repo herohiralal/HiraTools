@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using UnityEngine.Assertions;
-
-namespace UnityEngine
+﻿namespace UnityEngine
 {
     public interface ICollectionAwareTarget<T>
     {
@@ -17,42 +14,18 @@ namespace UnityEngine
 #if UNITY_EDITOR
         public bool IsDirty { get; set; }
 #endif
-        [SerializeField] protected ScriptableObject[] collection1 = { };
+        [SerializeField] protected T[] collection1 = { };
+        public T[] Collection1 => collection1;
 
-        protected virtual void OnValidate()
-        {
-            foreach (var scriptableObject in collection1) 
-                Assert.IsTrue(scriptableObject is T);
-        }
-
-        public void Setup(T[] inCollection)
-        {
-            Assert.IsNotNull(inCollection);
-            Assert.IsTrue(inCollection.All(t=>t is ScriptableObject));
-            collection1 = inCollection as ScriptableObject[];
-            Assert.IsNotNull(collection1);
-        }
+        public void Setup(T[] inCollection) => collection1 = inCollection;
     }
 
     public abstract class HiraCollection<T1, T2> : HiraCollection<T1>
     {
-        [SerializeField] protected ScriptableObject[] collection2 = { };
+        [SerializeField] protected T2[] collection2 = { };
+        public T2[] Collection2 => collection2;
 
-        protected override void OnValidate()
-        {
-            base.OnValidate();
-            foreach (var scriptableObject in collection2)
-                Assert.IsTrue(scriptableObject is T2);
-        }
-
-        public void Setup(T1[] inCollection1, T2[] inCollection2)
-        {
-            Setup(inCollection1);
-            
-            Assert.IsNotNull(inCollection2);
-            Assert.IsTrue(inCollection2.All(t=>t is ScriptableObject));
-            collection2 = inCollection2 as ScriptableObject[];
-            Assert.IsNotNull(collection2);
-        }
+        public void Setup(T1[] inCollection1, T2[] inCollection2) => 
+            (collection1, collection2) = (inCollection1, inCollection2);
     }
 }
