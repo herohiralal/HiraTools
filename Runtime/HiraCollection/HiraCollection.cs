@@ -10,18 +10,18 @@ namespace UnityEngine
         int Index { set; }
     }
 
-    public abstract class HiraCollection<T> : ScriptableObject, IEnumerable<T>
+    public abstract class HiraCollection<T> : ScriptableObject//, IEnumerable<T>
+#if UNITY_EDITOR
+        , IDirtiable
+#endif
         where T : ScriptableObject
     {
-        [SerializeField] protected T[] collection = { };
-        public T[] Objects => collection;
-        
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         public bool IsDirty { get; set; }
-        #endif
+#endif
+        [SerializeField] protected T[] collection = { };
+        public T[] FirstCollection => collection;
         
-        public Type CollectionType => typeof(T);
-
         public void Setup(T[] inCollection) => collection = inCollection;
 
         public IEnumerator<T> GetEnumerator() => (IEnumerator<T>) collection.GetEnumerator();

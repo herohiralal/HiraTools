@@ -14,63 +14,62 @@ namespace HiraEditor.HiraCollection
         void Init(Object asset, SerializedObject serializedObject, string objectsPropertyName);
         void Clear();
         void OnGUI();
+        void Refresh();
     }
 
-    internal sealed class HiraCollectionTargetArrayEditor<T> : IHiraCollectionTargetArrayEditor where T : ScriptableObject
-	{
-		private HiraCollection<T> Asset { get; set; }
-        
-		private readonly Editor _baseEditor;
+    internal sealed class HiraCollectionTargetArrayEditor<T> : IHiraCollectionTargetArrayEditor
+        where T : ScriptableObject
+    {
+        private ScriptableObject _asset;
 
-		private SerializedObject _serializedObject;
-		private SerializedProperty _objectsProperty;
+        private readonly Editor _baseEditor;
 
-		private Dictionary<Type, Type> _editorTypes;
-		private List<HiraCollectionTargetBaseEditor> _editors;
-        
-		public HiraCollectionTargetArrayEditor(Editor editor)
-		{
-			Assert.IsNotNull(editor);
-			_baseEditor = editor;
-		}
+        private SerializedObject _serializedObject;
+        private SerializedProperty _objectsProperty;
 
-		public void Init(Object asset, SerializedObject serializedObject, string objectsPropertyName)
-		{
-			Asset = asset as HiraCollection<T>;
-            
-			Assert.IsNotNull(Asset);
-			Assert.IsNotNull(serializedObject);
-            
-			_serializedObject = serializedObject;
-			_objectsProperty = serializedObject.FindProperty(objectsPropertyName);
-			Assert.IsNotNull(_objectsProperty);
+        private Dictionary<Type, Type> _editorTypes;
+        private List<HiraCollectionTargetBaseEditor> _editors;
 
-			_editorTypes = new Dictionary<Type, Type>();
-			_editors = new List<HiraCollectionTargetBaseEditor>();
-
-			var editorTypes = TypeCache.GetTypesDerivedFrom(typeof(HiraCollectionTargetBaseEditor))
-				.Where(t => t.IsDefined(typeof(HiraCollectionTargetEditorAttribute), false) && !t.IsAbstract);
-            
-			foreach (var editorType in editorTypes)
-			{
-				var attribute = editorType.GetCustomAttribute<HiraCollectionTargetEditorAttribute>();
-				_editorTypes.Add(attribute.TargetType, editorType);
-			}
-            
-			for (var i = 0; i < Asset.Objects.Length; i++)
-				CreateEditor(Asset.Objects[i], _objectsProperty.GetArrayElementAtIndex(i));
-
-			Undo.undoRedoPerformed += OnUndoPerformed;
-		}
-
-        private void OnUndoPerformed()
+        public HiraCollectionTargetArrayEditor(Editor editor)
         {
-            Asset.IsDirty = true;
-            
-            _serializedObject.Update();
-            _serializedObject.ApplyModifiedProperties();
-            
-            _baseEditor.Repaint();
+            Assert.IsNotNull(editor);
+            _baseEditor = editor;
+        }
+
+        public void Init(Object asset, SerializedObject serializedObject, string objectsPropertyName)
+        {
+            _asset = asset as ScriptableObject;
+
+            Assert.IsNotNull(_asset);
+            Assert.IsNotNull(serializedObject);
+
+            _serializedObject = serializedObject;
+            _objectsProperty = serializedObject.FindProperty(objectsPropertyName);
+            Assert.IsNotNull(_objectsProperty);
+
+            _editorTypes = new Dictionary<Type, Type>();
+            _editors = new List<HiraCollectionTargetBaseEditor>();
+
+            var editorTypes = TypeCache.GetTypesDerivedFrom(typeof(HiraCollectionTargetBaseEditor))
+                .Where(t => t.IsDefined(typeof(HiraCollectionTargetEditorAttribute), false) && !t.IsAbstract);
+
+            foreach (var editorType in editorTypes)
+            {
+                var attribute = editorType.GetCustomAttribute<HiraCollectionTargetEditorAttribute>();
+                _editorTypes.Add(attribute.TargetType, editorType);
+            }
+
+            CreateAllEditors();
+        }
+
+        private void CreateAllEditors()
+        {
+            var length = _objectsProperty.arraySize;
+            for (var i = 0; i < length; i++)
+            {
+                var currentElement = _objectsProperty.GetArrayElementAtIndex(i);
+                CreateEditor((T) currentElement.objectReferenceValue, currentElement);
+            }
         }
 
         private void CreateEditor(T targetObject, SerializedProperty property, int index = -1)
@@ -90,47 +89,38 @@ namespace HiraEditor.HiraCollection
                 _editors[index] = editor;
         }
 
-        private void RefreshEditors()
+        public void Refresh()
         {
             foreach (var editor in _editors)
                 editor.OnDisable();
 
             _editors.Clear();
-            
-            for (var i = 0; i < Asset.Objects.Length; i++)
-                CreateEditor(Asset.Objects[i], _objectsProperty.GetArrayElementAtIndex(i));
+
+            CreateAllEditors();
         }
 
         public void Clear()
         {
             if (_editors == null) return;
 
-            foreach (var editor in _editors) 
+            foreach (var editor in _editors)
                 editor.OnDisable();
 
             _editors.Clear();
             _editorTypes.Clear();
-
-            Undo.undoRedoPerformed -= OnUndoPerformed;
         }
 
         public void OnGUI()
         {
-            if (Asset == null) return;
+            if (_asset == null) return;
 
-            if (Asset.IsDirty)
-            {
-                RefreshEditors();
-                Asset.IsDirty = false;
-            }
-
-            var isEditable = AssetDatabase.IsOpenForEdit(Asset, StatusQueryOptions.UseCachedIfPossible);
+            var isEditable = AssetDatabase.IsOpenForEdit(_asset, StatusQueryOptions.UseCachedIfPossible);
 
             using (new EditorGUI.DisabledScope(!isEditable))
             {
                 EditorGUILayout.LabelField("Contents".GetGUIContent(), EditorStyles.boldLabel);
-                
-                bool showAll = false, hideAll = false;
+
+                bool showAll, hideAll;
                 using (new EditorGUILayout.HorizontalScope())
                 {
                     showAll = GUILayout.Button("Show All", EditorStyles.miniButton);
@@ -156,13 +146,14 @@ namespace HiraEditor.HiraCollection
                     else if (hideAll)
                         editor.BaseProperty.isExpanded = false;
 
-                    var expanded = HiraCollectionEditorHelperLibrary.DrawHeader(editor.BaseProperty, editor.SerializedObject,
+                    var expanded = HiraCollectionEditorHelperLibrary.DrawHeader(editor.BaseProperty,
+                        editor.SerializedObject,
                         () => ResetObject(editor.Target.GetType(), id),
                         () => RemoveObject(id),
                         moveUp,
                         moveDown,
                         ref editor.RenameMode);
-                    
+
                     if ((expanded))
                     {
                         editor.OnInternalInspectorGUI();
@@ -188,13 +179,13 @@ namespace HiraEditor.HiraCollection
                     {
                         menu.AddItem(targetType.Name.GetGUIContent(), false, () => AddNewObject(targetType));
                     }
-                    
+
                     var types = TypeCache.GetTypesDerivedFrom<T>().Where(t => !t.IsAbstract);
                     foreach (var type in types)
                     {
                         menu.AddItem(type.Name.GetGUIContent(), false, () => AddNewObject(type));
                     }
-                    
+
                     menu.ShowAsContext();
                 }
 
@@ -211,8 +202,8 @@ namespace HiraEditor.HiraCollection
             var newObject = CreateNewObject(type, index);
             Undo.RegisterCreatedObjectUndo(newObject, $"Add {type.Name} Object");
 
-            if (EditorUtility.IsPersistent(Asset))
-                AssetDatabase.AddObjectToAsset(newObject, Asset);
+            if (EditorUtility.IsPersistent(_asset))
+                AssetDatabase.AddObjectToAsset(newObject, _asset);
 
             _objectsProperty.arraySize++;
             var newObjectProperty = _objectsProperty.GetArrayElementAtIndex(index);
@@ -222,9 +213,9 @@ namespace HiraEditor.HiraCollection
 
             _serializedObject.ApplyModifiedProperties();
 
-            if (EditorUtility.IsPersistent(Asset))
+            if (EditorUtility.IsPersistent(_asset))
             {
-                EditorUtility.SetDirty(Asset);
+                EditorUtility.SetDirty(_asset);
                 AssetDatabase.SaveAssets();
             }
         }
@@ -237,7 +228,7 @@ namespace HiraEditor.HiraCollection
 
             _editors[id].OnDisable();
             _editors.RemoveAt(id);
-            
+
             _serializedObject.Update();
 
             var property = _objectsProperty.GetArrayElementAtIndex(id);
@@ -246,7 +237,7 @@ namespace HiraEditor.HiraCollection
             property.objectReferenceValue = null;
 
             _objectsProperty.DeleteArrayElementAtIndex(id);
-            
+
             for (var i = 0; i < _editors.Count; i++)
                 _editors[i].BaseProperty = _objectsProperty.GetArrayElementAtIndex(i).Copy();
 
@@ -257,7 +248,7 @@ namespace HiraEditor.HiraCollection
 
             Undo.DestroyObjectImmediate(effect);
 
-            EditorUtility.SetDirty(Asset);
+            EditorUtility.SetDirty(_asset);
             AssetDatabase.SaveAssets();
         }
 
@@ -265,7 +256,7 @@ namespace HiraEditor.HiraCollection
         {
             _editors[id].OnDisable();
             _editors[id] = null;
-            
+
             _serializedObject.Update();
 
             var property = _objectsProperty.GetArrayElementAtIndex(id);
@@ -276,7 +267,7 @@ namespace HiraEditor.HiraCollection
             var newObject = CreateNewObject(type, id);
             Undo.RegisterCreatedObjectUndo(newObject, "Reset Effect Override");
 
-            AssetDatabase.AddObjectToAsset(newObject, Asset);
+            AssetDatabase.AddObjectToAsset(newObject, _asset);
 
             property.objectReferenceValue = newObject;
 
@@ -286,7 +277,7 @@ namespace HiraEditor.HiraCollection
 
             Undo.DestroyObjectImmediate(previousObject);
 
-            EditorUtility.SetDirty(Asset);
+            EditorUtility.SetDirty(_asset);
             AssetDatabase.SaveAssets();
         }
 
@@ -296,51 +287,58 @@ namespace HiraEditor.HiraCollection
             createdObject.hideFlags = HideFlags.HideInInspector | HideFlags.HideInHierarchy;
             createdObject.name = type.Name;
 
-            if (createdObject is ICollectionAwareTarget<T> collectionAwareObject)
+            if (createdObject is ICollectionAwareTarget<T> collectionAwareObject
+                && _asset is HiraCollection<T> hiraCollectionAsset)
             {
-                collectionAwareObject.ParentCollection = Asset;
+                collectionAwareObject.ParentCollection = hiraCollectionAsset;
                 collectionAwareObject.Index = index;
             }
-            
+
             return createdObject;
         }
 
         private void MoveUp(int index)
         {
             _serializedObject.Update();
-        
+
             var current = _objectsProperty.GetArrayElementAtIndex(index);
             var previous = _objectsProperty.GetArrayElementAtIndex(index - 1);
 
             var (newCurrentObject, newPreviousObject) =
-            (current.objectReferenceValue, previous.objectReferenceValue) =
-            (previous.objectReferenceValue, current.objectReferenceValue);
+                (current.objectReferenceValue, previous.objectReferenceValue) =
+                (previous.objectReferenceValue, current.objectReferenceValue);
 
             (_editors[index], _editors[index - 1]) = (_editors[index - 1], _editors[index]);
 
-            if (newCurrentObject is ICollectionAwareTarget<T> collectionAwareObject) 
+            if (newCurrentObject is ICollectionAwareTarget<T> collectionAwareObject)
                 collectionAwareObject.Index = index;
 
             if (newPreviousObject is ICollectionAwareTarget<T> collectionAwareObject2)
                 collectionAwareObject2.Index = index - 1;
 
             _serializedObject.ApplyModifiedProperties();
+
+            if (EditorUtility.IsPersistent(_asset))
+            {
+                EditorUtility.SetDirty(_asset);
+                AssetDatabase.SaveAssets();
+            }
         }
 
         private void MoveDown(int index)
         {
             _serializedObject.Update();
-        
+
             var current = _objectsProperty.GetArrayElementAtIndex(index);
             var next = _objectsProperty.GetArrayElementAtIndex(index + 1);
 
             var (newCurrentObject, newNextObject) =
-            (current.objectReferenceValue, next.objectReferenceValue) =
-            (next.objectReferenceValue, current.objectReferenceValue);
+                (current.objectReferenceValue, next.objectReferenceValue) =
+                (next.objectReferenceValue, current.objectReferenceValue);
 
             (_editors[index], _editors[index + 1]) = (_editors[index + 1], _editors[index]);
 
-            if (newCurrentObject is ICollectionAwareTarget<T> collectionAwareObject) 
+            if (newCurrentObject is ICollectionAwareTarget<T> collectionAwareObject)
                 collectionAwareObject.Index = index;
 
             if (newNextObject is ICollectionAwareTarget<T> collectionAwareObject2)
@@ -348,11 +346,11 @@ namespace HiraEditor.HiraCollection
 
             _serializedObject.ApplyModifiedProperties();
 
-            if (EditorUtility.IsPersistent(Asset))
+            if (EditorUtility.IsPersistent(_asset))
             {
-                EditorUtility.SetDirty(Asset);
+                EditorUtility.SetDirty(_asset);
                 AssetDatabase.SaveAssets();
             }
         }
-	}
+    }
 }

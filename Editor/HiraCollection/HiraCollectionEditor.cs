@@ -8,9 +8,13 @@ namespace UnityEditor
     public class HiraCollectionEditor : Editor
     {
         private IHiraCollectionTargetArrayEditor _targetArray;
+        private HiraCollectionEditorRefresher _refresher;
 
         private void OnEnable()
         {
+            _refresher = new HiraCollectionEditorRefresher(this);
+            _refresher.Init(target, serializedObject);
+            
             _targetArray = (IHiraCollectionTargetArrayEditor) Activator.CreateInstance(
                 typeof(HiraCollectionTargetArrayEditor<>).MakeGenericType(TargetType), new object[] {this});
             _targetArray.Init(target, serializedObject, "collection");
@@ -19,11 +23,18 @@ namespace UnityEditor
         private void OnDisable()
         {
             _targetArray?.Clear();
+            _refresher.OnDisable();
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
+            if (_refresher.RequiresRefresh)
+            {
+                _targetArray.Refresh();
+                
+                _refresher.Refreshed();
+            }
             _targetArray.OnGUI();
             serializedObject.ApplyModifiedProperties();
         }
