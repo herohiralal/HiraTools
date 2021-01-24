@@ -36,10 +36,10 @@ namespace UnityEngine
             $"{PrivateFormattedName} = {(string.IsNullOrWhiteSpace(defaultValue) ? "default" : defaultValue)};";
 
         public string AppendGetter(string type) =>
-            type == keyType ? $"if (keyName == \"{name}\") return {PrivateFormattedName};" : null;
+            type == keyType ? $"if (keyName == \"{name}\") return {name};" : null;
 
         public string AppendSetter(string type) =>
-            type == keyType ? $"if (keyName == \"{name}\") {{ {PrivateFormattedName} = newValue; return; }}" : null;
+            type == keyType ? $"if (keyName == \"{name}\") {{ {name} = newValue; return; }}" : null;
 
         private string PrivateFormattedName
         {

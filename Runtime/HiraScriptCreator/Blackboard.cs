@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace UnityEngine
@@ -45,6 +44,7 @@ namespace UnityEngine
 					.AppendLine(@"using System;")
 					.AppendLine(@"using UnityEngine;")
 					.AppendLine(@"using System.Runtime.InteropServices;")
+					.AppendLine(@"// ReSharper disable All") // it's a generated file, obviously it's not state of the art
 					.AppendLine(@"")
 					.AppendLine(@"[Serializable]")
 					.AppendLine(@"[StructLayout(LayoutKind.Sequential)]")
@@ -68,15 +68,6 @@ namespace UnityEngine
 				foreach (var blackboard in hierarchy)
 				foreach (var blackboardKey in blackboard.collection1)
 					sb.Append(blackboardKey.Code);
-
-				// foreach (var blackboard in hierarchy)
-				// {
-				// 	foreach (var accessorInfo in blackboard.valueAccessorInfo)
-				// 	{
-				// 		blackboard.AppendGetter(sb, in accessorInfo);
-				// 		blackboard.AppendSetter(sb, in accessorInfo);
-				// 	}
-				// }
 				
 				foreach (var accessorInfo in valueAccessorInfo)
 				{
