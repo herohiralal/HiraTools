@@ -83,34 +83,35 @@ namespace HiraEngine.Components.Blackboard.Internal
 
             for (uint i = 0; i < _keys.Length; i++)
             {
-                if (hashes.ContainsKey(_keys[i].Name))
-                    Debug.LogErrorFormat($"Duplicate key \"{_keys[i].Name}\".");
+                var currentKey = _keys[i];
+                if (hashes.ContainsKey(currentKey.Name))
+                    Debug.LogErrorFormat($"Duplicate key \"{currentKey.Name}\".");
                 else
                 {
-                    hashes.Add(_keys[i].Name, i);
+                    hashes.Add(currentKey.Name, i);
 
                     // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-                    switch (_keys[i].KeyType)
+                    switch (currentKey.KeyType)
                     {
                         case BlackboardKeyType.Bool:
-                            _keys[i].TypeSpecificIndex = booleans++;
-                            booleanKeys.Add(_keys[i]);
+                            currentKey.TypeSpecificIndex = booleans++;
+                            booleanKeys.Add(currentKey);
                             break;
                         case BlackboardKeyType.Float:
-                            _keys[i].TypeSpecificIndex = floats++;
-                            floatKeys.Add(_keys[i]);
+                            currentKey.TypeSpecificIndex = floats++;
+                            floatKeys.Add(currentKey);
                             break;
                         case BlackboardKeyType.Int:
-                            _keys[i].TypeSpecificIndex = ints++;
-                            intKeys.Add(_keys[i]);
+                            currentKey.TypeSpecificIndex = ints++;
+                            intKeys.Add(currentKey);
                             break;
                         case BlackboardKeyType.String:
-                            _keys[i].TypeSpecificIndex = strings++;
-                            stringKeys.Add(_keys[i]);
+                            currentKey.TypeSpecificIndex = strings++;
+                            stringKeys.Add(currentKey);
                             break;
                         case BlackboardKeyType.Vector:
-                            _keys[i].TypeSpecificIndex = vectors++;
-                            vectorKeys.Add(_keys[i]);
+                            currentKey.TypeSpecificIndex = vectors++;
+                            vectorKeys.Add(currentKey);
                             break;
                     }
                 }
