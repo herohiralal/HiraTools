@@ -25,8 +25,8 @@ namespace HiraEditor.HiraAttributes
                     GenerateMenu(property).DropDown(buttonRect);
 
                 GUI.enabled = ((StringDropdownAttribute) attribute).Editable;
-                mainRect.x += 20;
-                mainRect.width -= 20;
+                mainRect.x += 21;
+                mainRect.width -= 21;
                 property.stringValue = EditorGUI.TextField(mainRect, property.stringValue);
                 GUI.enabled = true;
             }
