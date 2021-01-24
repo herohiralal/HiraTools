@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine
 {
-#if UNITY_EDITOR
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
     public interface IHiraCollectionEditorInterface
     {
         public Object[] Collection1 { get; }
@@ -14,12 +14,12 @@
     }
 
     public abstract class HiraCollection<T> : ScriptableObject
-#if UNITY_EDITOR
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
         , IDirtiable
         , IHiraCollectionEditorInterface
 #endif
     {
-#if UNITY_EDITOR
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
         public bool IsDirty { get; set; }
         Object[] IHiraCollectionEditorInterface.Collection1 => collection1 as Object[];
 #endif

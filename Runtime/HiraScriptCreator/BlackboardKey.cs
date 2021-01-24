@@ -4,6 +4,7 @@ namespace UnityEngine
 {
     public class BlackboardKey : ScriptableObject
     {
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
         [StringDropdown(true, "bool", "float", "int", "string")]
         [SerializeField] private string keyType = "bool";
         [SerializeField] private string defaultValue = "default";
@@ -55,5 +56,6 @@ namespace UnityEngine
                     : "_" + formattedName;
             }
         }
+#endif
     }
 }

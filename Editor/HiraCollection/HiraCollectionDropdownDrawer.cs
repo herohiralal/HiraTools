@@ -49,6 +49,7 @@ namespace HiraEditor.HiraAttributes
 			var currentValue = property.objectReferenceValue;
 			var menu = new GenericMenu();
 
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
 			var hiraCollectionTypes = Attribute.Type.GetHierarchy(true, true)
 				.Select(t => typeof(HiraCollection<>).MakeGenericType(t))
 				.SelectMany(t=>t.GetSubclasses());
@@ -78,6 +79,7 @@ namespace HiraEditor.HiraAttributes
 					else
 						menu.AddDisabledItem(new GUIContent($"{hiraCollection.name}/{o.name}"), false);
 			}
+#endif
 
 			return menu;
 		}

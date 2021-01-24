@@ -3,17 +3,24 @@ using System.Text;
 
 namespace UnityEngine
 {
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
 	[System.Serializable]
 	internal struct ValueAccessorInfo
 	{
 		public string typeName;
 		public string niceName;
 	}
+#endif
 	
 	[CreateAssetMenu]
-	public class Blackboard : HiraCollection<BlackboardKey>, IHiraScriptCreator
+	public class Blackboard : HiraCollection<BlackboardKey>
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
+		, IHiraScriptCreator
+#endif
 	{
 		[SerializeField] private Blackboard parent = null;
+		
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
 		[SerializeField] [HideInInspector] private string cachedFilePath = "";
 
 		[SerializeField] private ValueAccessorInfo[] valueAccessorInfo =
@@ -118,5 +125,6 @@ namespace UnityEngine
 				.AppendLine(@"    }")
 				.AppendLine(@"    ");
 		}
+#endif
 	}
 }

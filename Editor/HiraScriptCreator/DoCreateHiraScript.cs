@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace HiraEditor
 {
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
     public class DoCreateHiraScript : EndNameEditAction
     {
         [MenuItem("Assets/Convert to Script")]
@@ -84,4 +85,5 @@ namespace HiraEditor
             return content;
         }
     }
+#endif
 }
