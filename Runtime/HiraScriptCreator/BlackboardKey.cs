@@ -2,7 +2,20 @@
 
 namespace UnityEngine
 {
+    public interface IBlackboardKey
+    {
+        string StructField { get; }
+        string ClassProperty { get; }
+        string ConstructorArgument { get; }
+        string Initializer { get; }
+        string GetGetter(string type);
+        string GetSetter(string type);
+    }
+    
     public class BlackboardKey : ScriptableObject
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
+        , IBlackboardKey
+#endif
     {
 #if UNITY_EDITOR && !STRIP_EDITOR_CODE
         [StringDropdown(true, "bool", "float", "int", "string")]
@@ -10,52 +23,31 @@ namespace UnityEngine
         [SerializeField] private string defaultValue = "default";
         [SerializeField] private bool unitySerialization = true;
 
-        public string Code
-        {
-            get
-            {
-                var sb = new StringBuilder(100);
-                var privateFormattedName = PrivateFormattedName;
-                var serialize = unitySerialization ? "[SerializeField]" : "";
-                return sb
-                    .AppendLine($"    {serialize} private {keyType} {privateFormattedName};")
-                    .AppendLine($"    public {keyType} {name}")
-                    .AppendLine(@"    {")
-                    .AppendLine($"        get => {privateFormattedName};")
-                    .AppendLine(@"        set")
-                    .AppendLine(@"        {")
-                    .AppendLine(@"            OnValueUpdate.Invoke();")
-                    .AppendLine($"            {privateFormattedName} = value;")
-                    .AppendLine(@"        }")
-                    .AppendLine(@"    }")
-                    .AppendLine(@"    ")
-                    .ToString();
-            }
-        }
+        public string StructField => $"public {keyType} {name};";
+
+        public string ClassProperty =>
+            $"        \n" +
+            $"        public {keyType} {name}\n" +
+            $"        {{\n" +
+            $"            get => blackboard.{name};\n" +
+            $"            set\n" +
+            $"            {{\n" +
+            $"                OnValueUpdate.Invoke();\n" +
+            $"                blackboard.{name} = value;\n" +
+            $"            }}\n" +
+            $"        }}";
+
+        public string ConstructorArgument =>
+            $"{keyType} in{name} = {(string.IsNullOrWhiteSpace(defaultValue) ? "default" : defaultValue)}";
 
         public string Initializer =>
-            $"{PrivateFormattedName} = {(string.IsNullOrWhiteSpace(defaultValue) ? "default" : defaultValue)};";
+            $"{name} = in{name};";
 
-        public string AppendGetter(string type) =>
+        public string GetGetter(string type) =>
             type == keyType ? $"if (keyName == \"{name}\") return {name};" : null;
 
-        public string AppendSetter(string type) =>
+        public string GetSetter(string type) =>
             type == keyType ? $"if (keyName == \"{name}\") {{ {name} = newValue; return; }}" : null;
-
-        private string PrivateFormattedName
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(name)) return "";
-
-                var characters = name.ToCharArray();
-                characters[0] = char.ToLower(characters[0]);
-                var formattedName = new string(characters);
-                return unitySerialization 
-                    ? formattedName 
-                    : "_" + formattedName;
-            }
-        }
 #endif
     }
 }
