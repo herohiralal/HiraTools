@@ -1,5 +1,12 @@
 ﻿namespace UnityEngine
 {
+#if UNITY_EDITOR
+    public interface IHiraCollectionEditorInterface
+    {
+        public Object[] Collection1 { get; }
+    }
+#endif
+    
     public interface ICollectionAwareTarget<T>
     {
         HiraCollection<T> ParentCollection { set; }
@@ -9,10 +16,12 @@
     public abstract class HiraCollection<T> : ScriptableObject
 #if UNITY_EDITOR
         , IDirtiable
+        , IHiraCollectionEditorInterface
 #endif
     {
 #if UNITY_EDITOR
         public bool IsDirty { get; set; }
+        Object[] IHiraCollectionEditorInterface.Collection1 => collection1 as Object[];
 #endif
         [SerializeField] protected T[] collection1 = { };
         public T[] Collection1 => collection1;
