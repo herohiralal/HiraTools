@@ -187,7 +187,7 @@ namespace HiraTests.HiraEngine.Components.Planner
 
             _keys = new[] {DoorOpenKey, HasKeyKey, HasCrowbarKey, HasStaminaKey};
             Value = ScriptableObject.CreateInstance<HiraBlackboardKeySet>();
-            Value.Setup(_keys);
+            Value.Collection1 = _keys;
             Value.Initialize();
         }
 

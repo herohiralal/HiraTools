@@ -8,7 +8,7 @@ namespace UnityEngine
     {
         private IBlackboardKeyData _mainKeyData = null;
 
-        public void Initialize() => _mainKeyData = BlackboardTypes.GetKeyData(collection1);
+        public void Initialize() => _mainKeyData = BlackboardTypes.GetKeyData(Collection1);
 
         public IReadOnlyInstanceSynchronizer InstanceSynchronizer => _mainKeyData.InstanceSynchronizer;
         public uint GetHash(in string keyName) => _mainKeyData.GetHash(keyName);
@@ -34,6 +34,6 @@ namespace UnityEngine
         public bool IsVectorKeyInstanceSynchronized(uint typeSpecificIndex) =>
             _mainKeyData.IsVectorKeyInstanceSynchronized(typeSpecificIndex);
 
-        public SerializableBlackboardKey[] Keys => collection1;
+        public SerializableBlackboardKey[] Keys => Collection1;
     }
 }

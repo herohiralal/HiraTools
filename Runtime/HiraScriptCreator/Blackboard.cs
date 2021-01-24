@@ -65,7 +65,7 @@ namespace UnityEngine
 					.AppendLine(@"        ");
 				
 				foreach (var blackboard in hierarchy)
-				foreach (var blackboardKey in blackboard.collection1)
+				foreach (var blackboardKey in blackboard.Collection1)
 					sb.AppendLine($"        {blackboardKey.Initializer}");
 
 				sb
@@ -73,7 +73,7 @@ namespace UnityEngine
 					.AppendLine(@"    ");
 				
 				foreach (var blackboard in hierarchy)
-				foreach (var blackboardKey in blackboard.collection1)
+				foreach (var blackboardKey in blackboard.Collection1)
 					sb.Append(blackboardKey.Code);
 				
 				foreach (var accessorInfo in valueAccessorInfo)
@@ -94,7 +94,7 @@ namespace UnityEngine
 				.AppendLine(@"    {");
 			
 			foreach (var blackboard in blackboards)
-			foreach (var blackboardKey in blackboard.collection1)
+			foreach (var blackboardKey in blackboard.Collection1)
 			{
 				var getter = blackboardKey.AppendGetter(accessorInfo.typeName);
 				if (getter != null) sb.AppendLine($"        {getter}");
@@ -114,7 +114,7 @@ namespace UnityEngine
 				.AppendLine(@"    {");
 			
 			foreach (var blackboard in blackboards)
-			foreach (var blackboardKey in blackboard.collection1)
+			foreach (var blackboardKey in blackboard.Collection1)
 			{
 				var setter = blackboardKey.AppendSetter(accessorInfo.typeName);
 				if (setter != null) sb.AppendLine($"        {setter}");
