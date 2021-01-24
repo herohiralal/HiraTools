@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HiraEditor.HiraCollection;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace UnityEditor
             _refresher = new HiraCollectionEditorRefresher(this);
             _refresher.Init(target, serializedObject);
 
-            var targetTypes = TargetTypes;
+            var targetTypes = HIRA_COLLECTION_TARGET_TYPES[target.GetType()];
             var length = targetTypes.Length;
             _targetArrays = new IHiraCollectionTargetArrayEditor[length];
             _collectionProperties = new string[length];
@@ -75,25 +76,33 @@ namespace UnityEditor
             serializedObject.ApplyModifiedProperties();
         }
 
-        private Type[] TargetTypes
+        public static readonly Dictionary<Type, Type[]> HIRA_COLLECTION_TARGET_TYPES;
+
+        static HiraCollectionEditor()
         {
-            get
+            HIRA_COLLECTION_TARGET_TYPES = new Dictionary<Type, Type[]>();
+            var concreteHiraCollections =
+                typeof(IHiraCollectionEditorInterface).GetSubClasses(false, false);
+            foreach (var concreteHiraCollection in concreteHiraCollections)
+                HIRA_COLLECTION_TARGET_TYPES.Add(concreteHiraCollection, GetTargetTypes(concreteHiraCollection));
+        }
+
+        private static Type[] GetTargetTypes(Type hiraCollectionType)
+        {
+            var currentType = hiraCollectionType;
+
+            while ((currentType = currentType.BaseType) != null)
             {
-                var currentType = target.GetType();
+                if (!currentType.IsGenericType) continue;
 
-                while ((currentType = currentType.BaseType) != null)
-                {
-                    if (!currentType.IsGenericType) continue;
-                    
-                    var generic = currentType.GetGenericTypeDefinition();
-                    if (generic == typeof(HiraCollection<>) ||
-                        generic == typeof(HiraCollection<,>) ||
-                        generic == typeof(HiraCollection<,,>))
-                        return currentType.GenericTypeArguments;
-                }
-
-                return null;
+                var generic = currentType.GetGenericTypeDefinition();
+                if (generic == typeof(HiraCollection<>) ||
+                    generic == typeof(HiraCollection<,>) ||
+                    generic == typeof(HiraCollection<,,>))
+                    return currentType.GenericTypeArguments;
             }
+
+            return null;
         }
     }
 }

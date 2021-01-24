@@ -8,7 +8,7 @@ namespace UnityEngine
 #if UNITY_EDITOR && !STRIP_EDITOR_CODE
     public interface IHiraCollectionEditorInterface
     {
-        public Object[] Collection1 { get; }
+        public Object[][] CollectionInternal { get; }
     }
 #endif
     
@@ -26,9 +26,9 @@ namespace UnityEngine
     {
 #if UNITY_EDITOR && !STRIP_EDITOR_CODE
         public bool IsDirty { get; set; }
-        Object[] IHiraCollectionEditorInterface.Collection1 => collection1;
+        public virtual Object[][] CollectionInternal => new[]{collection1};
 #endif
-        [SerializeField] private Object[] collection1 = { };
+        [SerializeField] protected Object[] collection1 = { };
         private T[] _collection1Actual = { };
 
         protected void OnValidate() => UpdateMainCollection();
@@ -95,6 +95,9 @@ namespace UnityEngine
 
     public abstract class HiraCollection<T1, T2> : HiraCollection<T1>
     {
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
+        public override Object[][] CollectionInternal => new[] {collection1, collection2};
+#endif
         [SerializeField] protected Object[] collection2 = { };
         private T2[] _collection2Actual = { };
 
@@ -117,6 +120,9 @@ namespace UnityEngine
 
     public abstract class HiraCollection<T1, T2, T3> : HiraCollection<T1, T2>
     {
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
+        public override Object[][] CollectionInternal => new[] {collection1, collection2, collection3};
+#endif
         [SerializeField] protected Object[] collection3 = { };
         private T3[] _collection3Actual = { };
 

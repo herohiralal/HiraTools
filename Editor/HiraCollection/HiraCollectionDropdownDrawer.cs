@@ -50,10 +50,26 @@ namespace HiraEditor.HiraAttributes
 			var menu = new GenericMenu();
 
 #if UNITY_EDITOR && !STRIP_EDITOR_CODE
-			var hiraCollectionTypes = Attribute.Type.GetHierarchy(true, true)
-				.Select(t => typeof(HiraCollection<>).MakeGenericType(t))
-				.SelectMany(t=>t.GetSubclasses());
 
+			var hierarchy = Attribute.Type.GetHierarchy().ToArray();
+			var data = HiraCollectionEditor.HIRA_COLLECTION_TARGET_TYPES;
+			var targetHiraCollectionTypes = new[] {new List<Type>(), new List<Type>(), new List<Type>()};
+			foreach (var keyValuePair in data)
+			{
+				var collection = keyValuePair.Key;
+				var targets = keyValuePair.Value;
+				var targetsLength = targets.Length;
+				for (var i = 0; i < 3; i++)
+				{
+					if (i >= targetsLength) continue;
+
+					if (hierarchy.Any(type => targets[i] == type))
+					{
+						targetHiraCollectionTypes[i].Add(collection);
+					}
+				}
+			}
+			
 			if (currentValue == null)
 				menu.AddDisabledItem("Clear".GetGUIContent(), true);
 			else menu.AddItem("Clear".GetGUIContent(), false, () =>
@@ -62,22 +78,24 @@ namespace HiraEditor.HiraAttributes
 				property.serializedObject.ApplyModifiedProperties();
 			});
 			
-			foreach (var hiraCollectionType in hiraCollectionTypes)
+			for (var i = 0; i < targetHiraCollectionTypes.Length; i++)
 			{
-				menu.AddSeparator("");
-				
-				foreach (var hiraCollection in Resources.FindObjectsOfTypeAll(hiraCollectionType))
-				foreach (var o in ((IHiraCollectionEditorInterface) hiraCollection).Collection1)
-					if (currentValue == o)
-						menu.AddDisabledItem(new GUIContent($"{hiraCollection.name}/{o.name}"), true);
-					else if (Attribute.Type.IsInstanceOfType(o))
-						menu.AddItem(new GUIContent($"{hiraCollection.name}/{o.name}"), false, () =>
-						{
-							property.objectReferenceValue = o;
-							property.serializedObject.ApplyModifiedProperties();
+				var hiraCollectionTypes = targetHiraCollectionTypes[i];
+				foreach (var hiraCollectionType in hiraCollectionTypes)
+				{
+					foreach (var hiraCollection in Resources.FindObjectsOfTypeAll(hiraCollectionType))
+					foreach (var o in ((IHiraCollectionEditorInterface) hiraCollection).CollectionInternal[i])
+						if (currentValue == o)
+							menu.AddDisabledItem(new GUIContent($"{hiraCollectionType.Name}/{hiraCollection.name}/{o.name}"), true);
+						else if (Attribute.Type.IsInstanceOfType(o))
+							menu.AddItem(new GUIContent($"{hiraCollectionType.Name}/{hiraCollection.name}/{o.name}"), false, () =>
+							{
+								property.objectReferenceValue = o;
+								property.serializedObject.ApplyModifiedProperties();
 						});
-					else
-						menu.AddDisabledItem(new GUIContent($"{hiraCollection.name}/{o.name}"), false);
+						else
+							menu.AddDisabledItem(new GUIContent($"{hiraCollectionType.Name}/{hiraCollection.name}/{o.name}"), false);
+			    }
 			}
 #endif
 
