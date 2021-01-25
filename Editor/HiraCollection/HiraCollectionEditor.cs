@@ -82,7 +82,7 @@ namespace UnityEditor
         {
             HIRA_COLLECTION_TARGET_TYPES = new Dictionary<Type, Type[]>();
             var concreteHiraCollections =
-                typeof(IHiraCollectionEditorInterface).GetSubClasses(false, false);
+                typeof(IHiraCollectionEditorInterface).GetSubclasses(false, false);
             foreach (var concreteHiraCollection in concreteHiraCollections)
                 HIRA_COLLECTION_TARGET_TYPES.Add(concreteHiraCollection, GetTargetTypes(concreteHiraCollection));
         }

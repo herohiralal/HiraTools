@@ -21,7 +21,7 @@ namespace UnityEngine
         {
             var subclasses = typeof(IBlackboardHybridValueDefaultObject<T>).GetSubclasses();
             return subclasses
-                .ToDictionary(TypeExtensions.GetReflectionName, t => GetDefaultObject(t, value));
+                .ToDictionary(ReflectionLibrary.GetReflectionName, t => GetDefaultObject(t, value));
         }
 
         private static readonly Dictionary<string, IBlackboardHybridValueDefaultObject<bool>> bool_default_objects;

@@ -72,7 +72,7 @@ namespace HiraEditor.HiraEngine.Components.Planner.Helpers
         private static string[] GetModificationReflectionNames<T>() => GetReflectionNames(typeof(IBlackboardModificationDefaultObject<T>));
         private static string[] GetHybridReflectionNames<T>() => GetReflectionNames(typeof(IBlackboardHybridValueDefaultObject<T>));
         private static string[] GetReflectionNames(Type t) =>
-            t.GetSubclasses().Select(TypeExtensions.GetReflectionName).ToArray();
+            t.GetSubclasses().Select(ReflectionLibrary.GetReflectionName).ToArray();
 
         public static (string[], SerializableBlackboardKey[]) BuildKeyData(this Object keySet)
         {
