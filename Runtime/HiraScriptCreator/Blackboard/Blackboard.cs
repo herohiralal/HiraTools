@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace UnityEngine
@@ -19,11 +17,10 @@ namespace UnityEngine
 		, IHiraScriptCreator
 #endif
 	{
-		[SerializeField] private Blackboard parent = null;
-
 #if UNITY_EDITOR && !STRIP_EDITOR_CODE
+		// [SerializeField] private Blackboard parent = null;
 		[SerializeField] private ScriptableObject[] dependencies = { };
-		[SerializeField] private string @namespace = "UnityEngine";
+		public string @namespace = "UnityEngine";
 		[SerializeField] [HideInInspector] private string cachedFilePath = "";
 
 		[SerializeField] private ValueAccessorInfo[] valueAccessorInfo =
@@ -43,56 +40,41 @@ namespace UnityEngine
 
 		public string FileName => name;
 
-		public string FileData
-		{
-			get
-			{
-				IBlackboardKey[] allKeys;
-				{
-					var hierarchy = new List<Blackboard> {this};
-					var currentBlackboard = this;
-					while ((currentBlackboard = currentBlackboard.parent) != null)
-						hierarchy.Add(currentBlackboard);
-					allKeys = hierarchy.SelectMany(bb => bb.Collection1).ToArray();
-				}
-				if (allKeys.Length == 0) return "";
+		public string FileData =>
+			new StringBuilder(5000)
+				.AppendLine(@"// ReSharper disable All") // it's a generated file, obviously not state of the art
+				.AppendLine(@"")
+				.AppendLine($"namespace {@namespace}")
+				.AppendLine(@"{")
+				.AppendLine(@"    [System.Serializable]")
+				.AppendLine(@"    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]")
+				.AppendLine($"    public struct {name}")
+				.AppendLine(@"    {")
+				.AppendLine(GetConstructor(name, ""))
+				.AppendLine()
+				.AppendLine(StructFields)
+				.AppendLine(@"    }")
+				.AppendLine(@"    ")
+				.AppendLine(@"    [System.Serializable]")
+				.AppendLine($"    public class {name}Wrapper")
+				.AppendLine(@"    {")
+				.AppendLine(GetConstructor($"{name}Wrapper", "blackboard."))
+				.AppendLine()
+				.AppendLine(@"        public event System.Action OnValueUpdate = delegate { };")
+				.AppendLine($"        [SerializeField] private {name} blackboard;")
+				.Append(ClassProperties)
+				.Append(Accessors)
+				.AppendLine(@"    }")
+				.AppendLine(@"}")
+				.ToString();
 
-				var sb = new StringBuilder(5000);
-				sb
-					.AppendLine(@"// ReSharper disable All") // it's a generated file, obviously not state of the art
-					.AppendLine(@"")
-					.AppendLine($"namespace {@namespace}")
-					.AppendLine(@"{")
-					.AppendLine(@"    [System.Serializable]")
-					.AppendLine(@"    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]")
-					.AppendLine($"    public struct {name}")
-					.AppendLine(@"    {")
-					.AppendLine(GetConstructor(name, "", allKeys))
-					.AppendLine()
-					.AppendLine(GetStructFields(allKeys))
-					.AppendLine(@"    }")
-					.AppendLine(@"    ")
-					.AppendLine(@"    [System.Serializable]")
-					.AppendLine($"    public class {name}Wrapper")
-					.AppendLine(@"    {")
-					.AppendLine(GetConstructor($"{name}Wrapper", "blackboard.", allKeys))
-					.AppendLine()
-					.AppendLine(@"        public event System.Action OnValueUpdate = delegate { };")
-					.AppendLine($"        [SerializeField] private {name} blackboard;")
-					.Append(GetClassProperties(allKeys))
-					.Append(GetAccessors(allKeys))
-					.AppendLine(@"    }")
-					.AppendLine(@"}");
-				return sb.ToString();
-			}
-		}
-
-		private static string GetConstructor(string typeName, string variableName, IBlackboardKey[] allKeys)
+		private string GetConstructor(string typeName, string variableName)
 		{
 			var sb = new StringBuilder(250);
 			sb
 				.AppendLine($"        public {typeName}(");
-				
+
+			var allKeys = Collection1;
 			// constructor arguments
 			for (var i = 0; i < allKeys.Length; i++)
 			{
@@ -116,42 +98,51 @@ namespace UnityEngine
 			return sb.ToString();
 		}
 
-		private static string GetStructFields(IBlackboardKey[] allKeys)
+		private string StructFields
 		{
-			var sb = new StringBuilder(500);
-			foreach (var key in allKeys)
+			get
 			{
-				sb.AppendLine($"        {key.StructField}");
-			}
+				var sb = new StringBuilder(500);
+				foreach (var key in Collection1)
+				{
+					sb.AppendLine($"        {key.StructField}");
+				}
 
-			return sb.ToString();
+				return sb.ToString();
+			}
 		}
 
-		private static string GetClassProperties(IBlackboardKey[] allKeys)
+		private string ClassProperties
 		{
-			var sb = new StringBuilder(500);
-			foreach (var key in allKeys)
+			get
 			{
-				sb.AppendLine(key.ClassProperty);
-			}
+				var sb = new StringBuilder(500);
+				foreach (var key in Collection1)
+				{
+					sb.AppendLine(key.ClassProperty);
+				}
 
-			return sb.ToString();
+				return sb.ToString();
+			}
 		}
 
-		private string GetAccessors(IBlackboardKey[] allKeys)
+		private string Accessors
 		{
-			var sb = new StringBuilder(1000);
-			foreach (var accessorInfo in valueAccessorInfo)
+			get
 			{
-				sb
-					.Append(GetGetter(allKeys, in accessorInfo))
-					.Append(GetSetter(allKeys, in accessorInfo));
-			}
+				var sb = new StringBuilder(1000);
+				foreach (var accessorInfo in valueAccessorInfo)
+				{
+					sb
+						.Append(GetGetter(in accessorInfo))
+						.Append(GetSetter(in accessorInfo));
+				}
 
-			return sb.ToString();
+				return sb.ToString();
+			}
 		}
 
-		private string GetGetter(IBlackboardKey[] allKeys, in ValueAccessorInfo accessorInfo)
+		private string GetGetter(in ValueAccessorInfo accessorInfo)
 		{
 			var sb = new StringBuilder(500);
 			sb
@@ -161,7 +152,7 @@ namespace UnityEngine
 				.AppendLine(@"            switch (keyName)")
 				.AppendLine(@"            {");
 			
-			foreach (var key in allKeys)
+			foreach (var key in Collection1)
 			{
 				var getter = key.GetGetter(accessorInfo.typeName);
 				if (getter != null) sb.AppendLine(getter);
@@ -176,7 +167,7 @@ namespace UnityEngine
 				.ToString();
 		}
 
-		private string GetSetter(IBlackboardKey[] allKeys, in ValueAccessorInfo accessorInfo)
+		private string GetSetter(in ValueAccessorInfo accessorInfo)
 		{
 			var sb = new StringBuilder(500);
 			sb
@@ -185,7 +176,7 @@ namespace UnityEngine
 				.AppendLine(@"        {")
 				.AppendLine(@"            switch (keyName)")
 				.AppendLine(@"            {");
-			foreach (var key in allKeys)
+			foreach (var key in Collection1)
 			{
 				var setter = key.GetSetter(accessorInfo.typeName);
 				if (setter != null) sb.AppendLine(setter);
