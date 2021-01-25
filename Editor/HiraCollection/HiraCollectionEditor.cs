@@ -58,9 +58,11 @@ namespace UnityEditor
             // basic properties
             var iterator = serializedObject.GetIterator();
             iterator.NextVisible(true);
+            serializedObject.Update();
             while (iterator.NextVisible(false))
                 if (_collectionProperties.All(s => s != iterator.name))
                     EditorGUILayout.PropertyField(iterator);
+            serializedObject.ApplyModifiedProperties();
 
             if (_refresher.RequiresRefresh)
             {
