@@ -30,7 +30,6 @@ namespace UnityEngine
 			new ValueAccessorInfo {niceName = "Boolean", typeName = "bool"},
 			new ValueAccessorInfo {niceName = "Integer", typeName = "int"},
 			new ValueAccessorInfo {niceName = "Float", typeName = "float"},
-			new ValueAccessorInfo {niceName = "String", typeName = "string"},
 		};
 
 		public string CachedFilePath
@@ -51,40 +50,36 @@ namespace UnityEngine
 					var currentBlackboard = this;
 					while ((currentBlackboard = currentBlackboard.parent) != null)
 						hierarchy.Add(currentBlackboard);
-					var blackboardCount = hierarchy.Count;
 					allKeys = hierarchy.SelectMany(bb => bb.Collection1).ToArray();
 				}
 				if (allKeys.Length == 0) return "";
 
 				var sb = new StringBuilder(5000);
 				sb
-					.AppendLine(@"using System;")
-					.AppendLine(@"using UnityEngine;")
-					.AppendLine(@"using System.Runtime.InteropServices;")
 					.AppendLine(@"// ReSharper disable All") // it's a generated file, obviously not state of the art
 					.AppendLine(@"")
 					.AppendLine($"namespace {@namespace}")
 					.AppendLine(@"{")
-					.AppendLine(@"    [Serializable]")
-					.AppendLine(@"    [StructLayout(LayoutKind.Sequential)]")
+					.AppendLine(@"    [System.Serializable]")
+					.AppendLine(@"    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]")
 					.AppendLine($"    public struct {name}")
 					.AppendLine(@"    {")
-					.AppendLine(GetConstructor(name, "this", allKeys))
+					.AppendLine(GetConstructor(name, "", allKeys))
 					.AppendLine()
 					.AppendLine(GetStructFields(allKeys))
 					.AppendLine(@"    }")
 					.AppendLine(@"    ")
-					.AppendLine(@"    [Serializable]")
+					.AppendLine(@"    [System.Serializable]")
 					.AppendLine($"    public class {name}Wrapper")
 					.AppendLine(@"    {")
-					.AppendLine(GetConstructor($"{name}Wrapper", "blackboard", allKeys))
+					.AppendLine(GetConstructor($"{name}Wrapper", "blackboard.", allKeys))
 					.AppendLine()
-					.AppendLine(@"        public event Action OnValueUpdate = delegate { };")
+					.AppendLine(@"        public event System.Action OnValueUpdate = delegate { };")
 					.AppendLine($"        [SerializeField] private {name} blackboard;")
 					.Append(GetClassProperties(allKeys))
 					.Append(GetAccessors(allKeys))
 					.AppendLine(@"    }")
-					.AppendLine(@"}"); // namespace over
+					.AppendLine(@"}");
 				return sb.ToString();
 			}
 		}
@@ -110,7 +105,7 @@ namespace UnityEngine
 			// initializers
 			foreach (var key in allKeys)
 			{
-				sb.AppendLine($"            {variableName}.{key.Initializer}");
+				sb.AppendLine($"            {variableName}{key.Initializer}");
 			}
 				
 			sb
@@ -159,20 +154,23 @@ namespace UnityEngine
 			sb
 				.AppendLine(@"        ")
 				.AppendLine($"        public {accessorInfo.typeName} Get{accessorInfo.niceName}Value(string keyName)")
-				.AppendLine(@"        {");
+				.AppendLine(@"        {")
+				.AppendLine(@"            switch (keyName)")
+				.AppendLine(@"            {");
 			
 			foreach (var key in allKeys)
 			{
 				var getter = key.GetGetter(accessorInfo.typeName);
-				if (getter != null) sb.AppendLine($"            {getter}");
+				if (getter != null) sb.AppendLine(getter);
 			}
 
-			sb
-				.AppendLine($"            Debug.LogError($\"Key not recognized: {{keyName}}. Blackboard: {name}.\");")
-				.AppendLine(@"            return default;")
-				.AppendLine(@"        }");
-			
-			return sb.ToString();
+			return sb
+				.AppendLine(@"                default:")
+				.AppendLine($"                    Debug.LogError($\"Key not recognized: {{keyName}}. Blackboard: {name}.\");")
+				.AppendLine(@"                    return default;")
+				.AppendLine(@"            }")
+				.AppendLine(@"        }")
+				.ToString();
 		}
 
 		private string GetSetter(IBlackboardKey[] allKeys, in ValueAccessorInfo accessorInfo)
@@ -181,39 +179,23 @@ namespace UnityEngine
 			sb
 				.AppendLine(@"        ")
 				.AppendLine($"        public void Set{accessorInfo.niceName}Value(string keyName, {accessorInfo.typeName} newValue)")
-				.AppendLine(@"        {");
+				.AppendLine(@"        {")
+				.AppendLine(@"            switch (keyName)")
+				.AppendLine(@"            {");
 			foreach (var key in allKeys)
 			{
 				var setter = key.GetSetter(accessorInfo.typeName);
-				if (setter != null) sb.AppendLine($"            {setter}");
+				if (setter != null) sb.AppendLine(setter);
 			}
 
-			sb
-				.AppendLine($"            Debug.LogError($\"Key not recognized: {{keyName}}. Blackboard: {name}.\");")
-				.AppendLine(@"        }");
-
-			return sb.ToString();
+			return sb
+				.AppendLine(@"                default:")
+				.AppendLine($"                    Debug.LogError($\"Key not recognized: {{keyName}}. Blackboard: {name}.\");")
+				.AppendLine(@"                    return;")
+				.AppendLine(@"            }")
+				.AppendLine(@"        }")
+				.ToString();
 		}
-		//
-		// private void AppendSetter(StringBuilder sb, in ValueAccessorInfo accessorInfo, List<Blackboard> blackboards)
-		// {
-		// 	sb
-		// 		.AppendLine(
-		// 			$"    public void Set{accessorInfo.niceName}Value(string keyName, {accessorInfo.typeName} newValue)")
-		// 		.AppendLine(@"    {");
-		//
-		// 	foreach (var blackboard in blackboards)
-		// 	foreach (var blackboardKey in blackboard.Collection1)
-		// 	{
-		// 		var setter = blackboardKey.AppendSetter(accessorInfo.typeName);
-		// 		if (setter != null) sb.AppendLine($"        {setter}");
-		// 	}
-		//
-		// 	sb
-		// 		.AppendLine($"        Debug.LogError($\"Key not recognized: {{keyName}}. Blackboard: {name}.\");")
-		// 		.AppendLine(@"    }")
-		// 		.AppendLine(@"    ");
-		// }
 #endif
 	}
 }

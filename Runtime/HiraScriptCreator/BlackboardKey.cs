@@ -1,33 +1,28 @@
-﻿using System.Text;
-
-namespace UnityEngine
+﻿namespace UnityEngine
 {
     public interface IBlackboardKey
     {
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
         string StructField { get; }
         string ClassProperty { get; }
         string ConstructorArgument { get; }
         string Initializer { get; }
         string GetGetter(string type);
         string GetSetter(string type);
-    }
-    
-    public class BlackboardKey : ScriptableObject
-#if UNITY_EDITOR && !STRIP_EDITOR_CODE
-        , IBlackboardKey
 #endif
+    }
+
+    public abstract class BlackboardKey : ScriptableObject, IBlackboardKey
     {
 #if UNITY_EDITOR && !STRIP_EDITOR_CODE
-        [StringDropdown(true, "bool", "float", "int", "string")]
-        [SerializeField] private string keyType = "bool";
-        [SerializeField] private string defaultValue = "default";
-        [SerializeField] private bool unitySerialization = true;
+        protected abstract string KeyType { get; }
+        protected abstract string DefaultValue { get; }
 
-        public string StructField => $"public {keyType} {name};";
+        public virtual string StructField => $"public {KeyType} {name};";
 
-        public string ClassProperty =>
+        public virtual string ClassProperty =>
             $"        \n" +
-            $"        public {keyType} {name}\n" +
+            $"        public {KeyType} {name}\n" +
             $"        {{\n" +
             $"            get => blackboard.{name};\n" +
             $"            set\n" +
@@ -37,17 +32,24 @@ namespace UnityEngine
             $"            }}\n" +
             $"        }}";
 
-        public string ConstructorArgument =>
-            $"{keyType} in{name} = {(string.IsNullOrWhiteSpace(defaultValue) ? "default" : defaultValue)}";
+        public virtual string ConstructorArgument =>
+            $"{KeyType} in{name} = {(string.IsNullOrWhiteSpace(DefaultValue) ? "default" : DefaultValue)}";
 
-        public string Initializer =>
+        public virtual string Initializer =>
             $"{name} = in{name};";
 
-        public string GetGetter(string type) =>
-            type == keyType ? $"if (keyName == \"{name}\") return {name};" : null;
+        public virtual string GetGetter(string type) =>
+            type == KeyType
+                ? $"                case \"{name}\":\n" +
+                  $"                    return {name};"
+                : null;
 
-        public string GetSetter(string type) =>
-            type == keyType ? $"if (keyName == \"{name}\") {{ {name} = newValue; return; }}" : null;
+        public virtual string GetSetter(string type) =>
+            type == KeyType 
+                ? $"                case \"{name}\":\n" +
+                  $"                    {name} = newValue;\n" +
+                  $"                    return;" 
+                : null;
 #endif
     }
 }
