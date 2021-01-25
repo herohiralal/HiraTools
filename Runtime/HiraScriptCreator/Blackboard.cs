@@ -88,14 +88,14 @@ namespace UnityEngine
 		{
 			var sb = new StringBuilder(250);
 			sb
-				.Append($"        public {typeName}(");
+				.AppendLine($"        public {typeName}(");
 				
 			// constructor arguments
 			for (var i = 0; i < allKeys.Length; i++)
 			{
 				var key = allKeys[i];
-				sb.Append(key.ConstructorArgument);
-				if (i < allKeys.Length - 1) sb.Append(", ");
+				sb.Append($"            {key.ConstructorArgument}");
+				if (i < allKeys.Length - 1) sb.AppendLine(",");
 			}
 
 			sb
