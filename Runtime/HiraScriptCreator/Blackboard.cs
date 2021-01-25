@@ -22,6 +22,7 @@ namespace UnityEngine
 		[SerializeField] private Blackboard parent = null;
 
 #if UNITY_EDITOR && !STRIP_EDITOR_CODE
+		[SerializeField] private ScriptableObject[] dependencies = { };
 		[SerializeField] private string @namespace = "UnityEngine";
 		[SerializeField] [HideInInspector] private string cachedFilePath = "";
 
@@ -31,6 +32,8 @@ namespace UnityEngine
 			new ValueAccessorInfo {niceName = "Integer", typeName = "int"},
 			new ValueAccessorInfo {niceName = "Float", typeName = "float"},
 		};
+
+		public ScriptableObject[] Dependencies => dependencies;
 
 		public string CachedFilePath
 		{

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -8,17 +9,30 @@ using UnityEngine;
 namespace HiraEditor
 {
 #if UNITY_EDITOR && !STRIP_EDITOR_CODE
-    public class DoCreateHiraScript : EndNameEditAction
+    public class DoCreateHiraScript : ScriptableObject//EndNameEditAction
     {
+        [MenuItem("Assets/Convert to Script", true)]
+        private static bool ValidateCreation() => ValidateObjectForScriptConversion(Selection.activeObject);
+        
         [MenuItem("Assets/Convert to Script")]
-        private static void Create()
+        private static void Create() => CreateScriptFrom(Selection.activeObject);
+
+        private static bool ValidateObjectForScriptConversion(Object activeObject) =>
+            activeObject != null && activeObject is ScriptableObject && activeObject is IHiraScriptCreator;
+
+        private static void CreateScriptFrom(Object activeObject)
         {
-            var activeObject = Selection.activeObject;
             var scriptCreator = (IHiraScriptCreator) activeObject;
             var fileData = scriptCreator.FileData;
-            
+
             var creator = CreateInstance<DoCreateHiraScript>();
-            
+            creator.dependencies = new List<ScriptableObject>();
+            foreach (var dependency in scriptCreator.Dependencies)
+            {
+                if (ValidateObjectForScriptConversion(dependency))
+                    creator.dependencies.Add(dependency);
+            }
+
             var sourceDir = Path
                 .GetDirectoryName(AssetDatabase.GetAssetPath(activeObject))
                 ?.Replace('\\', '/');
@@ -30,29 +44,13 @@ namespace HiraEditor
                 scriptCreator.CachedFilePath = classPath;
             }
             
-            if (AssetDatabase.LoadMainAssetAtPath(classPath) == null)
-                ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
-                    creator,
-                    classPath,
-                    (Texture2D) EditorGUIUtility.IconContent("cs Script Icon").image,
-                    fileData);
-            else
-            {
-                creator.Action(0, classPath, fileData);
-                creator.CleanUp();
-            }
-        }
-
-        [MenuItem("Assets/Convert to Script", true)]
-        private static bool ValidateCreation()
-        {
-            var activeObject = Selection.activeObject;
-            return activeObject != null && activeObject is IHiraScriptCreator;
+            creator.Action(classPath, fileData);
         }
 
         [SerializeField] private string toDelete = "";
+        [SerializeField] private List<ScriptableObject> dependencies = null;
 
-        public override void Action(int instanceId, string pathName, string resourceFile)
+        private void Action(string pathName, string resourceFile)
         {
             File.WriteAllText(Path.GetFullPath(pathName), FixLineEndings(resourceFile), new UTF8Encoding(true));
             
@@ -63,6 +61,9 @@ namespace HiraEditor
 
             if (!string.IsNullOrWhiteSpace(toDelete) && AssetDatabase.LoadMainAssetAtPath(toDelete) != null)
                 AssetDatabase.DeleteAsset(toDelete);
+
+            foreach (var dependency in dependencies) CreateScriptFrom(dependency);
+            DestroyImmediate(this);
         }
 
         private static string FixLineEndings(string content)
