@@ -3,13 +3,12 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
-using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
 
 namespace HiraEditor
 {
 #if UNITY_EDITOR && !STRIP_EDITOR_CODE
-    public class DoCreateHiraScript : ScriptableObject//EndNameEditAction
+    public class DoCreateHiraScript : ScriptableObject
     {
         [MenuItem("Assets/Convert to Script", true)]
         private static bool ValidateCreation() => ValidateObjectForScriptConversion(Selection.activeObject);
