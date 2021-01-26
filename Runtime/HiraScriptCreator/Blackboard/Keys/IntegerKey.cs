@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine
 {
-    public class IntegerKey : NumericalKey
+    public class IntegerKey : BlackboardKey, INumericalKey
     {
         [SerializeField] private int defaultValue = 0;
         protected override string KeyType => "int";

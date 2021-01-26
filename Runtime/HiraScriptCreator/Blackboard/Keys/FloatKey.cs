@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine
 {
-    public class FloatKey : NumericalKey
+    public class FloatKey : BlackboardKey, INumericalKey
     {
         [SerializeField] private float defaultValue = 0.0f;
         protected override string KeyType => "float";
