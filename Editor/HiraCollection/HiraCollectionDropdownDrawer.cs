@@ -62,7 +62,7 @@ namespace HiraEditor.HiraAttributes
 				{
 					if (i >= targetsLength) continue;
 
-					if (hierarchy.Any(type => targets[i] == type))
+					if (hierarchy.Any(type => targets[i].IsAssignableFrom(type)))
 					{
 						targetHiraCollectionTypes[i].Add(collection);
 					}
