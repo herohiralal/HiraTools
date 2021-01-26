@@ -1,15 +1,14 @@
 ﻿namespace UnityEngine
 {
-	public class NumericalComparisonQuery : ScriptableObject, IIndividualQuery
+	public abstract class NumericalComparisonQuery<T> : ScriptableObject, IIndividualQuery
 	{
 		[HiraCollectionDropdown(typeof(INumericalKey))]
-		[SerializeField] private BlackboardKey key = null;
-
-		[StringDropdown(false, "==", "!=", ">", ">=", "<", "<=")]
-		[SerializeField] private string comparisonType = "==";
+		[SerializeField] protected BlackboardKey key = null;
+		protected abstract string ComparisonType { get; }
 		
-		[SerializeField] private float targetValue = 0;
+		[SerializeField] protected T targetValue = default;
+		protected abstract string TargetValue { get; }
 
-		public string Condition => $"(blackboard.{key.name} {comparisonType} {targetValue}f)";
+		public virtual string Condition => $"(blackboard.{key.name} {ComparisonType} {TargetValue})";
 	}
 }
