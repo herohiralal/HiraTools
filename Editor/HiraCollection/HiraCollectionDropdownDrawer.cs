@@ -82,6 +82,10 @@ namespace HiraEditor.HiraAttributes
 				var hiraCollectionTypes = targetHiraCollectionTypes[i];
 				foreach (var hiraCollectionType in hiraCollectionTypes)
 				{
+					var relevantAssets = AssetDatabase.FindAssets($"t:{hiraCollectionType.FullName}");
+					foreach (var relevantAsset in relevantAssets)
+						AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(relevantAsset));
+
 					foreach (var hiraCollection in Resources.FindObjectsOfTypeAll(hiraCollectionType))
 					foreach (var o in ((IHiraCollectionEditorInterface) hiraCollection).CollectionInternal[i])
 						if (currentValue == o)
