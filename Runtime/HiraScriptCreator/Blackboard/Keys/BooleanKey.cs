@@ -4,6 +4,6 @@
     {
         [SerializeField] private bool defaultValue = false;
         protected override string KeyType => "bool";
-        protected override string DefaultValue => defaultValue.ToString().ToLowerInvariant();
+        protected override string DefaultValue => defaultValue.ToCode();
     }
 }

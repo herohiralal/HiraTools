@@ -4,7 +4,7 @@
     {
         [SerializeField] protected T defaultValue = default;
         protected override string KeyType => typeof(T).FullName;
-        protected override string DefaultValue => $"{typeof(T).FullName}.{defaultValue}";
+        protected override string DefaultValue => defaultValue.ToCode();
 
         public override string GetGetter(string type) =>
             type == KeyType
