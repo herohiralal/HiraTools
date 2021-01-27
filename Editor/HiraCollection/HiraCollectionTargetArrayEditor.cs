@@ -150,8 +150,7 @@ namespace HiraEditor.HiraCollection
                         () => ResetObject(editor.Target.GetType(), id),
                         () => RemoveObject(id),
                         moveUp,
-                        moveDown,
-                        ref editor.RenameMode);
+                        moveDown);
 
                     if ((expanded))
                     {

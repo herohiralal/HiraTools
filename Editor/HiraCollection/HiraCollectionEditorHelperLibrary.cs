@@ -21,7 +21,7 @@ namespace HiraEditor.HiraCollection
 		}
 
 		internal static bool DrawHeader(SerializedProperty group, SerializedObject targetObject,
-			Action reset, Action remove, Action moveUp, Action moveDown, ref bool renameMode)
+			Action reset, Action remove, Action moveUp, Action moveDown)
 		{
 			Assert.IsNotNull(targetObject);
 			Assert.IsNotNull(group);
@@ -60,22 +60,13 @@ namespace HiraEditor.HiraCollection
 			// Background
 			EditorGUI.DrawRect(backgroundRect, HiraCollectionStyling.HeaderColor);
 
-			// renameMode = EditorGUI.Toggle(toggleRect, "I", renameMode, EditorStyles.miniButton);
-			if (GUI.Button(toggleRect, "R", EditorStyles.miniButton))
+			if (GUI.Button(toggleRect, "O"))
 			{
-				renameMode = !renameMode;
+				Selection.activeObject = targetObject.targetObject;
 			}
 
-			if (renameMode)
-			{
-				labelRect.y += 4;
-				targetObject.targetObject.name = EditorGUI.TextField(labelRect, GUIContent.none,
-					targetObject.targetObject.name, EditorStyles.miniTextField);
-			}
-			else
-			{
-				EditorGUI.LabelField(labelRect, targetObject.targetObject.name, EditorStyles.boldLabel);
-			}
+			
+			EditorGUI.LabelField(labelRect, targetObject.targetObject.name, EditorStyles.boldLabel);
 
 			// foldout
 			group.serializedObject.Update();

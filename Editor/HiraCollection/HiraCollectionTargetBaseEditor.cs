@@ -7,7 +7,6 @@ namespace UnityEditor
 		public ScriptableObject Target { get; private set; }
 		public SerializedObject SerializedObject { get; private set; }
 		private Editor _inspector;
-		public bool RenameMode = false;
 		public SerializedProperty BaseProperty { get; set; }
 
 		public void Repaint() => _inspector.Repaint();
