@@ -17,6 +17,7 @@ namespace UnityEditor
         {
             _refresher = new HiraCollectionEditorRefresher(this);
             _refresher.Init(target, serializedObject);
+            _refresher.OnEnable();
 
             var targetTypes = HIRA_COLLECTION_TARGET_TYPES[target.GetType()];
             var length = targetTypes.Length;
