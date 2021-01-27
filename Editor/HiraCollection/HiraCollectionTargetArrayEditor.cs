@@ -284,7 +284,7 @@ namespace HiraEditor.HiraCollection
         private ScriptableObject CreateNewObject(Type type, int index)
         {
             var createdObject = ScriptableObject.CreateInstance(type);
-            createdObject.hideFlags = HideFlags.HideInInspector | HideFlags.HideInHierarchy;
+            createdObject.hideFlags |= HideFlags.HideInHierarchy;
             createdObject.name = type.Name;
 
             if (createdObject is ICollectionAwareTarget<T> collectionAwareObject
