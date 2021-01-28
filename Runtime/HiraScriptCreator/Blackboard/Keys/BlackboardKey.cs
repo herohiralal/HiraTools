@@ -30,7 +30,7 @@ namespace UnityEngine
         protected virtual string DefaultValueInternal =>
             (string.IsNullOrWhiteSpace(DefaultValue) ? "default" : DefaultValue);
 
-        public virtual string StructField => $"public {KeyType} {name};";
+        public virtual string StructField => $"        public {KeyType} {name};";
         public virtual string ClassProperty
         {
             get
@@ -39,29 +39,31 @@ namespace UnityEngine
                 {
                     var staticFieldName = name.PascalToCamel();
                     var defaultValue = DefaultValueInternal;
-                    return $"        \n" +
-                           $"        private static {KeyType} {staticFieldName} = {defaultValue};\n" +
-                           $"        private static event System.Action On{name}Change = delegate {{ }};\n" +
-                           $"        \n" +
-                           $"        private void On{name}Updated()\n" +
-                           $"        {{\n" +
-                           $"            blackboard.{name} = {staticFieldName};\n" +
-                           $"            OnValueUpdate.Invoke();\n" +
-                           $"        }}\n" +
-                           $"        \n" +
-                           $"        public static {KeyType} {name}\n" +
-                           $"        {{\n" +
-                           $"            get => {staticFieldName};\n" +
-                           $"            set\n" +
-                           $"            {{\n" +
-                           $"                {staticFieldName} = value;\n" +
-                           $"                On{name}Change.Invoke();\n" +
-                           $"            }}\n" +
-                           $"        }}";
+                    return
+                        $"        \n" +
+                        $"        private static {KeyType} {staticFieldName} = {defaultValue};\n" +
+                        $"        private static event System.Action On{name}Change = delegate {{ }};\n" +
+                        $"        \n" +
+                        $"        private void On{name}Updated()\n" +
+                        $"        {{\n" +
+                        $"            blackboard.{name} = {staticFieldName};\n" +
+                        $"            OnValueUpdate.Invoke();\n" +
+                        $"        }}\n" +
+                        $"        \n" +
+                        $"        public static {KeyType} {name}\n" +
+                        $"        {{\n" +
+                        $"            get => {staticFieldName};\n" +
+                        $"            set\n" +
+                        $"            {{\n" +
+                        $"                {staticFieldName} = value;\n" +
+                        $"                On{name}Change.Invoke();\n" +
+                        $"            }}\n" +
+                        $"        }}";
                 }
                 else
                 {
-                    return $"        \n" +
+                    return
+                        $"        \n" +
                         $"        public {KeyType} {name}\n" +
                         $"        {{\n" +
                         $"            get => blackboard.{name};\n" +
@@ -76,10 +78,10 @@ namespace UnityEngine
         }
 
         public virtual string ConstructorArgument =>
-            $"{KeyType}? in{name} = null";
+            $"            {KeyType}? in{name} = null";
 
         public virtual string StructInitializer =>
-            $"{name} = in{name} ?? {DefaultValueInternal};";
+            $"            {name} = in{name} ?? {DefaultValueInternal};";
 
         public string ClassInitializer
         {
@@ -106,10 +108,10 @@ namespace UnityEngine
         }
 
         public string WrapperEventBinder =>
-            $"On{name}Change += On{name}Updated;";
+            $"            On{name}Change += On{name}Updated;";
         
         public string WrapperEventUnbinder =>
-            $"On{name}Change -= On{name}Updated;";
+            $"            On{name}Change -= On{name}Updated;";
 
         public virtual string GetGetter(string type) =>
             type == KeyType

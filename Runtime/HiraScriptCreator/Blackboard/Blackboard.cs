@@ -79,7 +79,7 @@ namespace UnityEngine
 			for (var i = 0; i < allKeys.Length; i++)
 			{
 				var key = allKeys[i];
-				sb.Append($"            {key.ConstructorArgument}");
+				sb.Append(key.ConstructorArgument);
 				if (i < allKeys.Length - 1) sb.AppendLine(",");
 			}
 
@@ -94,10 +94,10 @@ namespace UnityEngine
 				{
 					sb.AppendLine(key.ClassInitializer);
 					if(key.InstanceSynced)
-						sb.AppendLine($"            {key.WrapperEventBinder}");
+						sb.AppendLine(key.WrapperEventBinder);
 				}
 				else
-					sb.AppendLine($"            {key.StructInitializer}");
+					sb.AppendLine(key.StructInitializer);
 			}
 				
 			sb
@@ -114,7 +114,7 @@ namespace UnityEngine
 				foreach (var key in allKeys)
 				{
 					if(key.InstanceSynced)
-						sb.AppendLine($"            {key.WrapperEventUnbinder}");
+						sb.AppendLine(key.WrapperEventUnbinder);
 				}
 				
 				sb
@@ -131,7 +131,7 @@ namespace UnityEngine
 				var sb = new StringBuilder(500);
 				foreach (var key in Collection1)
 				{
-					sb.AppendLine($"        {key.StructField}");
+					sb.AppendLine(key.StructField);
 				}
 
 				return sb.ToString();
