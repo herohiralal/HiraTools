@@ -50,7 +50,7 @@ namespace UnityEngine
 				.AppendLine(@"    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]")
 				.AppendLine($"    public struct {name}")
 				.AppendLine(@"    {")
-				.AppendLine(GetConstructor(name, ""))
+				.AppendLine(GetConstructor(name, false))
 				.AppendLine()
 				.AppendLine(StructFields)
 				.AppendLine(@"    }")
@@ -58,7 +58,7 @@ namespace UnityEngine
 				.AppendLine(@"    [System.Serializable]")
 				.AppendLine($"    public class {name}Wrapper")
 				.AppendLine(@"    {")
-				.AppendLine(GetConstructor($"{name}Wrapper", "blackboard."))
+				.AppendLine(GetConstructor($"{name}Wrapper", true))
 				.AppendLine()
 				.AppendLine(@"        public event System.Action OnValueUpdate = delegate { };")
 				.AppendLine($"        [SerializeField] private {name} blackboard;")
@@ -68,7 +68,7 @@ namespace UnityEngine
 				.AppendLine(@"}")
 				.ToString();
 
-		private string GetConstructor(string typeName, string variableName)
+		private string GetConstructor(string typeName, bool isWrapper)
 		{
 			var sb = new StringBuilder(250);
 			sb
@@ -90,11 +90,37 @@ namespace UnityEngine
 			// initializers
 			foreach (var key in allKeys)
 			{
-				sb.AppendLine($"            {variableName}{key.Initializer}");
+				if (isWrapper)
+				{
+					sb.AppendLine(key.ClassInitializer);
+					if(key.InstanceSynced)
+						sb.AppendLine($"            {key.WrapperEventBinder}");
+				}
+				else
+					sb.AppendLine($"            {key.StructInitializer}");
 			}
 				
 			sb
 				.Append(@"        }"); // constructor over
+
+			if (isWrapper)
+			{
+				sb
+					.AppendLine(@"")
+					.AppendLine(@"")
+					.AppendLine($"        ~{typeName}()")
+					.AppendLine(@"        {");
+
+				foreach (var key in allKeys)
+				{
+					if(key.InstanceSynced)
+						sb.AppendLine($"            {key.WrapperEventUnbinder}");
+				}
+				
+				sb
+					.Append(@"        }");
+			}
+			
 			return sb.ToString();
 		}
 

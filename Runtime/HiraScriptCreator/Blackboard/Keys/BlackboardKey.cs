@@ -8,7 +8,11 @@ namespace UnityEngine
         string StructField { get; }
         string ClassProperty { get; }
         string ConstructorArgument { get; }
-        string Initializer { get; }
+        string StructInitializer { get; }
+        string ClassInitializer { get; }
+        string WrapperEventBinder { get; }
+        string WrapperEventUnbinder { get; }
+        bool InstanceSynced { get; }
         string GetGetter(string type);
         string GetSetter(string type);
 #endif
@@ -23,6 +27,9 @@ namespace UnityEngine
         protected abstract string KeyType { get; }
         protected abstract string DefaultValue { get; }
 
+        protected virtual string DefaultValueInternal =>
+            (string.IsNullOrWhiteSpace(DefaultValue) ? "default" : DefaultValue);
+
         public virtual string StructField => $"public {KeyType} {name};";
         public virtual string ClassProperty
         {
@@ -31,14 +38,14 @@ namespace UnityEngine
                 if (instanceSynced)
                 {
                     var staticFieldName = name.PascalToCamel();
-                    var defaultValue = (string.IsNullOrWhiteSpace(DefaultValue) ? "default" : DefaultValue);
+                    var defaultValue = DefaultValueInternal;
                     return $"        \n" +
                            $"        private static {KeyType} {staticFieldName} = {defaultValue};\n" +
-                           $"        private static event System.Action On{name}Change = null;\n" +
+                           $"        private static event System.Action On{name}Change = delegate {{ }};\n" +
                            $"        \n" +
-                           $"        private void On{name}Updated({KeyType} newValue)\n" +
+                           $"        private void On{name}Updated()\n" +
                            $"        {{\n" +
-                           $"            blackboard.{name} = newValue;\n" +
+                           $"            blackboard.{name} = {staticFieldName};\n" +
                            $"            OnValueUpdate.Invoke();\n" +
                            $"        }}\n" +
                            $"        \n" +
@@ -71,8 +78,38 @@ namespace UnityEngine
         public virtual string ConstructorArgument =>
             $"{KeyType}? in{name} = null";
 
-        public virtual string Initializer =>
-            $"{name} = in{name} ?? {(string.IsNullOrWhiteSpace(DefaultValue) ? "default" : DefaultValue)};";
+        public virtual string StructInitializer =>
+            $"{name} = in{name} ?? {DefaultValueInternal};";
+
+        public string ClassInitializer
+        {
+            get
+            {
+                if (instanceSynced)
+                {
+                    var staticFieldName = name.PascalToCamel();
+                    return
+                        $"            if (in{name}.HasValue)\n" +
+                        $"            {{\n" +
+                        $"                {staticFieldName} = in{name}.Value;\n" +
+                        $"                On{name}Change.Invoke();\n" +
+                        $"            }}\n" +
+                        $"            blackboard.{name} = {staticFieldName};";
+                }
+                else
+                {
+                    var defaultValueInternal = DefaultValueInternal;
+                    return
+                        $"            blackboard.{name} = in{name} ?? {defaultValueInternal};";
+                }
+            }
+        }
+
+        public string WrapperEventBinder =>
+            $"On{name}Change += On{name}Updated;";
+        
+        public string WrapperEventUnbinder =>
+            $"On{name}Change -= On{name}Updated;";
 
         public virtual string GetGetter(string type) =>
             type == KeyType
