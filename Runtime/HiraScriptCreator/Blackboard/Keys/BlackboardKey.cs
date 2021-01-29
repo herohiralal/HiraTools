@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace UnityEngine
+﻿namespace UnityEngine
 {
     public interface IBlackboardKey
     {
