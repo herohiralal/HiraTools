@@ -10,5 +10,6 @@
         [SerializeField] private int value = 0;
 
         protected override string Value => value.ToCode();
+        protected override string NonCodeValue => value.ToString();
     }
 }

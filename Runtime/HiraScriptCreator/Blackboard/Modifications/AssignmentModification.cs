@@ -3,7 +3,13 @@
     public abstract class AssignmentModification : ScriptableObject, IIndividualModification
     {
         protected abstract BlackboardKey Key { get; }
+        protected abstract string NonCodeValue { get; }
         protected abstract string Value { get; }
         public string Modification => $"blackboard->{Key.name} = {Value}";
+
+        private void OnValidate()
+        {
+            if (Key != null) name = $"{Key.name} is {NonCodeValue}";
+        }
     }
 }

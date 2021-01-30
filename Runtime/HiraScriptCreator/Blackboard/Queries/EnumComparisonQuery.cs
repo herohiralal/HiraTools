@@ -15,6 +15,11 @@ namespace UnityEngine
 		[SerializeField] private float weight = 1;
 		public float Weight => weight;
 
+		private void OnValidate()
+		{
+			if (key != null) name = $"{key.name} is {targetValue.ToString().Replace(", ", " and ")}";
+		}
+
 		public virtual string Condition
 		{
 			get

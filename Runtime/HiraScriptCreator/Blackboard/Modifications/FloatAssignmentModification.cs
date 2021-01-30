@@ -10,5 +10,6 @@
         [SerializeField] private float value = 0f;
 
         protected override string Value => value.ToCode();
+        protected override string NonCodeValue => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
 }

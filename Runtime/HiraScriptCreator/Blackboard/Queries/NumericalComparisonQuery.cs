@@ -11,6 +11,11 @@
 		[SerializeField] protected T targetValue = default;
 		protected abstract string TargetValue { get; }
 
+		private void OnValidate()
+		{
+			if (key != null) name = $"{key.name} is {targetValue}";
+		}
+
 		public virtual string Condition => $"(blackboard->{key.name} {ComparisonType} {TargetValue})";
 	}
 }

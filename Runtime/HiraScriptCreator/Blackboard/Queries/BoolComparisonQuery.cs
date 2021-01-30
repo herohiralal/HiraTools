@@ -10,6 +10,10 @@
 
         [SerializeField] private bool invert = false;
 
+        private void OnValidate()
+        {
+            if (key != null) name = $"{key.name} is {!invert}";
+        }
 
         public string Condition => $"({(invert?"!":"")}blackboard->{key.name})";
     }

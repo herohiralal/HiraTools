@@ -10,5 +10,7 @@
         [SerializeField] private T value = default;
 
         protected override string Value => value.ToCode();
+
+        protected override string NonCodeValue => value.ToString().Replace(", ", " and ");
     }
 }
