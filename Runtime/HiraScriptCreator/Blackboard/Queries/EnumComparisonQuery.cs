@@ -5,7 +5,7 @@ namespace UnityEngine
 		private const string has_flag = "Has Flag";
 		private const string does_not_have_flag = "Does not have Flag";
 
-		[HiraCollectionDropdown(typeof(EnumKey<>))]
+		[HiraCollectionDropdown(typeof(EnumKey))]
 		[SerializeField] protected EnumKey<T> key = null;
 
 		[StringDropdown(false, "==", "!=", ">", ">=", "<", "<=", has_flag, does_not_have_flag)]

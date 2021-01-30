@@ -1,6 +1,10 @@
 ﻿namespace UnityEngine
 {
-    public abstract class EnumKey<T> : BlackboardKey where T : System.Enum
+    public abstract class EnumKey : BlackboardKey
+    {
+    }
+
+    public abstract class EnumKey<T> : EnumKey where T : System.Enum
     {
         [SerializeField] protected T defaultValue = default;
         protected override string KeyType => typeof(T).FullName;
