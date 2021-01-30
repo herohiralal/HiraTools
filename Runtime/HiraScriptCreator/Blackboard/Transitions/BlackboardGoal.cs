@@ -11,9 +11,11 @@ namespace UnityEngine
 		
 		public string Name => name;
 		public string TargetHeuristicString =>
-			Collection2
-				.ConcatenateStringsWith(
-					q=>$"({q.Condition} ? 0 : {q.Weight})", 
-					" + ");
+			Collection2.Length > 0
+				? Collection2
+					.ConcatenateStringsWith(
+						q => $"({q.Condition} ? 0 : {q.Weight})",
+						" + ")
+				: "0";
 	}
 }

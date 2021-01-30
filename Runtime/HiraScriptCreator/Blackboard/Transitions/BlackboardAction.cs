@@ -11,14 +11,17 @@ namespace UnityEngine
 		
 		public string Name => name;
 		public string PreconditionCheck =>
-			Collection1
-				.ConcatenateStringsWith(
-					q => q.Condition,
-					" && ");
+			Collection1.Length > 0
+				? Collection1
+					.ConcatenateStringsWith(
+						q => q.Condition,
+						" && ")
+				: "true";
 
 		public string ApplyEffect =>
 			Collection2
 				.ConcatenateStringsWith(m => $" {m.Modification}",
-					";");
+					"; ",
+					suffix: ";");
 	}
 }
