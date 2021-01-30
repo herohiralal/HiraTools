@@ -37,5 +37,20 @@ namespace UnityEditor
 		protected virtual void OnInspectorGUI()
 		{
 		}
+
+		protected virtual void DrawObjectNameField()
+		{
+			using (new EditorGUILayout.HorizontalScope())
+			{
+				EditorGUILayout.PrefixLabel("Object Name");
+				EditorGUI.BeginChangeCheck();
+				var updatedName = EditorGUILayout.TextField(GUIContent.none, Target.name);
+				if (EditorGUI.EndChangeCheck())
+				{
+					Undo.RegisterCompleteObjectUndo(Target, $"Renamed {Target.name}");
+					Target.name = updatedName;
+				}
+			}
+		}
 	}
 }
