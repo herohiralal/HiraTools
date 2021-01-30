@@ -88,6 +88,21 @@ namespace UnityEngine
 				.AppendLine(@"    {")
 				.Append(ArchetypeIndices)
 				.AppendLine(@"    }")
+				.AppendLine(@"    ")
+				.AppendLine(@"    [Unity.Burst.BurstCompile]")
+				.AppendLine($"    public struct {name}PlannerJob : Unity.Jobs.IJob")
+				.AppendLine(@"    {")
+				.AppendLine($"        [Unity.Collections.DeallocateOnJobCompletion] private Unity.Collections.NativeArray<{name}> _datasets;")
+				.AppendLine(@"        [Unity.Collections.ReadOnly] private readonly int _goal;")
+				.AppendLine($"        [Unity.Collections.ReadOnly] private readonly Unity.Collections.NativeArray<{name}ActionData> _actions;")
+				.AppendLine(@"        [Unity.Collections.ReadOnly] private readonly int _actionsCount;")
+				.AppendLine(@"        [Unity.Collections.ReadOnly] private readonly float _maxFScore;")
+				.AppendLine(@"        [Unity.Collections.WriteOnly] public Unity.Collections.NativeArray<int> Plan;")
+				.AppendLine(@"        ")
+				.AppendLine(@"        public void Execute()")
+				.AppendLine(@"        {")
+				.AppendLine(@"        }")
+				.AppendLine(@"    }")
 				.AppendLine(@"}")
 				.ToString();
 
@@ -244,20 +259,24 @@ namespace UnityEngine
 		{
 			get
 			{
+				int i;
 				var s = "";
 				s += "        public const int GOAL_UNINITIALIZED = 0;\n";
-				for (var i = 0; i < Collection2.Length; i++)
+				for (i = 0; i < Collection2.Length; i++)
 				{
 					s += $"        public const int GOAL_{Collection2[i].Name.PascalToAllUpper()} = {i + 1};\n";
 				}
 
+				s += $"        public const int GOAL_COUNT = {i};\n";
 				s += "        public const int ACTION_UNINITIALIZED = 0;\n";
 				
-				for (var i = 0; i < Collection3.Length; i++)
+				for (i = 0; i < Collection3.Length; i++)
 				{
 					s += $"        public const int ACTION_{Collection3[i].Name.PascalToAllUpper()} = {i + 1};\n";
 				}
 
+				s += $"        public const int ACTION_COUNT = {i};\n";
+				
 				return s;
 			}
 		}
