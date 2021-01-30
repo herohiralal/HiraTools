@@ -13,12 +13,18 @@ namespace UnityEngine
 		
 		[SerializeField] protected T targetValue = default;
 
-		public virtual string Condition =>
-			comparisonType switch
+		public virtual string Condition
+		{
+			get
 			{
-				has_flag => $"(blackboard.{key.name}.HasFlag({targetValue.ToCode()})",
-				does_not_have_flag => $"!(blackboard.{key.name}.HasFlag({targetValue.ToCode()})",
-				_ => $"(blackboard.{key.name} {comparisonType} {targetValue.ToCode()})"
-			};
+				var value = targetValue.ToCode();
+				return comparisonType switch
+				{
+					has_flag => $"(blackboard & {value} == {value})",
+					does_not_have_flag => $"(blackboard & {value} != {value})",
+					_ => $"(blackboard.{key.name} {comparisonType} {value})"
+				};
+			}
+		}
 	}
 }
