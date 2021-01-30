@@ -95,13 +95,11 @@ namespace HiraEditor.HiraCollection
 				else if (leftRect.Contains(e.mousePosition) && e.button == 0 && moveUp != null)
 				{
 					moveUp();
-					Debug.Log("move");
 					e.Use();
 				}
 				else if (rightRect.Contains(e.mousePosition) && e.button == 0 && moveDown != null)
 				{
 					moveDown();
-					Debug.Log("move");
 					e.Use();
 				}
 				else if (labelRect.Contains(e.mousePosition))
