@@ -15,11 +15,13 @@ namespace UnityEngine
 		, IHiraScriptCreator
 #endif
 	{
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
 #pragma warning disable 414
 		private static readonly string collection1_name = "Blackboard Values";
 		private static readonly string collection2_name = "Goals";
 		private static readonly string collection3_name = "Actions";
 #pragma warning restore 414
+#endif
 		
 		[SerializeField] private ScriptableObject[] dependencies = { };
 		public string @namespace = "UnityEngine";
@@ -90,17 +92,93 @@ namespace UnityEngine
 				.AppendLine(@"    }")
 				.AppendLine(@"    ")
 				.AppendLine(@"    [Unity.Burst.BurstCompile]")
-				.AppendLine($"    public struct {name}PlannerJob : Unity.Jobs.IJob")
+				.AppendLine($"    public unsafe struct {name}PlannerJob : Unity.Jobs.IJob")
 				.AppendLine(@"    {")
-				.AppendLine($"        [Unity.Collections.DeallocateOnJobCompletion] private Unity.Collections.NativeArray<{name}> _datasets;")
+				.AppendLine($"        [Unity.Collections.ReadOnly] private readonly int _datasetsLength;")
+				.AppendLine($"        [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction] private {name}* _datasetsPtr;")
+				.AppendLine($"        [Unity.Collections.DeallocateOnJobCompletion] private readonly Unity.Collections.NativeArray<{name}> _datasets;")
 				.AppendLine(@"        [Unity.Collections.ReadOnly] private readonly int _goal;")
 				.AppendLine($"        [Unity.Collections.ReadOnly] private readonly Unity.Collections.NativeArray<{name}ActionData> _actions;")
 				.AppendLine(@"        [Unity.Collections.ReadOnly] private readonly int _actionsCount;")
 				.AppendLine(@"        [Unity.Collections.ReadOnly] private readonly float _maxFScore;")
 				.AppendLine(@"        [Unity.Collections.WriteOnly] public Unity.Collections.NativeArray<int> Plan;")
 				.AppendLine(@"        ")
+				.AppendLine($"        public {name}PlannerJob({name}* dataset, int goal, int maxPlanLength, float maxFScore,")
+				.AppendLine($"            Unity.Collections.NativeArray<{name}ActionData> actions, Unity.Collections.NativeArray<int> plan)")
+				.AppendLine(@"        {")
+				.AppendLine($"            _datasets = new Unity.Collections.NativeArray<{name}>(maxPlanLength + 1, Unity.Collections.Allocator.TempJob) {{[0] = *dataset}};")
+				.AppendLine($"            _datasetsPtr = ({name}*) Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafePtr(_datasets);")
+				.AppendLine(@"            _datasetsLength = maxPlanLength + 1;")
+				.AppendLine(@"            _actions = actions;")
+				.AppendLine(@"            _actionsCount = actions.Length;")
+				.AppendLine(@"            _maxFScore = maxFScore;")
+				.AppendLine(@"            _goal = goal;")
+				.AppendLine(@"            Plan = plan;")
+				.AppendLine(@"        }")
+				.AppendLine(@"        ")
 				.AppendLine(@"        public void Execute()")
 				.AppendLine(@"        {")
+				.AppendLine(@"            float threshold = GetHeuristic(_goal, _datasetsPtr), score;")
+				.AppendLine(@"            while ((score = PerformHeuristicEstimatedSearch(1, 0, threshold)) < 0 && !(score > _maxFScore) && !(score < 0)) threshold = score;")
+				.AppendLine(@"            _datasetsPtr = null;")
+				.AppendLine(@"        }")
+				.AppendLine(@"        ")
+				.AppendLine(@"        private float PerformHeuristicEstimatedSearch(int index, float cost, float threshold)")
+				.AppendLine(@"        {")
+				.AppendLine(@"            var heuristic = GetHeuristic(_goal, _datasetsPtr + index - 1);")
+				.AppendLine(@"            var fScore = cost + heuristic;")
+				.AppendLine(@"            if (fScore > threshold) return fScore;")
+				.AppendLine(@"            ")
+				.AppendLine(@"            if (heuristic == 0)")
+				.AppendLine(@"            {")
+				.AppendLine(@"                Plan[0] = index - 1;")
+				.AppendLine(@"                return -1;")
+				.AppendLine(@"            }")
+				.AppendLine(@"            ")
+				.AppendLine(@"            if (index == _datasetsLength) return float.MaxValue;")
+				.AppendLine(@"            ")
+				.AppendLine(@"            var min = float.MaxValue;")
+				.AppendLine(@"            ")
+				.AppendLine(@"            for (var i = 0; i < _actionsCount; i++)")
+				.AppendLine(@"            {")
+				.AppendLine(@"                var action = _actions[i];")
+				.AppendLine(@"                ")
+				.AppendLine(@"                if (!PreconditionCheck(action.ArchetypeIndex, _datasetsPtr + index - 1)) continue;")
+				.AppendLine(@"                ")
+				.AppendLine(@"                *(_datasetsPtr + index) = *(_datasetsPtr + index - 1);")
+				.AppendLine(@"                ApplyEffect(action.ArchetypeIndex, _datasetsPtr + index);")
+				.AppendLine(@"                ")
+				.AppendLine(@"                float score;")
+				.AppendLine(@"                if ((score = PerformHeuristicEstimatedSearch(index + 1, cost + action.Cost, threshold)) < 0)")
+				.AppendLine(@"                {")
+				.AppendLine(@"                    Plan[index] = action.Identifier;")
+				.AppendLine(@"                    return -1;")
+				.AppendLine(@"                }")
+				.AppendLine(@"                ")
+				.AppendLine(@"                min = Unity.Mathematics.math.min(score, min);")
+				.AppendLine(@"            }")
+				.AppendLine(@"            ")
+				.AppendLine(@"            return min;")
+				.AppendLine(@"        }")
+				.AppendLine(@"        ")
+				.AppendLine($"        public static int GetHeuristic(int target, {name}* blackboard) =>")
+				.AppendLine(@"            target switch")
+				.AppendLine(@"            {")
+				.Append(GoalHeuristics)
+				.AppendLine(@"            };")
+				.AppendLine(@"        ")
+				.AppendLine($"        public static bool PreconditionCheck(int target, {name}* blackboard) =>")
+				.AppendLine(@"            target switch")
+				.AppendLine(@"            {")
+				.Append(ActionPreconditions)
+				.AppendLine(@"            };")
+				.AppendLine(@"        ")
+				.AppendLine($"        public static void ApplyEffect(int target, {name}* blackboard)")
+				.AppendLine(@"        {")
+				.AppendLine(@"            switch (target)")
+				.AppendLine(@"            {")
+				.Append(ActionModifications)
+				.AppendLine(@"            }")
 				.AppendLine(@"        }")
 				.AppendLine(@"    }")
 				.AppendLine(@"}")
@@ -277,6 +355,39 @@ namespace UnityEngine
 
 				s += $"        public const int ACTION_COUNT = {i};\n";
 				
+				return s;
+			}
+		}
+
+		private string GoalHeuristics
+		{
+			get
+			{
+				var s = "";
+				s += $"                {name}ArchetypeIndices.GOAL_UNINITIALIZED => throw new System.Exception(\"Uninitialized goal data received by {name}PlannerJob.\"),\n";
+				s += $"                _ => throw new System.Exception($\"Invalid action data received by {name}PlannerJob: {{target}}.\")\n";
+				return s;
+			}
+		}
+
+		private string ActionPreconditions
+		{
+			get
+			{
+				var s = "";
+				s += $"                {name}ArchetypeIndices.ACTION_UNINITIALIZED => throw new System.Exception(\"Uninitialized action data received in {name}PlannerJob.\"),\n";
+				s += $"                _ => throw new System.Exception($\"Invalid action data received by {name}PlannerJob: {{target}}.\")\n";
+				return s;
+			}
+		}
+
+		private string ActionModifications
+		{
+			get
+			{
+				var s = "";
+				s += $"                case {name}ArchetypeIndices.ACTION_UNINITIALIZED: throw new System.Exception(\"Uninitialized action data received in {name}PlannerJob.\");\n";
+				s += $"                default: throw new System.Exception($\"Invalid action data received by {name}PlannerJob: {{target}}.\");\n";
 				return s;
 			}
 		}
