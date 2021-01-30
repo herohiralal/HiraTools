@@ -2,23 +2,25 @@ using System.Text;
 
 namespace UnityEngine
 {
-#if UNITY_EDITOR && !STRIP_EDITOR_CODE
 	[System.Serializable]
 	internal struct ValueAccessorInfo
 	{
 		public string typeName;
 		public string niceName;
 	}
-#endif
 
 	[CreateAssetMenu]
-	public class Blackboard : HiraCollection<IBlackboardKey>
+	public class Blackboard : HiraCollection<IBlackboardKey, IBlackboardGoal, IBlackboardAction>
 #if UNITY_EDITOR && !STRIP_EDITOR_CODE
 		, IHiraScriptCreator
 #endif
 	{
-#if UNITY_EDITOR && !STRIP_EDITOR_CODE
-		// [SerializeField] private Blackboard parent = null;
+#pragma warning disable 414
+		private static readonly string collection1_name = "Blackboard Values";
+		private static readonly string collection2_name = "Goals";
+		private static readonly string collection3_name = "Actions";
+#pragma warning restore 414
+		
 		[SerializeField] private ScriptableObject[] dependencies = { };
 		public string @namespace = "UnityEngine";
 		[SerializeField] [HideInInspector] private string cachedFilePath = "";
@@ -30,6 +32,7 @@ namespace UnityEngine
 			new ValueAccessorInfo {niceName = "Float", typeName = "float"},
 		};
 
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
 		public ScriptableObject[] Dependencies => dependencies;
 
 		public string CachedFilePath
@@ -41,7 +44,7 @@ namespace UnityEngine
 		public string FileName => name;
 
 		public string FileData =>
-			new StringBuilder(5000)
+			new StringBuilder(30000)
 				.AppendLine(@"// ReSharper disable All") // it's a generated file, obviously not state of the art
 				.AppendLine(@"")
 				.AppendLine($"namespace {@namespace}")
@@ -52,7 +55,7 @@ namespace UnityEngine
 				.AppendLine(@"    {")
 				.AppendLine(GetConstructor(name, false))
 				.AppendLine()
-				.AppendLine(StructFields)
+				.Append(StructFields)
 				.AppendLine(@"    }")
 				.AppendLine(@"    ")
 				.AppendLine(@"    [System.Serializable]")
@@ -64,6 +67,26 @@ namespace UnityEngine
 				.AppendLine($"        [SerializeField] private {name} blackboard;")
 				.Append(ClassProperties)
 				.Append(Accessors)
+				.AppendLine(@"    }")
+				.AppendLine(@"    ")
+				.AppendLine(@"    [Unity.Burst.BurstCompile]")
+				.AppendLine($"    public readonly struct {name}ActionData")
+				.AppendLine(@"    {")
+				.AppendLine(@"        [Unity.Collections.ReadOnly] public readonly int Identifier;")
+				.AppendLine(@"        [Unity.Collections.ReadOnly] public readonly int ArchetypeIndex;")
+				.AppendLine(@"        [Unity.Collections.ReadOnly] public readonly float Cost;")
+				.AppendLine(@"        ")
+				.AppendLine($"        public {name}ActionData(int identifier, int archetypeIndex, float cost)")
+				.AppendLine(@"        {")
+				.AppendLine(@"            Identifier = identifier;")
+				.AppendLine(@"            ArchetypeIndex = archetypeIndex;")
+				.AppendLine(@"            Cost = cost;")
+				.AppendLine(@"        }")
+				.AppendLine(@"    }")
+				.AppendLine(@"    ")
+				.AppendLine($"    public static class {name}ArchetypeIndices")
+				.AppendLine(@"    {")
+				.Append(ArchetypeIndices)
 				.AppendLine(@"    }")
 				.AppendLine(@"}")
 				.ToString();
@@ -215,6 +238,28 @@ namespace UnityEngine
 				.AppendLine(@"            }")
 				.AppendLine(@"        }")
 				.ToString();
+		}
+
+		private string ArchetypeIndices
+		{
+			get
+			{
+				var s = "";
+				s += "        public const int GOAL_UNINITIALIZED = 0;\n";
+				for (var i = 0; i < Collection2.Length; i++)
+				{
+					s += $"        public const int GOAL_{Collection2[i].Name.PascalToAllUpper()} = {i + 1};\n";
+				}
+
+				s += "        public const int ACTION_UNINITIALIZED = 0;\n";
+				
+				for (var i = 0; i < Collection3.Length; i++)
+				{
+					s += $"        public const int ACTION_{Collection3[i].Name.PascalToAllUpper()} = {i + 1};\n";
+				}
+
+				return s;
+			}
 		}
 #endif
 	}
