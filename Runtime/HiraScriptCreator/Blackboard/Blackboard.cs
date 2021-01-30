@@ -125,15 +125,15 @@ namespace UnityEngine
 				.AppendLine(@"        ")
 				.AppendLine(@"        private float PerformHeuristicEstimatedSearch(int index, float cost, float threshold)")
 				.AppendLine(@"        {")
-				.AppendLine(@"            var heuristic = GetHeuristic(_goal, _datasetsPtr + index - 1);")
-				.AppendLine(@"            var fScore = cost + heuristic;")
-				.AppendLine(@"            if (fScore > threshold) return fScore;")
-				.AppendLine(@"            ")
-				.AppendLine(@"            if (heuristic == 0)")
+				.AppendLine(@"            int heuristic;")
+				.AppendLine(@"            if ((heuristic = GetHeuristic(_goal, _datasetsPtr + index - 1)) == 0)")
 				.AppendLine(@"            {")
 				.AppendLine(@"                Plan[0] = index - 1;")
 				.AppendLine(@"                return -1;")
 				.AppendLine(@"            }")
+				.AppendLine(@"            ")
+				.AppendLine(@"            var fScore = cost + heuristic;")
+				.AppendLine(@"            if (fScore > threshold) return fScore;")
 				.AppendLine(@"            ")
 				.AppendLine(@"            if (index == _datasetsLength) return float.MaxValue;")
 				.AppendLine(@"            ")
@@ -340,15 +340,18 @@ namespace UnityEngine
 				int i;
 				var s = "";
 				s += "        public const int GOAL_UNINITIALIZED = 0;\n";
-				for (i = 0; i < Collection2.Length; i++)
+				
+				var collection2Length = Collection2.Length;
+				for (i = 0; i < collection2Length; i++)
 				{
 					s += $"        public const int GOAL_{Collection2[i].Name.PascalToAllUpper()} = {i + 1};\n";
 				}
 
 				s += $"        public const int GOAL_COUNT = {i};\n";
 				s += "        public const int ACTION_UNINITIALIZED = 0;\n";
-				
-				for (i = 0; i < Collection3.Length; i++)
+
+				var collection3Length = Collection3.Length;
+				for (i = 0; i < collection3Length; i++)
 				{
 					s += $"        public const int ACTION_{Collection3[i].Name.PascalToAllUpper()} = {i + 1};\n";
 				}
@@ -365,6 +368,14 @@ namespace UnityEngine
 			{
 				var s = "";
 				s += $"                {name}ArchetypeIndices.GOAL_UNINITIALIZED => throw new System.Exception(\"Uninitialized goal data received by {name}PlannerJob.\"),\n";
+				
+				var collection2Length = Collection2.Length;
+				for (var i = 0; i < collection2Length; i++)
+				{
+					var goal = Collection2[i];
+					s += $"                {name}ArchetypeIndices.GOAL_{goal.Name.PascalToAllUpper()} => {goal.TargetHeuristicString},\n";
+				}
+				
 				s += $"                _ => throw new System.Exception($\"Invalid action data received by {name}PlannerJob: {{target}}.\")\n";
 				return s;
 			}
@@ -376,6 +387,14 @@ namespace UnityEngine
 			{
 				var s = "";
 				s += $"                {name}ArchetypeIndices.ACTION_UNINITIALIZED => throw new System.Exception(\"Uninitialized action data received in {name}PlannerJob.\"),\n";
+
+				var collection3Length = Collection3.Length;
+				for (var i = 0; i < collection3Length; i++)
+				{
+					var action = Collection3[i];
+					s += $"                {name}ArchetypeIndices.ACTION_{action.Name.PascalToAllUpper()} => {action.PreconditionCheck},\n";
+				}
+				
 				s += $"                _ => throw new System.Exception($\"Invalid action data received by {name}PlannerJob: {{target}}.\")\n";
 				return s;
 			}
@@ -387,6 +406,14 @@ namespace UnityEngine
 			{
 				var s = "";
 				s += $"                case {name}ArchetypeIndices.ACTION_UNINITIALIZED: throw new System.Exception(\"Uninitialized action data received in {name}PlannerJob.\");\n";
+
+				var collection3Length = Collection3.Length;
+				for (var i = 0; i < collection3Length; i++)
+				{
+					var action = Collection3[i];
+					s += $"                case {name}ArchetypeIndices.ACTION_{action.Name.PascalToAllUpper()}:{action.ApplyEffect} break;\n";
+				}
+				
 				s += $"                default: throw new System.Exception($\"Invalid action data received by {name}PlannerJob: {{target}}.\");\n";
 				return s;
 			}
