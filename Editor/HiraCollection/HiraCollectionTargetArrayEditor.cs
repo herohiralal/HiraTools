@@ -28,11 +28,13 @@ namespace HiraEditor.HiraCollection
 
         private Dictionary<Type, Type> _editorTypes;
         private List<HiraCollectionTargetBaseEditor> _editors;
+        private readonly string _title;
 
-        public HiraCollectionTargetArrayEditor(Editor editor)
+        public HiraCollectionTargetArrayEditor(Editor editor, string title)
         {
             Assert.IsNotNull(editor);
             _baseEditor = editor;
+            _title = title;
         }
 
         public void Init(Object asset, SerializedObject serializedObject, string objectsPropertyName)
@@ -117,7 +119,9 @@ namespace HiraEditor.HiraCollection
 
             using (new EditorGUI.DisabledScope(!isEditable))
             {
-                EditorGUILayout.LabelField("Contents".GetGUIContent(), EditorStyles.boldLabel);
+                EditorGUILayout.Space();
+                HiraCollectionEditorHelperLibrary.DrawSplitter(4f);
+                EditorGUILayout.LabelField(_title.GetGUIContent(), EditorStyles.boldLabel);
 
                 bool showAll, hideAll;
                 using (new EditorGUILayout.HorizontalScope())

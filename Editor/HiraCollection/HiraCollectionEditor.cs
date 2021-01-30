@@ -19,7 +19,8 @@ namespace UnityEditor
             _refresher.Init(target, serializedObject);
             _refresher.OnEnable();
 
-            var targetTypes = HIRA_COLLECTION_TARGET_TYPES[target.GetType()];
+            var objectType = target.GetType();
+            var targetTypes = HIRA_COLLECTION_TARGET_TYPES[objectType];
             var length = targetTypes.Length;
             _targetArrays = new IHiraCollectionTargetArrayEditor[length];
             _collectionProperties = new string[length];
@@ -27,9 +28,9 @@ namespace UnityEditor
             for (var i = 0; i < length; i++)
             {
                 var collectionProperty = $"collection{i + 1}";
-                
+                if (!objectType.GetData($"collection{i+1}_name", out string title)) title = "Contents";
                 var editor = (IHiraCollectionTargetArrayEditor) Activator.CreateInstance(
-                    typeof(HiraCollectionTargetArrayEditor<>).MakeGenericType(targetTypes[i]), new object[] {this});
+                    typeof(HiraCollectionTargetArrayEditor<>).MakeGenericType(targetTypes[i]), this, title);
                 editor.Init(target, serializedObject, collectionProperty);
                 
                 _targetArrays[i] = editor;

@@ -7,9 +7,9 @@ namespace HiraEditor.HiraCollection
 {
 	public static class HiraCollectionEditorHelperLibrary
 	{
-		internal static void DrawSplitter()
+		internal static void DrawSplitter(float size = 2f)
 		{
-			var rect = GUILayoutUtility.GetRect(1f, 1f);
+			var rect = GUILayoutUtility.GetRect(size, size);
 
 			rect.xMin = 0f;
 			rect.width += 4f;
