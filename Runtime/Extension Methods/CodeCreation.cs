@@ -1,3 +1,5 @@
+using System.Linq;
+
 public static class CodeCreation
 {
 	public static string ToCode(this float f) => $"{f}f";
@@ -34,4 +36,7 @@ public static class CodeCreation
 		var s = new string(charArray);
 		return underscore ? $"_{s}" : s;
 	}
+
+	public static string PascalToAllUpper(this string input) =>
+		string.Concat(input.Select((x, i) => i > 0 && char.IsUpper(x) ? $"_{char.ToUpper(x)}" : $"{char.ToUpper(x)}"));
 }
