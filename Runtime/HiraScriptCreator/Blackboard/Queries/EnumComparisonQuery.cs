@@ -12,6 +12,8 @@ namespace UnityEngine
 		[SerializeField] protected string comparisonType = "==";
 		
 		[SerializeField] protected T targetValue = default;
+		[SerializeField] private float weight = 1;
+		public float Weight => weight;
 
 		public virtual string Condition
 		{
@@ -20,9 +22,9 @@ namespace UnityEngine
 				var value = targetValue.ToCode();
 				return comparisonType switch
 				{
-					has_flag => $"(blackboard & {value} == {value})",
-					does_not_have_flag => $"(blackboard & {value} != {value})",
-					_ => $"(blackboard.{key.name} {comparisonType} {value})"
+					has_flag => $"(blackboard->{key.name} & {value} == {value})",
+					does_not_have_flag => $"(blackboard->{key.name} & {value} != {value})",
+					_ => $"(blackboard->{key.name} {comparisonType} {value})"
 				};
 			}
 		}
