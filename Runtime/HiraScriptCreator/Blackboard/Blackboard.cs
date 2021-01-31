@@ -116,52 +116,7 @@ namespace UnityEngine
 				.AppendLine(@"            Plan = plan;")
 				.AppendLine(@"        }")
 				.AppendLine(@"        ")
-				.AppendLine(@"        public void Execute()")
-				.AppendLine(@"        {")
-				.AppendLine(@"            float threshold = GetHeuristic(_goal, _datasetsPtr), score;")
-				.AppendLine(@"            while ((score = PerformHeuristicEstimatedSearch(1, 0, threshold)) > 0 && score < _maxFScore) threshold = score;")
-				.AppendLine(@"            _datasetsPtr = null;")
-				.AppendLine(@"        }")
-				.AppendLine(@"        ")
-				.AppendLine(@"        private float PerformHeuristicEstimatedSearch(int index, float cost, float threshold)")
-				.AppendLine(@"        {")
-				.AppendLine(@"            int heuristic = GetHeuristic(_goal, _datasetsPtr + index - 1);")
-				.AppendLine(@"            ")
-				.AppendLine(@"            var fScore = cost + heuristic;")
-				.AppendLine(@"            if (fScore > threshold) return fScore;")
-				.AppendLine(@"            ")
-				.AppendLine(@"            if (heuristic == 0)")
-				.AppendLine(@"            {")
-				.AppendLine(@"                Plan[0] = index - 1;")
-				.AppendLine(@"                return -1;")
-				.AppendLine(@"            }")
-				.AppendLine(@"            ")
-				.AppendLine(@"            if (index == _datasetsLength) return float.MaxValue;")
-				.AppendLine(@"            ")
-				.AppendLine(@"            var min = float.MaxValue;")
-				.AppendLine(@"            ")
-				.AppendLine(@"            for (var i = 0; i < _actionsCount; i++)")
-				.AppendLine(@"            {")
-				.AppendLine(@"                var action = _actions[i];")
-				.AppendLine(@"                ")
-				.AppendLine(@"                if (!PreconditionCheck(action.ArchetypeIndex, _datasetsPtr + index - 1)) continue;")
-				.AppendLine(@"                ")
-				.AppendLine(@"                *(_datasetsPtr + index) = *(_datasetsPtr + index - 1);")
-				.AppendLine(@"                ApplyEffect(action.ArchetypeIndex, _datasetsPtr + index);")
-				.AppendLine(@"                ")
-				.AppendLine(@"                float score;")
-				.AppendLine(@"                if ((score = PerformHeuristicEstimatedSearch(index + 1, cost + action.Cost, threshold)) < 0)")
-				.AppendLine(@"                {")
-				.AppendLine(@"                    Plan[index] = action.Identifier;")
-				.AppendLine(@"                    return -1;")
-				.AppendLine(@"                }")
-				.AppendLine(@"                ")
-				.AppendLine(@"                min = Unity.Mathematics.math.min(score, min);")
-				.AppendLine(@"            }")
-				.AppendLine(@"            ")
-				.AppendLine(@"            return min;")
-				.AppendLine(@"        }")
-				.AppendLine(@"        ")
+				.AppendLine(planner_algorithm)
 				.AppendLine($"        public static int GetHeuristic(int target, {name}* blackboard) =>")
 				.AppendLine(@"            target switch")
 				.AppendLine(@"            {")
@@ -362,6 +317,54 @@ namespace UnityEngine
 				return s;
 			}
 		}
+
+		private const string planner_algorithm =
+			@"        public void Execute()" + "\n" +
+		    @"        {" + "\n" +
+		    @"            float threshold = GetHeuristic(_goal, _datasetsPtr), score;" + "\n" +
+		    @"            while ((score = PerformHeuristicEstimatedSearch(1, 0, threshold)) > 0 && score < _maxFScore) threshold = score;" + "\n" +
+		    @"            _datasetsPtr = null;" + "\n" +
+		    @"        }" + "\n" +
+		    @"        " + "\n" +
+		    @"        private float PerformHeuristicEstimatedSearch(int index, float cost, float threshold)" + "\n" +
+		    @"        {" + "\n" +
+		    @"            int heuristic = GetHeuristic(_goal, _datasetsPtr + index - 1);" + "\n" +
+		    @"            " + "\n" +
+		    @"            var fScore = cost + heuristic;" + "\n" +
+		    @"            if (fScore > threshold) return fScore;" + "\n" +
+		    @"            " + "\n" +
+		    @"            if (heuristic == 0)" + "\n" +
+		    @"            {" + "\n" +
+		    @"                Plan[0] = index - 1;" + "\n" +
+		    @"                return -1;" + "\n" +
+		    @"            }" + "\n" +
+		    @"            " + "\n" +
+		    @"            if (index == _datasetsLength) return float.MaxValue;" + "\n" +
+		    @"            " + "\n" +
+		    @"            var min = float.MaxValue;" + "\n" +
+		    @"            " + "\n" +
+		    @"            for (var i = 0; i < _actionsCount; i++)" + "\n" +
+		    @"            {" + "\n" +
+		    @"                var action = _actions[i];" + "\n" +
+		    @"                " + "\n" +
+		    @"                if (!PreconditionCheck(action.ArchetypeIndex, _datasetsPtr + index - 1)) continue;" + "\n" +
+		    @"                " + "\n" +
+		    @"                *(_datasetsPtr + index) = *(_datasetsPtr + index - 1);" + "\n" +
+		    @"                ApplyEffect(action.ArchetypeIndex, _datasetsPtr + index);" + "\n" +
+		    @"                " + "\n" +
+		    @"                float score;" + "\n" +
+		    @"                if ((score = PerformHeuristicEstimatedSearch(index + 1, cost + action.Cost, threshold)) < 0)" + "\n" +
+		    @"                {" + "\n" +
+		    @"                    Plan[index] = action.Identifier;" + "\n" +
+		    @"                    return -1;" + "\n" +
+		    @"                }" + "\n" +
+		    @"                " + "\n" +
+		    @"                min = Unity.Mathematics.math.min(score, min);" + "\n" +
+		    @"            }" + "\n" +
+		    @"            " + "\n" +
+		    @"            return min;" + "\n" +
+		    @"        }" + "\n" +
+			@"        ";
 
 		private string GoalHeuristics
 		{
