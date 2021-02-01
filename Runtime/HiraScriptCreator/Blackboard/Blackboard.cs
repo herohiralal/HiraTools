@@ -292,7 +292,7 @@ namespace UnityEngine
 			get
 			{
 				var s = "";
-				s += $"                ArchetypeIndices.GOAL_UNINITIALIZED => throw new System.Exception(\"Uninitialized goal data received by {name}PlannerJob.\"),\n";
+				s += $"                ArchetypeIndices.GOAL_UNINITIALIZED => throw new System.Exception(\"Uninitialized goal data received by {name}.\"),\n";
 				
 				var collection2Length = Collection2.Length;
 				for (var i = 0; i < collection2Length; i++)
@@ -301,7 +301,7 @@ namespace UnityEngine
 					s += $"                ArchetypeIndices.GOAL_{goal.Name.PascalToAllUpper()} => {goal.TargetHeuristicString},\n";
 				}
 				
-				s += $"                _ => throw new System.Exception($\"Invalid action data received by {name}PlannerJob: {{target}}.\")\n";
+				s += $"                _ => throw new System.Exception($\"Invalid action data received by {name}: {{target}}.\")\n";
 				return s;
 			}
 		}
@@ -311,7 +311,7 @@ namespace UnityEngine
 			get
 			{
 				var s = "";
-				s += $"                ArchetypeIndices.ACTION_UNINITIALIZED => throw new System.Exception(\"Uninitialized action data received in {name}PlannerJob.\"),\n";
+				s += $"                ArchetypeIndices.ACTION_UNINITIALIZED => throw new System.Exception(\"Uninitialized action data received in {name}.\"),\n";
 
 				var collection3Length = Collection3.Length;
 				for (var i = 0; i < collection3Length; i++)
@@ -320,7 +320,7 @@ namespace UnityEngine
 					s += $"                ArchetypeIndices.ACTION_{action.Name.PascalToAllUpper()} => {action.PreconditionCheck},\n";
 				}
 				
-				s += $"                _ => throw new System.Exception($\"Invalid action data received by {name}PlannerJob: {{target}}.\")\n";
+				s += $"                _ => throw new System.Exception($\"Invalid action data received by {name}: {{target}}.\")\n";
 				return s;
 			}
 		}
@@ -330,7 +330,7 @@ namespace UnityEngine
 			get
 			{
 				var s = "";
-				s += $"                case ArchetypeIndices.ACTION_UNINITIALIZED: throw new System.Exception(\"Uninitialized action data received in {name}PlannerJob.\");\n";
+				s += $"                case ArchetypeIndices.ACTION_UNINITIALIZED: throw new System.Exception(\"Uninitialized action data received in {name}.\");\n";
 
 				var collection3Length = Collection3.Length;
 				for (var i = 0; i < collection3Length; i++)
@@ -339,7 +339,7 @@ namespace UnityEngine
 					s += $"                case ArchetypeIndices.ACTION_{action.Name.PascalToAllUpper()}:{action.ApplyEffect} break;\n";
 				}
 				
-				s += $"                default: throw new System.Exception($\"Invalid action data received by {name}PlannerJob: {{target}}.\");\n";
+				s += $"                default: throw new System.Exception($\"Invalid action data received by {name}: {{target}}.\");\n";
 				return s;
 			}
 		}

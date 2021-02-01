@@ -9,28 +9,16 @@ namespace UnityEngine
     [BurstCompile]
     public readonly struct ActionData
     {
-        [ReadOnly] public readonly int Identifier;
         [ReadOnly] public readonly int ArchetypeIndex;
         [ReadOnly] public readonly float Cost;
         
-        public ActionData(int identifier, int archetypeIndex, float cost)
+        public ActionData(int archetypeIndex, float cost)
         {
-            Identifier = identifier;
             ArchetypeIndex = archetypeIndex;
             Cost = cost;
         }
     }
 
-    public interface IBlackboard
-    {
-        [BurstCompile]
-        int GetHeuristic(int target);
-        [BurstCompile]
-        bool PreconditionCheck(int target);
-        [BurstCompile]
-        void ApplyEffect(int target);
-    }
-    
     [BurstCompile]
     public unsafe struct PlannerJob<T> : IJob where T : unmanaged, IBlackboard
     {
@@ -92,7 +80,7 @@ namespace UnityEngine
                 float score;
                 if ((score = PerformHeuristicEstimatedSearch(index + 1, cost + action.Cost, threshold)) < 0)
                 {
-                    Plan[index] = action.Identifier;
+                    Plan[index] = i;
                     return -1;
                 }
                 
