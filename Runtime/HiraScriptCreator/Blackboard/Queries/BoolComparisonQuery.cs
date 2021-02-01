@@ -15,6 +15,6 @@
             if (key != null) name = $"{key.name} is {!invert}";
         }
 
-        public string Condition => $"({(invert?"!":"")}blackboard->{key.name})";
+        public string Condition => $"({(invert?"!":"")}{key.name})";
     }
 }

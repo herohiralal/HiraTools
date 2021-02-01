@@ -52,16 +52,46 @@ namespace UnityEngine
 				.AppendLine($"namespace {@namespace}")
 				.AppendLine(@"{")
 				.AppendLine(@"    [System.Serializable]")
+				.AppendLine(@"    [Unity.Burst.BurstCompile]")
 				.AppendLine(@"    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]")
-				.AppendLine($"    public struct {name}")
+				.AppendLine($"    public struct {name} : UnityEngine.IBlackboard")
 				.AppendLine(@"    {")
 				.AppendLine(GetConstructor(name, false))
 				.AppendLine()
 				.Append(StructFields)
+				.AppendLine(@"        ")
+				.AppendLine(@"        [Unity.Burst.BurstCompile]")
+				.AppendLine(@"        public static class ArchetypeIndices")
+				.AppendLine(@"        {")
+				.Append(ArchetypeIndices)
+				.AppendLine(@"        }")
+				.AppendLine(@"        ")
+				.AppendLine(@"        [Unity.Burst.BurstCompile]")
+				.AppendLine($"        public int GetHeuristic(int target) =>")
+				.AppendLine(@"            target switch")
+				.AppendLine(@"            {")
+				.Append(GoalHeuristics)
+				.AppendLine(@"            };")
+				.AppendLine(@"        ")
+				.AppendLine(@"        [Unity.Burst.BurstCompile]")
+				.AppendLine($"        public bool PreconditionCheck(int target) =>")
+				.AppendLine(@"            target switch")
+				.AppendLine(@"            {")
+				.Append(ActionPreconditions)
+				.AppendLine(@"            };")
+				.AppendLine(@"        ")
+				.AppendLine(@"        [Unity.Burst.BurstCompile]")
+				.AppendLine($"        public void ApplyEffect(int target)")
+				.AppendLine(@"        {")
+				.AppendLine(@"            switch (target)")
+				.AppendLine(@"            {")
+				.Append(ActionModifications)
+				.AppendLine(@"            }")
+				.AppendLine(@"        }")
 				.AppendLine(@"    }")
 				.AppendLine(@"    ")
 				.AppendLine(@"    [System.Serializable]")
-				.AppendLine($"    public class {name}Wrapper")
+				.AppendLine($"    public class {name}Wrapper : UnityEngine.IBlackboard")
 				.AppendLine(@"    {")
 				.AppendLine(GetConstructor($"{name}Wrapper", true))
 				.AppendLine()
@@ -69,73 +99,12 @@ namespace UnityEngine
 				.AppendLine($"        [SerializeField] private {name} blackboard;")
 				.Append(ClassProperties)
 				.Append(Accessors)
-				.AppendLine(@"    }")
-				.AppendLine(@"    ")
-				.AppendLine(@"    [Unity.Burst.BurstCompile]")
-				.AppendLine($"    public readonly struct {name}ActionData")
-				.AppendLine(@"    {")
-				.AppendLine(@"        [Unity.Collections.ReadOnly] public readonly int Identifier;")
-				.AppendLine(@"        [Unity.Collections.ReadOnly] public readonly int ArchetypeIndex;")
-				.AppendLine(@"        [Unity.Collections.ReadOnly] public readonly float Cost;")
 				.AppendLine(@"        ")
-				.AppendLine($"        public {name}ActionData(int identifier, int archetypeIndex, float cost)")
-				.AppendLine(@"        {")
-				.AppendLine(@"            Identifier = identifier;")
-				.AppendLine(@"            ArchetypeIndex = archetypeIndex;")
-				.AppendLine(@"            Cost = cost;")
-				.AppendLine(@"        }")
-				.AppendLine(@"    }")
-				.AppendLine(@"    ")
-				.AppendLine($"    public static class {name}ArchetypeIndices")
-				.AppendLine(@"    {")
-				.Append(ArchetypeIndices)
-				.AppendLine(@"    }")
-				.AppendLine(@"    ")
-				.AppendLine(@"    [Unity.Burst.BurstCompile]")
-				.AppendLine($"    public unsafe struct {name}PlannerJob : Unity.Jobs.IJob")
-				.AppendLine(@"    {")
-				.AppendLine($"        [Unity.Collections.ReadOnly] private readonly int _datasetsLength;")
-				.AppendLine($"        [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction] private {name}* _datasetsPtr;")
-				.AppendLine($"        [Unity.Collections.DeallocateOnJobCompletion] private readonly Unity.Collections.NativeArray<{name}> _datasets;")
-				.AppendLine(@"        [Unity.Collections.ReadOnly] private readonly int _goal;")
-				.AppendLine($"        [Unity.Collections.ReadOnly] private readonly Unity.Collections.NativeArray<{name}ActionData> _actions;")
-				.AppendLine(@"        [Unity.Collections.ReadOnly] private readonly int _actionsCount;")
-				.AppendLine(@"        [Unity.Collections.ReadOnly] private readonly float _maxFScore;")
-				.AppendLine(@"        [Unity.Collections.WriteOnly] public Unity.Collections.NativeArray<int> Plan;")
+				.AppendLine(@"        public int GetHeuristic(int target) => blackboard.GetHeuristic(target);")
 				.AppendLine(@"        ")
-				.AppendLine($"        public {name}PlannerJob({name}* dataset, int goal, int maxPlanLength, float maxFScore,")
-				.AppendLine($"            Unity.Collections.NativeArray<{name}ActionData> actions, Unity.Collections.NativeArray<int> plan)")
-				.AppendLine(@"        {")
-				.AppendLine($"            _datasets = new Unity.Collections.NativeArray<{name}>(maxPlanLength + 1, Unity.Collections.Allocator.TempJob) {{[0] = *dataset}};")
-				.AppendLine($"            _datasetsPtr = ({name}*) Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafePtr(_datasets);")
-				.AppendLine(@"            _datasetsLength = maxPlanLength + 1;")
-				.AppendLine(@"            _actions = actions;")
-				.AppendLine(@"            _actionsCount = actions.Length;")
-				.AppendLine(@"            _maxFScore = maxFScore;")
-				.AppendLine(@"            _goal = goal;")
-				.AppendLine(@"            Plan = plan;")
-				.AppendLine(@"        }")
+				.AppendLine(@"        public bool PreconditionCheck(int target) => blackboard.PreconditionCheck(target);")
 				.AppendLine(@"        ")
-				.AppendLine(planner_algorithm)
-				.AppendLine($"        public static int GetHeuristic(int target, {name}* blackboard) =>")
-				.AppendLine(@"            target switch")
-				.AppendLine(@"            {")
-				.Append(GoalHeuristics)
-				.AppendLine(@"            };")
-				.AppendLine(@"        ")
-				.AppendLine($"        public static bool PreconditionCheck(int target, {name}* blackboard) =>")
-				.AppendLine(@"            target switch")
-				.AppendLine(@"            {")
-				.Append(ActionPreconditions)
-				.AppendLine(@"            };")
-				.AppendLine(@"        ")
-				.AppendLine($"        public static void ApplyEffect(int target, {name}* blackboard)")
-				.AppendLine(@"        {")
-				.AppendLine(@"            switch (target)")
-				.AppendLine(@"            {")
-				.Append(ActionModifications)
-				.AppendLine(@"            }")
-				.AppendLine(@"        }")
+				.AppendLine(@"        public void ApplyEffect(int target) => blackboard.ApplyEffect(target);")
 				.AppendLine(@"    }")
 				.AppendLine(@"}")
 				.ToString();
@@ -295,89 +264,41 @@ namespace UnityEngine
 			{
 				int i;
 				var s = "";
-				s += "        public const int GOAL_UNINITIALIZED = 0;\n";
+				s += $"            public const int GOAL_UNINITIALIZED = 0;\n";
 				
 				var collection2Length = Collection2.Length;
 				for (i = 0; i < collection2Length; i++)
 				{
-					s += $"        public const int GOAL_{Collection2[i].Name.PascalToAllUpper()} = {i + 1};\n";
+					s += $"            public const int GOAL_{Collection2[i].Name.PascalToAllUpper()} = {i + 1};\n";
 				}
 
-				s += $"        public const int GOAL_COUNT = {i};\n";
-				s += "        public const int ACTION_UNINITIALIZED = 0;\n";
+				s += $"            public const int GOAL_COUNT = {i};\n";
+				s += $"            public const int ACTION_UNINITIALIZED = 0;\n";
 
 				var collection3Length = Collection3.Length;
 				for (i = 0; i < collection3Length; i++)
 				{
-					s += $"        public const int ACTION_{Collection3[i].Name.PascalToAllUpper()} = {i + 1};\n";
+					s += $"            public const int ACTION_{Collection3[i].Name.PascalToAllUpper()} = {i + 1};\n";
 				}
 
-				s += $"        public const int ACTION_COUNT = {i};\n";
+				s += $"            public const int ACTION_COUNT = {i};\n";
 				
 				return s;
 			}
 		}
-
-		private const string planner_algorithm =
-			@"        public void Execute()" + "\n" +
-		    @"        {" + "\n" +
-		    @"            float threshold = GetHeuristic(_goal, _datasetsPtr), score;" + "\n" +
-		    @"            while ((score = PerformHeuristicEstimatedSearch(1, 0, threshold)) > 0 && score < _maxFScore) threshold = score;" + "\n" +
-		    @"            _datasetsPtr = null;" + "\n" +
-		    @"        }" + "\n" +
-		    @"        " + "\n" +
-		    @"        private float PerformHeuristicEstimatedSearch(int index, float cost, float threshold)" + "\n" +
-		    @"        {" + "\n" +
-		    @"            int heuristic = GetHeuristic(_goal, _datasetsPtr + index - 1);" + "\n" +
-		    @"            " + "\n" +
-		    @"            var fScore = cost + heuristic;" + "\n" +
-		    @"            if (fScore > threshold) return fScore;" + "\n" +
-		    @"            " + "\n" +
-		    @"            if (heuristic == 0)" + "\n" +
-		    @"            {" + "\n" +
-		    @"                Plan[0] = index - 1;" + "\n" +
-		    @"                return -1;" + "\n" +
-		    @"            }" + "\n" +
-		    @"            " + "\n" +
-		    @"            if (index == _datasetsLength) return float.MaxValue;" + "\n" +
-		    @"            " + "\n" +
-		    @"            var min = float.MaxValue;" + "\n" +
-		    @"            " + "\n" +
-		    @"            for (var i = 0; i < _actionsCount; i++)" + "\n" +
-		    @"            {" + "\n" +
-		    @"                var action = _actions[i];" + "\n" +
-		    @"                " + "\n" +
-		    @"                if (!PreconditionCheck(action.ArchetypeIndex, _datasetsPtr + index - 1)) continue;" + "\n" +
-		    @"                " + "\n" +
-		    @"                *(_datasetsPtr + index) = *(_datasetsPtr + index - 1);" + "\n" +
-		    @"                ApplyEffect(action.ArchetypeIndex, _datasetsPtr + index);" + "\n" +
-		    @"                " + "\n" +
-		    @"                float score;" + "\n" +
-		    @"                if ((score = PerformHeuristicEstimatedSearch(index + 1, cost + action.Cost, threshold)) < 0)" + "\n" +
-		    @"                {" + "\n" +
-		    @"                    Plan[index] = action.Identifier;" + "\n" +
-		    @"                    return -1;" + "\n" +
-		    @"                }" + "\n" +
-		    @"                " + "\n" +
-		    @"                min = Unity.Mathematics.math.min(score, min);" + "\n" +
-		    @"            }" + "\n" +
-		    @"            " + "\n" +
-		    @"            return min;" + "\n" +
-		    @"        }" + "\n" +
-			@"        ";
 
 		private string GoalHeuristics
 		{
 			get
 			{
 				var s = "";
-				s += $"                {name}ArchetypeIndices.GOAL_UNINITIALIZED => throw new System.Exception(\"Uninitialized goal data received by {name}PlannerJob.\"),\n";
+				s += $"                ArchetypeIndices.GOAL_UNINITIALIZED => throw new System.Exception(\"Uninitialized goal data received by {name}PlannerJob.\"),\n";
 				
 				var collection2Length = Collection2.Length;
 				for (var i = 0; i < collection2Length; i++)
 				{
 					var goal = Collection2[i];
-					s += $"                {name}ArchetypeIndices.GOAL_{goal.Name.PascalToAllUpper()} => {goal.TargetHeuristicString},\n";
+					s += $"                ArchetypeIndices.GOAL_{goal.Name.PascalToAllUpper()} => {goal.TargetHeuristicString},\n";
 				}
 				
 				s += $"                _ => throw new System.Exception($\"Invalid action data received by {name}PlannerJob: {{target}}.\")\n";
@@ -390,13 +311,13 @@ namespace UnityEngine
 			get
 			{
 				var s = "";
-				s += $"                {name}ArchetypeIndices.ACTION_UNINITIALIZED => throw new System.Exception(\"Uninitialized action data received in {name}PlannerJob.\"),\n";
+				s += $"                ArchetypeIndices.ACTION_UNINITIALIZED => throw new System.Exception(\"Uninitialized action data received in {name}PlannerJob.\"),\n";
 
 				var collection3Length = Collection3.Length;
 				for (var i = 0; i < collection3Length; i++)
 				{
 					var action = Collection3[i];
-					s += $"                {name}ArchetypeIndices.ACTION_{action.Name.PascalToAllUpper()} => {action.PreconditionCheck},\n";
+					s += $"                ArchetypeIndices.ACTION_{action.Name.PascalToAllUpper()} => {action.PreconditionCheck},\n";
 				}
 				
 				s += $"                _ => throw new System.Exception($\"Invalid action data received by {name}PlannerJob: {{target}}.\")\n";
@@ -409,13 +330,13 @@ namespace UnityEngine
 			get
 			{
 				var s = "";
-				s += $"                case {name}ArchetypeIndices.ACTION_UNINITIALIZED: throw new System.Exception(\"Uninitialized action data received in {name}PlannerJob.\");\n";
+				s += $"                case ArchetypeIndices.ACTION_UNINITIALIZED: throw new System.Exception(\"Uninitialized action data received in {name}PlannerJob.\");\n";
 
 				var collection3Length = Collection3.Length;
 				for (var i = 0; i < collection3Length; i++)
 				{
 					var action = Collection3[i];
-					s += $"                case {name}ArchetypeIndices.ACTION_{action.Name.PascalToAllUpper()}:{action.ApplyEffect} break;\n";
+					s += $"                case ArchetypeIndices.ACTION_{action.Name.PascalToAllUpper()}:{action.ApplyEffect} break;\n";
 				}
 				
 				s += $"                default: throw new System.Exception($\"Invalid action data received by {name}PlannerJob: {{target}}.\");\n";

@@ -27,9 +27,9 @@ namespace UnityEngine
 				var value = targetValue.ToCode();
 				return comparisonType switch
 				{
-					has_flag => $"(blackboard->{key.name} & {value} == {value})",
-					does_not_have_flag => $"(blackboard->{key.name} & {value} != {value})",
-					_ => $"(blackboard->{key.name} {comparisonType} {value})"
+					has_flag => $"({key.name} & {value} == {value})",
+					does_not_have_flag => $"({key.name} & {value} != {value})",
+					_ => $"({key.name} {comparisonType} {value})"
 				};
 			}
 		}

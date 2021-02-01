@@ -5,7 +5,7 @@
         protected abstract BlackboardKey Key { get; }
         protected abstract string NonCodeValue { get; }
         protected abstract string Value { get; }
-        public string Modification => $"blackboard->{Key.name} = {Value}";
+        public string Modification => $"{Key.name} = {Value}";
 
         private void OnValidate()
         {

@@ -16,6 +16,6 @@
 			if (key != null) name = $"{key.name} is {targetValue}";
 		}
 
-		public virtual string Condition => $"(blackboard->{key.name} {ComparisonType} {TargetValue})";
+		public virtual string Condition => $"({key.name} {ComparisonType} {TargetValue})";
 	}
 }
