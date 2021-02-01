@@ -67,21 +67,28 @@ namespace UnityEngine
 				.AppendLine(@"        }")
 				.AppendLine(@"        ")
 				.AppendLine(@"        [Unity.Burst.BurstCompile]")
-				.AppendLine($"        public int GetHeuristic(int target) =>")
+				.AppendLine($"        public bool GetGoalValidity(int target) =>")
+				.AppendLine(@"            target switch")
+				.AppendLine(@"            {")
+				.Append(GoalValidities)
+				.AppendLine(@"            };")
+				.AppendLine(@"        ")
+				.AppendLine(@"        [Unity.Burst.BurstCompile]")
+				.AppendLine($"        public int GetGoalHeuristic(int target) =>")
 				.AppendLine(@"            target switch")
 				.AppendLine(@"            {")
 				.Append(GoalHeuristics)
 				.AppendLine(@"            };")
 				.AppendLine(@"        ")
 				.AppendLine(@"        [Unity.Burst.BurstCompile]")
-				.AppendLine($"        public bool PreconditionCheck(int target) =>")
+				.AppendLine($"        public bool GetActionApplicability(int target) =>")
 				.AppendLine(@"            target switch")
 				.AppendLine(@"            {")
 				.Append(ActionPreconditions)
 				.AppendLine(@"            };")
 				.AppendLine(@"        ")
 				.AppendLine(@"        [Unity.Burst.BurstCompile]")
-				.AppendLine($"        public void ApplyEffect(int target)")
+				.AppendLine($"        public void ApplyActionEffect(int target)")
 				.AppendLine(@"        {")
 				.AppendLine(@"            switch (target)")
 				.AppendLine(@"            {")
@@ -100,11 +107,13 @@ namespace UnityEngine
 				.Append(ClassProperties)
 				.Append(Accessors)
 				.AppendLine(@"        ")
-				.AppendLine(@"        public int GetHeuristic(int target) => blackboard.GetHeuristic(target);")
+				.AppendLine(@"        public bool GetGoalValidity(int target) => blackboard.GetGoalValidity(target);")
 				.AppendLine(@"        ")
-				.AppendLine(@"        public bool PreconditionCheck(int target) => blackboard.PreconditionCheck(target);")
+				.AppendLine(@"        public int GetGoalHeuristic(int target) => blackboard.GetGoalHeuristic(target);")
 				.AppendLine(@"        ")
-				.AppendLine(@"        public void ApplyEffect(int target) => blackboard.ApplyEffect(target);")
+				.AppendLine(@"        public bool GetActionApplicability(int target) => blackboard.GetActionApplicability(target);")
+				.AppendLine(@"        ")
+				.AppendLine(@"        public void ApplyActionEffect(int target) => blackboard.ApplyActionEffect(target);")
 				.AppendLine(@"    }")
 				.AppendLine(@"}")
 				.ToString();
@@ -287,6 +296,25 @@ namespace UnityEngine
 			}
 		}
 
+		private string GoalValidities
+		{
+			get
+			{
+				var s = "";
+				s += $"                ArchetypeIndices.GOAL_UNINITIALIZED => throw new System.Exception(\"Uninitialized goal data received in {name}.\"),\n";
+
+				var collection2Length = Collection2.Length;
+				for (var i = 0; i < collection2Length; i++)
+				{
+					var goal = Collection2[i];
+					s += $"                ArchetypeIndices.ACTION_{goal.Name.PascalToAllUpper()} => {goal.ValidityCheck},\n";
+				}
+				
+				s += $"                _ => throw new System.Exception($\"Invalid goal data received by {name}: {{target}}.\")\n";
+				return s;
+			}
+		}
+
 		private string GoalHeuristics
 		{
 			get
@@ -301,7 +329,7 @@ namespace UnityEngine
 					s += $"                ArchetypeIndices.GOAL_{goal.Name.PascalToAllUpper()} => {goal.TargetHeuristicString},\n";
 				}
 				
-				s += $"                _ => throw new System.Exception($\"Invalid action data received by {name}: {{target}}.\")\n";
+				s += $"                _ => throw new System.Exception($\"Invalid goal data received by {name}: {{target}}.\")\n";
 				return s;
 			}
 		}

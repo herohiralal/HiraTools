@@ -17,5 +17,26 @@ namespace UnityEngine
 						q => $"({q.Condition} ? 0 : {q.Weight.ToCode()})",
 						" + ")
 				: "0";
+		public string ValidityCheck
+		{
+			get
+			{
+				var s1 = Collection1.Length > 0
+					? Collection1
+						.ConcatenateStringsWith(
+							q => q.Condition,
+							" && ")
+					: "true";
+
+				var s2 = Collection2.Length > 0
+					? Collection2
+						.ConcatenateStringsWith(
+							q => $"!{q.Condition}",
+							" && ")
+					: "true";
+
+				return $"{s1} && {s2}";
+			}
+		}
 	}
 }

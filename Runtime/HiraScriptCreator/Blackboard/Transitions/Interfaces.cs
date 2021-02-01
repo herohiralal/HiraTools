@@ -3,6 +3,7 @@ namespace UnityEngine
 	public interface IBlackboardGoal
 	{
 		string Name { get; }
+		string ValidityCheck { get; }
 		string TargetHeuristicString { get; }
 	}
 

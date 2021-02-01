@@ -46,14 +46,14 @@ namespace UnityEngine
         
         public void Execute()
         {
-            float threshold = _datasetsPtr->GetHeuristic(_goal), score;
+            float threshold = _datasetsPtr->GetGoalHeuristic(_goal), score;
             while ((score = PerformHeuristicEstimatedSearch(1, 0, threshold)) > 0 && score < _maxFScore) threshold = score;
             _datasetsPtr = null;
         }
         
         private float PerformHeuristicEstimatedSearch(int index, float cost, float threshold)
         {
-            var heuristic = (_datasetsPtr + index - 1)->GetHeuristic(_goal);
+            var heuristic = (_datasetsPtr + index - 1)->GetGoalHeuristic(_goal);
             
             var fScore = cost + heuristic;
             if (fScore > threshold) return fScore;
@@ -72,10 +72,10 @@ namespace UnityEngine
             {
                 var action = _actions[i];
                 
-                if (!(_datasetsPtr + index - 1)->PreconditionCheck(action.ArchetypeIndex)) continue;
+                if (!(_datasetsPtr + index - 1)->GetActionApplicability(action.ArchetypeIndex)) continue;
                 
                 *(_datasetsPtr + index) = *(_datasetsPtr + index - 1);
-                (_datasetsPtr + index)->ApplyEffect(action.ArchetypeIndex);
+                (_datasetsPtr + index)->ApplyActionEffect(action.ArchetypeIndex);
                 
                 float score;
                 if ((score = PerformHeuristicEstimatedSearch(index + 1, cost + action.Cost, threshold)) < 0)

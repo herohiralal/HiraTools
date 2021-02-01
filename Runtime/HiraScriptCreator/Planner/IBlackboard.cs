@@ -4,8 +4,9 @@ namespace UnityEngine
 {
     public interface IBlackboard
     {
-        [BurstCompile] int GetHeuristic(int target);
-        [BurstCompile] bool PreconditionCheck(int target);
-        [BurstCompile] void ApplyEffect(int target);
+        [BurstCompile] bool GetGoalValidity(int target);
+        [BurstCompile] int GetGoalHeuristic(int target);
+        [BurstCompile] bool GetActionApplicability(int target);
+        [BurstCompile] void ApplyActionEffect(int target);
     }
 }
