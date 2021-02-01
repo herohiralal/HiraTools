@@ -1,11 +1,17 @@
-﻿namespace UnityEngine
+﻿using Unity.Burst;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
+using Unity.Jobs;
+using Unity.Mathematics;
+
+namespace UnityEngine
 {
-    [Unity.Burst.BurstCompile]
+    [BurstCompile]
     public readonly struct ActionData
     {
-        [Unity.Collections.ReadOnly] public readonly int Identifier;
-        [Unity.Collections.ReadOnly] public readonly int ArchetypeIndex;
-        [Unity.Collections.ReadOnly] public readonly float Cost;
+        [ReadOnly] public readonly int Identifier;
+        [ReadOnly] public readonly int ArchetypeIndex;
+        [ReadOnly] public readonly float Cost;
         
         public ActionData(int identifier, int archetypeIndex, float cost)
         {
@@ -17,31 +23,31 @@
 
     public interface IBlackboard
     {
-        [Unity.Burst.BurstCompile]
+        [BurstCompile]
         int GetHeuristic(int target);
-        [Unity.Burst.BurstCompile]
+        [BurstCompile]
         bool PreconditionCheck(int target);
-        [Unity.Burst.BurstCompile]
+        [BurstCompile]
         void ApplyEffect(int target);
     }
     
-    [Unity.Burst.BurstCompile]
-    public unsafe struct PlannerJob<T> : Unity.Jobs.IJob where T : unmanaged, IBlackboard
+    [BurstCompile]
+    public unsafe struct PlannerJob<T> : IJob where T : unmanaged, IBlackboard
     {
-        [Unity.Collections.ReadOnly] private readonly int _datasetsLength;
-        [Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestriction] private T* _datasetsPtr;
-        [Unity.Collections.DeallocateOnJobCompletion] private readonly Unity.Collections.NativeArray<T> _datasets;
-        [Unity.Collections.ReadOnly] private readonly int _goal;
-        [Unity.Collections.DeallocateOnJobCompletion] [Unity.Collections.ReadOnly] private readonly Unity.Collections.NativeArray<ActionData> _actions;
-        [Unity.Collections.ReadOnly] private readonly int _actionsCount;
-        [Unity.Collections.ReadOnly] private readonly float _maxFScore;
-        [Unity.Collections.WriteOnly] public Unity.Collections.NativeArray<int> Plan;
+        [ReadOnly] private readonly int _datasetsLength;
+        [NativeDisableUnsafePtrRestriction] private T* _datasetsPtr;
+        [DeallocateOnJobCompletion] private readonly NativeArray<T> _datasets;
+        [ReadOnly] private readonly int _goal;
+        [DeallocateOnJobCompletion] [ReadOnly] private readonly NativeArray<ActionData> _actions;
+        [ReadOnly] private readonly int _actionsCount;
+        [ReadOnly] private readonly float _maxFScore;
+        [WriteOnly] public NativeArray<int> Plan;
         
         public PlannerJob(T* dataset, int goal, int maxPlanLength, float maxFScore,
-            Unity.Collections.NativeArray<ActionData> actions, Unity.Collections.NativeArray<int> plan)
+            NativeArray<ActionData> actions, NativeArray<int> plan)
         {
-            _datasets = new Unity.Collections.NativeArray<T>(maxPlanLength + 1, Unity.Collections.Allocator.TempJob) {[0] = *dataset};
-            _datasetsPtr = (T*) Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafePtr(_datasets);
+            _datasets = new NativeArray<T>(maxPlanLength + 1, Allocator.TempJob) {[0] = *dataset};
+            _datasetsPtr = (T*) _datasets.GetUnsafePtr();
             _datasetsLength = maxPlanLength + 1;
             _actions = actions;
             _actionsCount = actions.Length;
@@ -90,7 +96,7 @@
                     return -1;
                 }
                 
-                min = Unity.Mathematics.math.min(score, min);
+                min = math.min(score, min);
             }
             
             return min;
