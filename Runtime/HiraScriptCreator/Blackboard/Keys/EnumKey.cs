@@ -7,6 +7,7 @@
     public abstract class EnumKey<T> : EnumKey where T : System.Enum
     {
         [SerializeField] protected T defaultValue = default;
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
         protected override string KeyType => typeof(T).FullName;
         protected override string DefaultValue => defaultValue.ToCode();
 
@@ -106,5 +107,6 @@
                     return null;
             }
         }
+#endif
     }
 }
