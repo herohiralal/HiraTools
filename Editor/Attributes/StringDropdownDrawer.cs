@@ -40,7 +40,8 @@ namespace HiraEditor.HiraAttributes
             
             foreach (var dropdownValue in dropdownValues)
             {
-                menu.AddItem(new GUIContent(dropdownValue),
+                var dropdownValueToShow = dropdownValue == "/" ? "\\" : dropdownValue;
+                menu.AddItem(new GUIContent(dropdownValueToShow),
                     property.stringValue == dropdownValue,
                     () =>
                     {
