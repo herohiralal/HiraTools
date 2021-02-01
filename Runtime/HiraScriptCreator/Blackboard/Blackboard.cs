@@ -314,7 +314,7 @@ namespace UnityEngine
 				for (var i = 0; i < collection2Length; i++)
 				{
 					var goal = Collection2[i];
-					s += $"                ArchetypeIndices.ACTION_{goal.Name.PascalToAllUpper()} => {goal.ValidityCheck},\n";
+					s += $"                ArchetypeIndices.GOAL_{goal.Name.PascalToAllUpper()} => {goal.ValidityCheck},\n";
 				}
 				
 				s += $"                _ => throw new System.Exception($\"Invalid goal data received by {name}: {{target}}.\")\n";
