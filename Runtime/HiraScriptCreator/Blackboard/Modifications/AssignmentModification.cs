@@ -9,7 +9,7 @@
 
         private void OnValidate()
         {
-            if (Key != null) name = $"{Key.name} is {NonCodeValue}";
+            if (Key != null) name = $"Set {Key.name} to {NonCodeValue}";
         }
     }
 }
