@@ -1,4 +1,5 @@
-﻿using Unity.Burst;
+﻿using System.Collections.Generic;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
@@ -17,9 +18,14 @@ namespace UnityEngine
         }
     }
 
+    public interface IActualGoal
+    {
+        GoalData Data { get; }
+    }
+
     public static class GoalCalculator
     {
-        public static unsafe int GetGoal<T>(T* blackboard, NativeArray<GoalData> goalData) where T : unmanaged, IBlackboard
+        private static unsafe int GetGoal<T>(ref T blackboard, NativeArray<GoalData> goalData) where T : unmanaged, IBlackboard
         {
             var length = goalData.Length;
             var data = (GoalData*) goalData.GetUnsafePtr();
@@ -32,15 +38,45 @@ namespace UnityEngine
                 data += i;
 
                 var currentInsistence = data->Insistence;
-                var foundBetterGoal = blackboard->GetGoalValidity(data->ArchetypeIndex) && currentInsistence > cachedInsistence;
+                var foundBetterGoal = blackboard.GetGoalValidity(data->ArchetypeIndex) && currentInsistence > cachedInsistence;
 
                 goal = foundBetterGoal ? i : goal;
                 cachedInsistence = foundBetterGoal ? currentInsistence : cachedInsistence;
             }
-
-            goalData.Dispose();
             
             return goal;
+        }
+
+        public static TGoal GetGoal<TBlackboard, TGoal>(ref TBlackboard blackboard, TGoal[] goals)
+            where TBlackboard : unmanaged, IBlackboard
+            where TGoal : IActualGoal
+        {
+            var length = goals.Length;
+            var data = new NativeArray<GoalData>(length, Allocator.Temp);
+            for (var i = 0; i < length; i++)
+            {
+                data[i] = goals[i].Data;
+            }
+            
+            var goal = GetGoal(ref blackboard, data);
+            data.Dispose();
+            return goals[goal];
+        }
+
+        public static TGoal GetGoal<TBlackboard, TGoal>(ref TBlackboard blackboard, List<TGoal> goals)
+            where TBlackboard : unmanaged, IBlackboard
+            where TGoal : IActualGoal
+        {
+            var length = goals.Count;
+            var data = new NativeArray<GoalData>(length, Allocator.Temp);
+            for (var i = 0; i < length; i++)
+            {
+                data[i] = goals[i].Data;
+            }
+            
+            var goal = GetGoal(ref blackboard, data);
+            data.Dispose();
+            return goals[goal];
         }
     }
 }

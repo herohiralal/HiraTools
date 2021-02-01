@@ -1,4 +1,5 @@
-﻿using Unity.Burst;
+﻿using System.Collections.Generic;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
@@ -19,29 +20,49 @@ namespace UnityEngine
         }
     }
 
+    public interface IActualAction
+    {
+        ActionData Data { get; }
+    }
+
     [BurstCompile]
     public unsafe struct PlannerJob<T> : IJob where T : unmanaged, IBlackboard
     {
         [ReadOnly] private readonly int _datasetsLength;
         [NativeDisableUnsafePtrRestriction] private T* _datasetsPtr;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         [DeallocateOnJobCompletion] private readonly NativeArray<T> _datasets;
         [ReadOnly] private readonly int _goal;
         [DeallocateOnJobCompletion] [ReadOnly] private readonly NativeArray<ActionData> _actions;
         [ReadOnly] private readonly int _actionsCount;
         [ReadOnly] private readonly float _maxFScore;
         [WriteOnly] public NativeArray<int> Plan;
-        
-        public PlannerJob(T* dataset, int goal, int maxPlanLength, float maxFScore,
-            NativeArray<ActionData> actions, NativeArray<int> plan)
+
+        public PlannerJob(ref T dataset, int goal, int maxPlanLength, float maxFScore,
+            IActualAction[] actions)
+            : this(ref dataset, goal, maxPlanLength, maxFScore, ConvertToActionData(actions))
         {
-            _datasets = new NativeArray<T>(maxPlanLength + 1, Allocator.TempJob) {[0] = *dataset};
+            
+        }
+
+        public PlannerJob(ref T dataset, int goal, int maxPlanLength, float maxFScore,
+            List<IActualAction> actions)
+            : this(ref dataset, goal, maxPlanLength, maxFScore, ConvertToActionData(actions))
+        {
+            
+        }
+        
+        public PlannerJob(ref T dataset, int goal, int maxPlanLength, float maxFScore,
+            NativeArray<ActionData> actions)
+        {
+            _datasets = new NativeArray<T>(maxPlanLength + 1, Allocator.TempJob) {[0] = dataset};
             _datasetsPtr = (T*) _datasets.GetUnsafePtr();
             _datasetsLength = maxPlanLength + 1;
             _actions = actions;
             _actionsCount = actions.Length;
             _maxFScore = maxFScore;
             _goal = goal;
-            Plan = plan;
+            Plan = new NativeArray<int>(maxPlanLength + 1, Allocator.TempJob);
         }
         
         public void Execute()
@@ -88,6 +109,30 @@ namespace UnityEngine
             }
             
             return min;
+        }
+
+        private static NativeArray<ActionData> ConvertToActionData(IActualAction[] actions)
+        {
+            var length = actions.Length;
+            var data = new NativeArray<ActionData>(length, Allocator.TempJob);
+            for (var i = 0; i < length; i++)
+            {
+                data[i] = actions[i].Data;
+            }
+
+            return data;
+        }
+
+        private static NativeArray<ActionData> ConvertToActionData(List<IActualAction> actions)
+        {
+            var length = actions.Count;
+            var data = new NativeArray<ActionData>(length, Allocator.TempJob);
+            for (var i = 0; i < length; i++)
+            {
+                data[i] = actions[i].Data;
+            }
+
+            return data;
         }
     }
 }
