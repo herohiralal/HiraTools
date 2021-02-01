@@ -4,7 +4,7 @@ namespace UnityEngine
 {
 	public class FloatModification : ArithmeticModification
 	{
-		[HiraCollectionDropdown(typeof(INumericalKey))]
+		[HiraCollectionDropdown(typeof(FloatKey))]
 		[SerializeField] private BlackboardKey key = null;
 		protected override BlackboardKey Key => key;
 

@@ -2,7 +2,7 @@ namespace UnityEngine
 {
 	public class IntegerModification : ArithmeticModification
 	{
-		[HiraCollectionDropdown(typeof(IntegerKey))]
+		[HiraCollectionDropdown(typeof(INumericalKey))]
 		[SerializeField] private BlackboardKey key = null;
 		protected override BlackboardKey Key => key;
 

@@ -2,7 +2,7 @@ namespace UnityEngine
 {
 	public class FloatDynamicModification : ArithmeticModification
 	{
-		[HiraCollectionDropdown(typeof(INumericalKey))]
+		[HiraCollectionDropdown(typeof(FloatKey))]
 		[SerializeField] private BlackboardKey key = null;
 		protected override BlackboardKey Key => key;
 		[HiraCollectionDropdown(typeof(INumericalKey))]
