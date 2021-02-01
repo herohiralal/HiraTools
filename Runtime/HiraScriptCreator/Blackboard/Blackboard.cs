@@ -53,7 +53,6 @@ namespace UnityEngine
 				.AppendLine(@"{")
 				.AppendLine(@"    [System.Serializable]")
 				.AppendLine(@"    [Unity.Burst.BurstCompile]")
-				.AppendLine(@"    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]")
 				.AppendLine($"    public struct {name} : UnityEngine.IBlackboard")
 				.AppendLine(@"    {")
 				.AppendLine(GetConstructor(name, false))

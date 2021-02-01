@@ -13,7 +13,21 @@
 
 		private void OnValidate()
 		{
-			if (key != null) name = $"{key.name} is {targetValue}";
+			if (key != null)
+			{
+				var comparison = ComparisonType switch
+				{
+					"==" => "",
+					"!=" => "not ",
+					">" => "greater than ",
+					"<" => "lesser than ",
+					"<=" => "lesser than or equal to ",
+					">=" => "greater than or equal to ",
+					_ => throw new System.ArgumentOutOfRangeException()
+				};
+
+				name = $"{key.name} is {comparison}{targetValue}";
+			}
 		}
 
 		public virtual string Condition => $"({key.name} {ComparisonType} {TargetValue})";
