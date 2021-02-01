@@ -6,7 +6,7 @@ using Unity.Collections.LowLevel.Unsafe;
 namespace UnityEngine
 {
     [BurstCompile]
-    public readonly struct GoalData
+    public readonly struct GoalData : IActualGoal
     {
         [ReadOnly] public readonly int ArchetypeIndex;
         [ReadOnly] public readonly float Insistence;
@@ -16,6 +16,8 @@ namespace UnityEngine
             ArchetypeIndex = archetypeIndex;
             Insistence = insistence;
         }
+
+        public GoalData Data => this;
     }
 
     public interface IActualGoal
