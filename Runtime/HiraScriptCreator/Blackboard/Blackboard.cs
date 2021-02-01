@@ -113,7 +113,11 @@ namespace UnityEngine
 				.AppendLine(@"        ")
 				.AppendLine(@"        public bool GetActionApplicability(int target) => blackboard.GetActionApplicability(target);")
 				.AppendLine(@"        ")
-				.AppendLine(@"        public void ApplyActionEffect(int target) => blackboard.ApplyActionEffect(target);")
+				.AppendLine(@"        public void ApplyActionEffect(int target)")
+				.AppendLine(@"        {")
+				.AppendLine(@"            blackboard.ApplyActionEffect(target);")
+				.AppendLine(@"            OnValueUpdate.Invoke();")
+				.AppendLine(@"        }")
 				.AppendLine(@"    }")
 				.AppendLine(@"}")
 				.ToString();
