@@ -2,8 +2,8 @@
 {
     public class BoolComparisonQuery : ScriptableObject, IIndividualQuery
     {
-        [SerializeField] private float weight = 1;
-        public float Weight => weight;
+        [SerializeField] private int weight = 1;
+        public int Weight => weight;
         
         [HiraCollectionDropdown(typeof(BooleanKey))]
         [SerializeField] protected BlackboardKey key = null;

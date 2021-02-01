@@ -12,8 +12,8 @@ namespace UnityEngine
 		[SerializeField] protected string comparisonType = "==";
 		
 		[SerializeField] protected T targetValue = default;
-		[SerializeField] private float weight = 1;
-		public float Weight => weight;
+		[SerializeField] private int weight = 1;
+		public int Weight => weight;
 
 		private void OnValidate()
 		{

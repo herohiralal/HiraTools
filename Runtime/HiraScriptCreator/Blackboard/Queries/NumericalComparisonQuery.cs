@@ -2,8 +2,8 @@
 {
 	public abstract class NumericalComparisonQuery<T> : ScriptableObject, IIndividualQuery
 	{
-		[SerializeField] private float weight = 1;
-		public float Weight => weight;
+		[SerializeField] private int weight = 1;
+		public int Weight => weight;
 		[HiraCollectionDropdown(typeof(INumericalKey))]
 		[SerializeField] protected BlackboardKey key = null;
 		protected abstract string ComparisonType { get; }

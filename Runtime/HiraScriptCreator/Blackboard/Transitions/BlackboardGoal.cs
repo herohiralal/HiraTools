@@ -14,7 +14,7 @@ namespace UnityEngine
 			Collection2.Length > 0
 				? Collection2
 					.ConcatenateStringsWith(
-						q => $"({q.Condition} ? 0 : {q.Weight})",
+						q => $"({q.Condition} ? 0 : {q.Weight.ToCode()})",
 						" + ")
 				: "0";
 	}
