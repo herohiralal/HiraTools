@@ -1,0 +1,12 @@
+﻿.SceneListContainer {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.ButtonContainer {
+    flex-direction: row;
+}
+
+.OpenerButton:hover > .SceneNameLabel {
+    -unity-font-style: bold;
+}
