@@ -1,12 +1,21 @@
-﻿.SceneListContainer {
+﻿#LabelContainer {
     flex-direction: row;
     justify-content: space-between;
+    max-height: 20px;
 }
 
-.ButtonContainer {
-    flex-direction: row;
-}
-
-.OpenerButton:hover > .SceneNameLabel {
+#SceneNameLabel {
     -unity-font-style: bold;
+    min-width: 150px;
+}
+
+#SceneListContainer {
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+#ButtonContainer {
+    flex-direction: row;
+    justify-content: space-between;
+    max-height: 20px;
 }

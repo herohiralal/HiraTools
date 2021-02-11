@@ -34,7 +34,7 @@ namespace HiraEditor
 			rootVisualElement.Add(_toolbar);
 
 			RefreshSceneAssetList();
-			_list = new ListView(_sceneAssets, 20, MakeItemForListView, BindItemForListView) {unbindItem = UnbindItemFromListView};
+			_list = new ListView(_sceneAssets, 45, MakeItemForListView, BindItemForListView) {unbindItem = UnbindItemFromListView};
 			_list.style.flexGrow = 1;
 			rootVisualElement.Add(_list);
 		}
@@ -79,43 +79,41 @@ namespace HiraEditor
 		private void BindItemForListView(VisualElement createdVisualElement, int index)
 		{
 			var sceneOpener = _sceneAssets[index];
+			createdVisualElement.tooltip = sceneOpener.Path;
 
-			var label = createdVisualElement.Q<Label>(className: "SceneNameLabel");
+			var label = createdVisualElement.Q<Label>("SceneNameLabel");
 			if (label != null)
 			{
 				label.text = sceneOpener.Name;
-				label.tooltip = sceneOpener.Path;
+			}
+
+			var pathLabel = createdVisualElement.Q<Label>("ScenePathLabel");
+			if (pathLabel != null)
+			{
+				pathLabel.text = sceneOpener.Path;
 			}
 
 			var openButton = createdVisualElement.Q<Button>("SceneOpenerButton");
 			if (openButton != null)
 			{
-				openButton.text = "O";
-				openButton.tooltip = $"Open {sceneOpener.Name}.";
 				openButton.clickable.clicked += sceneOpener.Open;
 			}
 
 			var openAdditiveButton = createdVisualElement.Q<Button>("AdditiveSceneOpenerButton");
 			if (openAdditiveButton != null)
 			{
-				openAdditiveButton.text = "+";
-				openAdditiveButton.tooltip = $"Open {sceneOpener.Name} additively.";
 				openAdditiveButton.clickable.clicked += sceneOpener.OpenAdditive;
 			}
 
 			var openAdditiveNoLoadButton = createdVisualElement.Q<Button>("AdditiveNoLoadSceneOpenerButton");
 			if (openAdditiveNoLoadButton != null)
 			{
-				openAdditiveNoLoadButton.text = "!";
-				openAdditiveNoLoadButton.tooltip = $"Open {sceneOpener.Name} additively without loading.";
 				openAdditiveNoLoadButton.clickable.clicked += sceneOpener.OpenAdditiveWithoutLoading;
 			}
 
 			var closeButton = createdVisualElement.Q<Button>("SceneCloserButton");
 			if (closeButton != null)
 			{
-				closeButton.text = "-";
-				closeButton.tooltip = $"Close {sceneOpener.Name}.";
 				closeButton.clickable.clicked += sceneOpener.Close;
 			}
 		}
@@ -123,43 +121,42 @@ namespace HiraEditor
 		private void UnbindItemFromListView(VisualElement createdVisualElement, int index)
 		{
 			var sceneOpener = _sceneAssets[index];
+			createdVisualElement.tooltip = "";
 
-			var label = createdVisualElement.Q<Label>(className: "SceneNameLabel");
+			var label = createdVisualElement.Q<Label>("SceneNameLabel");
 			if (label != null)
 			{
 				label.text = "";
-				label.tooltip = "";
+			}
+
+			var pathLabel = createdVisualElement.Q<Label>("ScenePathLabel");
+			if (pathLabel != null)
+			{
+				pathLabel.text = "";
+				pathLabel.tooltip = "";
 			}
 
 			var openButton = createdVisualElement.Q<Button>("SceneOpenerButton");
 			if (openButton != null)
 			{
-				openButton.text = "";
-				openButton.tooltip = "";
 				openButton.clickable.clicked -= sceneOpener.Open;
 			}
 
 			var openAdditiveButton = createdVisualElement.Q<Button>("AdditiveSceneOpenerButton");
 			if (openAdditiveButton != null)
 			{
-				openAdditiveButton.text = "";
-				openAdditiveButton.tooltip = "";
 				openAdditiveButton.clickable.clicked -= sceneOpener.OpenAdditive;
 			}
 
 			var openAdditiveNoLoadButton = createdVisualElement.Q<Button>("AdditiveNoLoadSceneOpenerButton");
 			if (openAdditiveNoLoadButton != null)
 			{
-				openAdditiveNoLoadButton.text = "";
-				openAdditiveNoLoadButton.tooltip = "";
 				openAdditiveNoLoadButton.clickable.clicked -= sceneOpener.OpenAdditiveWithoutLoading;
 			}
 
 			var closeButton = createdVisualElement.Q<Button>("SceneCloserButton");
 			if (closeButton != null)
 			{
-				closeButton.text = "";
-				closeButton.tooltip = "";
 				closeButton.clickable.clicked -= sceneOpener.Close;
 			}
 		}

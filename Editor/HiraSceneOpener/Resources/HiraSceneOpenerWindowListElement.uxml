@@ -1,12 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <UXML xmlns="UnityEngine.UIElements">
-    <VisualElement class="SceneListContainer">
-        <Label class="SceneNameLabel"/>
-        <VisualElement class="ButtonContainer">
-            <Button name="SceneOpenerButton" class="OpenerButton"/>
-            <Button name="AdditiveSceneOpenerButton" class="OpenerButton"/>
-            <Button name="AdditiveNoLoadSceneOpenerButton" class="OpenerButton"/>
-            <Button name="SceneCloserButton" class="OpenerButton"/>
+    <VisualElement name="SceneListContainer">
+        <VisualElement name="LabelContainer">
+            <Label name="SceneNameLabel"/>
+            <Label name="ScenePathLabel"/>
+        </VisualElement>
+        <VisualElement name="ButtonContainer">
+            <Button name="SceneOpenerButton" class="OpenerButton" text="Open"/>
+            <Button name="AdditiveSceneOpenerButton" class="OpenerButton" text="Add"/>
+            <Button name="AdditiveNoLoadSceneOpenerButton" class="OpenerButton" text="Add (No load)"/>
+            <Button name="SceneCloserButton" class="OpenerButton" text="Close"/>
         </VisualElement>
     </VisualElement>
 </UXML>
