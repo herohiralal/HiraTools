@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -7,206 +8,203 @@ using UnityEngine.UIElements;
 
 namespace HiraEditor
 {
-    public class HiraSceneOpenerWindow : EditorWindow
-    {
-        private static SceneOpener[] _sceneAssets;
-        private IMGUIContainer _toolbar = null;
-        private ListView _list = null;
-        static HiraSceneOpenerWindow() => RebuildSceneData();
+	public class HiraSceneOpenerWindow : EditorWindow
+	{
+		private List<SceneOpener> _sceneAssets;
+		private IMGUIContainer _toolbar = null;
+		private ListView _list = null;
 
-        [MenuItem("Window/General/Scene Opener &O", false, 10)]
-        public static void GetSceneOpener()
-        {
-            GetWindow<HiraSceneOpenerWindow>().Focus();
-        }
+		[MenuItem("Window/General/Scene Opener &O", false, 10)]
+		public static void GetSceneOpener() => GetWindow<HiraSceneOpenerWindow>().Focus();
 
-        private static void RebuildSceneData() =>
-            _sceneAssets = AssetDatabase.FindAssets("t: scene")
-                .Select(s => new SceneOpener(s))
-                .ToArray();
+		private void Awake()
+		{
+			_sceneAssets = new List<SceneOpener>();
+			titleContent = "Scene Loader".GetGUIContent();
+		}
 
-        private void Awake() => titleContent = "Scene Loader".GetGUIContent();
+		private void OnDestroy()
+		{
+			_sceneAssets = null;
+		}
 
-        public void OnEnable()
-        {
-            _toolbar = new IMGUIContainer(OnToolbarGUI);
-            rootVisualElement.Add(_toolbar);
+		public void OnEnable()
+		{
+			_toolbar = new IMGUIContainer(OnToolbarGUI);
+			rootVisualElement.Add(_toolbar);
 
-            CreateList();
-        }
+			RefreshSceneAssetList();
+			_list = new ListView(_sceneAssets, 20, MakeItemForListView, BindItemForListView) {unbindItem = UnbindItemFromListView};
+			_list.style.flexGrow = 1;
+			rootVisualElement.Add(_list);
+		}
 
-        private void OnDisable()
-        {
-            DeleteList();
+		private void OnDisable()
+		{
+			rootVisualElement.Remove(_list);
+			_list = null;
 
-            rootVisualElement.Remove(_toolbar);
-            _toolbar = null;
-        }
+			rootVisualElement.Remove(_toolbar);
+			_toolbar = null;
+		}
 
-        private void OnToolbarGUI()
-        {
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                if (GUILayout.Button("Refresh", EditorStyles.toolbarButton))
-                    Refresh();
+		private void OnToolbarGUI()
+		{
+			using (new EditorGUILayout.HorizontalScope())
+			{
+				if (GUILayout.Button("Refresh", EditorStyles.toolbarButton))
+					Refresh();
 
-                GUILayout.FlexibleSpace();
+				GUILayout.FlexibleSpace();
 
-                GUILayout.Label("Made by Rohan Jadav");
-            }
-        }
+				GUILayout.Label("Made by Rohan Jadav");
+			}
+		}
 
-        private void Refresh()
-        {
-            DeleteList();
-            RebuildSceneData();
-            CreateList();
-            rootVisualElement.MarkDirtyRepaint();
-        }
+		private void Refresh()
+		{
+			RefreshSceneAssetList();
+			_list.Refresh();
+		}
 
-        private void CreateList()
-        {
-            _list = new ListView(_sceneAssets, 20, MakeItemForListView, BindItemForListView) {unbindItem = UnbindItemFromListView};
-            _list.style.flexGrow = 1;
-            rootVisualElement.Add(_list);
-        }
+		private void RefreshSceneAssetList()
+		{
+			var sceneAssets = AssetDatabase.FindAssets("t: scene")
+				.Select(s => new SceneOpener(s));
 
-        private void DeleteList()
-        {
-            
-            rootVisualElement.Remove(_list);
-            _list = null;
-        }
+			_sceneAssets.Clear();
+			foreach (var asset in sceneAssets) _sceneAssets.Add(asset);
+		}
 
-        private void BindItemForListView(VisualElement createdVisualElement, int index)
-        {
-            var sceneOpener = _sceneAssets[index];
+		private void BindItemForListView(VisualElement createdVisualElement, int index)
+		{
+			var sceneOpener = _sceneAssets[index];
 
-            var label = createdVisualElement.Q<Label>(className: "SceneNameLabel");
-            if (label != null)
-            {
-                label.text = sceneOpener.Name;
-                label.tooltip = sceneOpener.Path;
-            }
+			var label = createdVisualElement.Q<Label>(className: "SceneNameLabel");
+			if (label != null)
+			{
+				label.text = sceneOpener.Name;
+				label.tooltip = sceneOpener.Path;
+			}
 
-            var openButton = createdVisualElement.Q<Button>("SceneOpenerButton");
-            if (openButton != null)
-            {
-                openButton.text = "O";
-                openButton.tooltip = $"Open {sceneOpener.Name}.";
-                openButton.clickable.clicked += sceneOpener.Open;
-            }
+			var openButton = createdVisualElement.Q<Button>("SceneOpenerButton");
+			if (openButton != null)
+			{
+				openButton.text = "O";
+				openButton.tooltip = $"Open {sceneOpener.Name}.";
+				openButton.clickable.clicked += sceneOpener.Open;
+			}
 
-            var openAdditiveButton = createdVisualElement.Q<Button>("AdditiveSceneOpenerButton");
-            if (openAdditiveButton != null)
-            {
-                openAdditiveButton.text = "+";
-                openAdditiveButton.tooltip = $"Open {sceneOpener.Name} additively.";
-                openAdditiveButton.clickable.clicked += sceneOpener.OpenAdditive;
-            }
+			var openAdditiveButton = createdVisualElement.Q<Button>("AdditiveSceneOpenerButton");
+			if (openAdditiveButton != null)
+			{
+				openAdditiveButton.text = "+";
+				openAdditiveButton.tooltip = $"Open {sceneOpener.Name} additively.";
+				openAdditiveButton.clickable.clicked += sceneOpener.OpenAdditive;
+			}
 
-            var openAdditiveNoLoadButton = createdVisualElement.Q<Button>("AdditiveNoLoadSceneOpenerButton");
-            if (openAdditiveNoLoadButton != null)
-            {
-                openAdditiveNoLoadButton.text = "!";
-                openAdditiveNoLoadButton.tooltip = $"Open {sceneOpener.Name} additively without loading.";
-                openAdditiveNoLoadButton.clickable.clicked += sceneOpener.OpenAdditiveWithoutLoading;
-            }
+			var openAdditiveNoLoadButton = createdVisualElement.Q<Button>("AdditiveNoLoadSceneOpenerButton");
+			if (openAdditiveNoLoadButton != null)
+			{
+				openAdditiveNoLoadButton.text = "!";
+				openAdditiveNoLoadButton.tooltip = $"Open {sceneOpener.Name} additively without loading.";
+				openAdditiveNoLoadButton.clickable.clicked += sceneOpener.OpenAdditiveWithoutLoading;
+			}
 
-            var closeButton = createdVisualElement.Q<Button>("SceneCloserButton");
-            if (closeButton != null)
-            {
-                closeButton.text = "-";
-                closeButton.tooltip = $"Close {sceneOpener.Name}.";
-                closeButton.clickable.clicked += sceneOpener.Close;
-            }
-        }
+			var closeButton = createdVisualElement.Q<Button>("SceneCloserButton");
+			if (closeButton != null)
+			{
+				closeButton.text = "-";
+				closeButton.tooltip = $"Close {sceneOpener.Name}.";
+				closeButton.clickable.clicked += sceneOpener.Close;
+			}
+		}
 
-        private void UnbindItemFromListView(VisualElement createdVisualElement, int index)
-        {
-            var sceneOpener = _sceneAssets[index];
+		private void UnbindItemFromListView(VisualElement createdVisualElement, int index)
+		{
+			var sceneOpener = _sceneAssets[index];
 
-            var label = createdVisualElement.Q<Label>(className: "SceneNameLabel");
-            if (label != null)
-            {
-                label.text = "";
-                label.tooltip = "";
-            }
+			var label = createdVisualElement.Q<Label>(className: "SceneNameLabel");
+			if (label != null)
+			{
+				label.text = "";
+				label.tooltip = "";
+			}
 
-            var openButton = createdVisualElement.Q<Button>("SceneOpenerButton");
-            if (openButton != null)
-            {
-                openButton.text = "";
-                openButton.tooltip = "";
-                openButton.clickable.clicked -= sceneOpener.Open;
-            }
+			var openButton = createdVisualElement.Q<Button>("SceneOpenerButton");
+			if (openButton != null)
+			{
+				openButton.text = "";
+				openButton.tooltip = "";
+				openButton.clickable.clicked -= sceneOpener.Open;
+			}
 
-            var openAdditiveButton = createdVisualElement.Q<Button>("AdditiveSceneOpenerButton");
-            if (openAdditiveButton != null)
-            {
-                openAdditiveButton.text = "";
-                openAdditiveButton.tooltip = "";
-                openAdditiveButton.clickable.clicked -= sceneOpener.OpenAdditive;
-            }
+			var openAdditiveButton = createdVisualElement.Q<Button>("AdditiveSceneOpenerButton");
+			if (openAdditiveButton != null)
+			{
+				openAdditiveButton.text = "";
+				openAdditiveButton.tooltip = "";
+				openAdditiveButton.clickable.clicked -= sceneOpener.OpenAdditive;
+			}
 
-            var openAdditiveNoLoadButton = createdVisualElement.Q<Button>("AdditiveNoLoadSceneOpenerButton");
-            if (openAdditiveNoLoadButton != null)
-            {
-                openAdditiveNoLoadButton.text = "";
-                openAdditiveNoLoadButton.tooltip = "";
-                openAdditiveNoLoadButton.clickable.clicked -= sceneOpener.OpenAdditiveWithoutLoading;
-            }
+			var openAdditiveNoLoadButton = createdVisualElement.Q<Button>("AdditiveNoLoadSceneOpenerButton");
+			if (openAdditiveNoLoadButton != null)
+			{
+				openAdditiveNoLoadButton.text = "";
+				openAdditiveNoLoadButton.tooltip = "";
+				openAdditiveNoLoadButton.clickable.clicked -= sceneOpener.OpenAdditiveWithoutLoading;
+			}
 
-            var closeButton = createdVisualElement.Q<Button>("SceneCloserButton");
-            if (closeButton != null)
-            {
-                closeButton.text = "";
-                closeButton.tooltip = "";
-                closeButton.clickable.clicked -= sceneOpener.Close;
-            }
-        }
+			var closeButton = createdVisualElement.Q<Button>("SceneCloserButton");
+			if (closeButton != null)
+			{
+				closeButton.text = "";
+				closeButton.tooltip = "";
+				closeButton.clickable.clicked -= sceneOpener.Close;
+			}
+		}
 
-        private VisualElement MakeItemForListView()
-        {
-            var template = Resources.Load<VisualTreeAsset>("HiraSceneOpenerWindowListElement");
-            var style = Resources.Load<StyleSheet>("HiraSceneOpenerWindowListElementStyling");
-            var element = template.CloneTree();
-            element.styleSheets.Add(style);
-            return element;
-        }
-    }
+		private VisualElement MakeItemForListView()
+		{
+			var template = Resources.Load<VisualTreeAsset>("HiraSceneOpenerWindowListElement");
+			var style = Resources.Load<StyleSheet>("HiraSceneOpenerWindowListElementStyling");
+			var element = template.CloneTree();
+			element.styleSheets.Add(style);
+			return element;
+		}
+	}
 
-    internal class SceneOpener
-    {
-        public SceneOpener(string sceneAssetGuid)
-        {
-            Path = AssetDatabase.GUIDToAssetPath(sceneAssetGuid);
-            Name = ((SceneAsset) AssetDatabase.LoadMainAssetAtPath(Path)).name;
-        }
+	internal class SceneOpener
+	{
+		public SceneOpener(string sceneAssetGuid)
+		{
+			Path = AssetDatabase.GUIDToAssetPath(sceneAssetGuid);
+			Name = ((SceneAsset) AssetDatabase.LoadMainAssetAtPath(Path)).name;
+		}
 
-        public readonly string Name;
-        public readonly string Path;
+		public readonly string Name;
+		public readonly string Path;
 
-        public void Open()
-        {
-            EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
-            EditorSceneManager.OpenScene(Path, OpenSceneMode.Single);
-        }
+		public void Open()
+		{
+			EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+			EditorSceneManager.OpenScene(Path, OpenSceneMode.Single);
+		}
 
-        public void OpenAdditive()
-        {
-            EditorSceneManager.OpenScene(Path, OpenSceneMode.Additive);
-        }
+		public void OpenAdditive()
+		{
+			EditorSceneManager.OpenScene(Path, OpenSceneMode.Additive);
+		}
 
-        public void OpenAdditiveWithoutLoading()
-        {
-            EditorSceneManager.OpenScene(Path, OpenSceneMode.AdditiveWithoutLoading);
-        }
+		public void OpenAdditiveWithoutLoading()
+		{
+			EditorSceneManager.OpenScene(Path, OpenSceneMode.AdditiveWithoutLoading);
+		}
 
-        public void Close()
-        {
-            EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
-            EditorSceneManager.CloseScene(SceneManager.GetSceneByPath(Path), true);
-        }
-    }
+		public void Close()
+		{
+			EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+			EditorSceneManager.CloseScene(SceneManager.GetSceneByPath(Path), true);
+		}
+	}
 }
