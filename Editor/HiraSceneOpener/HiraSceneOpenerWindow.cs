@@ -82,40 +82,22 @@ namespace HiraEditor
 			createdVisualElement.tooltip = sceneOpener.Path;
 
 			var label = createdVisualElement.Q<Label>("SceneNameLabel");
-			if (label != null)
-			{
-				label.text = sceneOpener.Name;
-			}
+			if (label != null) label.text = sceneOpener.Name;
 
 			var pathLabel = createdVisualElement.Q<Label>("ScenePathLabel");
-			if (pathLabel != null)
-			{
-				pathLabel.text = sceneOpener.Path;
-			}
+			if (pathLabel != null) pathLabel.text = sceneOpener.Path;
 
 			var openButton = createdVisualElement.Q<Button>("SceneOpenerButton");
-			if (openButton != null)
-			{
-				openButton.clickable.clicked += sceneOpener.Open;
-			}
+			if (openButton != null) openButton.clickable.clicked += sceneOpener.Open;
 
 			var openAdditiveButton = createdVisualElement.Q<Button>("AdditiveSceneOpenerButton");
-			if (openAdditiveButton != null)
-			{
-				openAdditiveButton.clickable.clicked += sceneOpener.OpenAdditive;
-			}
+			if (openAdditiveButton != null) openAdditiveButton.clickable.clicked += sceneOpener.OpenAdditive;
 
 			var openAdditiveNoLoadButton = createdVisualElement.Q<Button>("AdditiveNoLoadSceneOpenerButton");
-			if (openAdditiveNoLoadButton != null)
-			{
-				openAdditiveNoLoadButton.clickable.clicked += sceneOpener.OpenAdditiveWithoutLoading;
-			}
+			if (openAdditiveNoLoadButton != null) openAdditiveNoLoadButton.clickable.clicked += sceneOpener.OpenAdditiveWithoutLoading;
 
 			var closeButton = createdVisualElement.Q<Button>("SceneCloserButton");
-			if (closeButton != null)
-			{
-				closeButton.clickable.clicked += sceneOpener.Close;
-			}
+			if (closeButton != null) closeButton.clickable.clicked += sceneOpener.Close;
 		}
 
 		private void UnbindItemFromListView(VisualElement createdVisualElement, int index)
@@ -124,41 +106,22 @@ namespace HiraEditor
 			createdVisualElement.tooltip = "";
 
 			var label = createdVisualElement.Q<Label>("SceneNameLabel");
-			if (label != null)
-			{
-				label.text = "";
-			}
+			if (label != null) label.text = "";
 
 			var pathLabel = createdVisualElement.Q<Label>("ScenePathLabel");
-			if (pathLabel != null)
-			{
-				pathLabel.text = "";
-				pathLabel.tooltip = "";
-			}
+			if (pathLabel != null) pathLabel.text = "";
 
 			var openButton = createdVisualElement.Q<Button>("SceneOpenerButton");
-			if (openButton != null)
-			{
-				openButton.clickable.clicked -= sceneOpener.Open;
-			}
+			if (openButton != null) openButton.clickable.clicked -= sceneOpener.Open;
 
 			var openAdditiveButton = createdVisualElement.Q<Button>("AdditiveSceneOpenerButton");
-			if (openAdditiveButton != null)
-			{
-				openAdditiveButton.clickable.clicked -= sceneOpener.OpenAdditive;
-			}
+			if (openAdditiveButton != null) openAdditiveButton.clickable.clicked -= sceneOpener.OpenAdditive;
 
 			var openAdditiveNoLoadButton = createdVisualElement.Q<Button>("AdditiveNoLoadSceneOpenerButton");
-			if (openAdditiveNoLoadButton != null)
-			{
-				openAdditiveNoLoadButton.clickable.clicked -= sceneOpener.OpenAdditiveWithoutLoading;
-			}
+			if (openAdditiveNoLoadButton != null) openAdditiveNoLoadButton.clickable.clicked -= sceneOpener.OpenAdditiveWithoutLoading;
 
 			var closeButton = createdVisualElement.Q<Button>("SceneCloserButton");
-			if (closeButton != null)
-			{
-				closeButton.clickable.clicked -= sceneOpener.Close;
-			}
+			if (closeButton != null) closeButton.clickable.clicked -= sceneOpener.Close;
 		}
 
 		private VisualElement MakeItemForListView()

@@ -9,7 +9,7 @@
             <Button name="SceneOpenerButton" class="OpenerButton" text="Open"/>
             <Button name="AdditiveSceneOpenerButton" class="OpenerButton" text="Add"/>
             <Button name="AdditiveNoLoadSceneOpenerButton" class="OpenerButton" text="Add (No load)"/>
-            <Button name="SceneCloserButton" class="OpenerButton" text="Close"/>
+            <Button name="SceneCloserButton" class="OpenerButton" text="Remove"/>
         </VisualElement>
     </VisualElement>
 </UXML>
