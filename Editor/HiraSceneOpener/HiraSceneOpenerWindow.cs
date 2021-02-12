@@ -13,39 +13,52 @@ namespace HiraEditor
 		private List<SceneOpener> _sceneAssets;
 		private IMGUIContainer _toolbar = null;
 		private ListView _list = null;
+		private bool _enabled = false;
 
 		[MenuItem("Window/General/Scene Opener &O", false, 10)]
 		public static void GetSceneOpener() => GetWindow<HiraSceneOpenerWindow>().Focus();
 
-		private void Awake()
+		public void OnEnable() => Enable();
+
+		private void Enable()
 		{
-			_sceneAssets = new List<SceneOpener>();
 			titleContent = "Scene Loader".GetGUIContent();
+			_sceneAssets ??= new List<SceneOpener>();
+
+			if (!_enabled)
+			{
+				_toolbar = new IMGUIContainer(OnToolbarGUI);
+				rootVisualElement.Add(_toolbar);
+
+				RefreshSceneAssetList();
+				_list = new ListView(_sceneAssets, 45, MakeItemForListView, BindItemForListView) {unbindItem = UnbindItemFromListView};
+				_list.style.flexGrow = 1;
+				rootVisualElement.Add(_list);
+				
+				_enabled = true;
+				
+				rootVisualElement.MarkDirtyRepaint();
+			}
 		}
 
-		private void OnDestroy()
+		private void OnDisable() => Disable();
+
+		private void Disable()
 		{
+			if (_enabled)
+			{
+				_enabled = false;
+				
+				rootVisualElement.Remove(_list);
+				_list = null;
+
+				rootVisualElement.Remove(_toolbar);
+				_toolbar = null;
+				
+				rootVisualElement.MarkDirtyRepaint();
+			}
+
 			_sceneAssets = null;
-		}
-
-		public void OnEnable()
-		{
-			_toolbar = new IMGUIContainer(OnToolbarGUI);
-			rootVisualElement.Add(_toolbar);
-
-			RefreshSceneAssetList();
-			_list = new ListView(_sceneAssets, 45, MakeItemForListView, BindItemForListView) {unbindItem = UnbindItemFromListView};
-			_list.style.flexGrow = 1;
-			rootVisualElement.Add(_list);
-		}
-
-		private void OnDisable()
-		{
-			rootVisualElement.Remove(_list);
-			_list = null;
-
-			rootVisualElement.Remove(_toolbar);
-			_toolbar = null;
 		}
 
 		private void OnToolbarGUI()
