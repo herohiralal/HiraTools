@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Unity.Burst;
 using Unity.Collections;
@@ -21,10 +22,43 @@ namespace UnityEngine
         }
     }
 
+    public enum ActionStatus
+    {
+        Running, Successful, Failed
+    }
+
     public interface IActualAction
     {
         string Name { get; }
         ActionData Data { get; }
+        void Initialize(GameObject gameObject);
+        ActionStatus Update();
+        void Abort();
+    }
+
+    public readonly struct EmptyAction : IActualAction
+    {
+        static EmptyAction() => INSTANCE = new EmptyAction("Empty Action");
+
+        public static readonly EmptyAction INSTANCE;
+
+        private EmptyAction(string name) => Name = name;
+
+        public string Name { get; }
+        public ActionData Data => throw new Exception("Empty action must not be queried for ActionData as it is not supposed to be used for planning.");
+
+        public void Initialize(GameObject _)
+        {
+        }
+
+        public ActionStatus Update()
+        {
+            return ActionStatus.Running;
+        }
+
+        public void Abort()
+        {
+        }
     }
 
     [BurstCompile]
