@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -22,6 +23,7 @@ namespace UnityEngine
 
     public interface IActualAction
     {
+        string Name { get; }
         ActionData Data { get; }
     }
 
@@ -133,6 +135,48 @@ namespace UnityEngine
             }
 
             return data;
+        }
+    }
+
+    public class ActualPlanStack
+    {
+        private readonly IActualAction[] _actions = null;
+        private int _planSize = 0;
+        private int _currentIndex = 0;
+
+        public ActualPlanStack(byte length) => _actions = new IActualAction[length];
+
+        public void Consume(NativeArray<int> actionIndicesWithFirstElementAsLength, List<IActualAction> actionPool)
+        {
+            var planSize = actionIndicesWithFirstElementAsLength[0];
+            _planSize = planSize;
+
+            var startIndex = planSize - 1;
+            _currentIndex = startIndex;
+            
+            for (var i = 0; i < planSize; i++)
+            {
+                _actions[startIndex - i] = actionPool[actionIndicesWithFirstElementAsLength[i + 1]];
+            }
+        }
+
+        public IActualAction Pop() => _actions[_currentIndex--];
+        public bool HasActions => _currentIndex > -1;
+
+        public void Invalidate() => _currentIndex = -1;
+
+        public void Restart() => _currentIndex = _planSize - 1;
+
+        public override string ToString()
+        {
+            var data = new StringBuilder(500);
+            for (var i = _planSize - 1; i > -1; i--)
+            {
+                data.Append(_actions[i].Name);
+                data.AppendLine(_currentIndex + 1 == i ? " <--" : "");
+            }
+
+            return data.ToString();
         }
     }
 }
