@@ -1,18 +1,4 @@
-﻿/* * * * * * * * * * * * * * * * * * * * * * * * *
- * * * * * * * * * * * * * * * * * * * * * * * * *
- * *  
- * *  File: SerializedInstanceFactory.cs
- * *  Type: Visual C# Source File
- * *  
- * *  Author: Rohan Jadav
- * *  
- * *  Description: Get a singleton instance of a class from a string that defines the type.
- * *               Specialized for use with SerializedInstance.
- * *  
- * * * * * * * * * * * * * * * * * * * * * * * * *
- * * * * * * * * * * * * * * * * * * * * * * * * */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;

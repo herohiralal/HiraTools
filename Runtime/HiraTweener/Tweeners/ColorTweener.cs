@@ -1,5 +1,4 @@
 ﻿using System;
-using HiraEngine.SOVariables.Core;
 using UnityEngine;
 using UnityEngine.Events;
 

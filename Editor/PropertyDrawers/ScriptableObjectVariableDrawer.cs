@@ -1,5 +1,4 @@
 using System;
-using HiraEngine.SOVariables.Core;
 using UnityEngine;
 using UnityEditor;
 
@@ -8,7 +7,7 @@ namespace HiraEditor
     [CustomPropertyDrawer(typeof(ScriptableObjectVariable), true)]
     public class ScriptableObjectVariableDrawer : PropertyDrawer
     {
-        private const string variable_value_name  = "_value";
+        private const string variable_value_name  = "value";
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {

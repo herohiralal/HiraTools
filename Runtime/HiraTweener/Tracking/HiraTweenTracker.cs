@@ -6,7 +6,7 @@ namespace UnityEngine
     public readonly struct HiraTweenTracker
     {
         internal HiraTweenTracker(IEnumerator coroutine, HiraTweenControl control, ulong index) =>
-            (this._coroutine, this._control, this._index) = (coroutine, control, index);
+            (_coroutine, _control, _index) = (coroutine, control, index);
 
         private readonly ulong _index;
         private readonly IEnumerator _coroutine;
