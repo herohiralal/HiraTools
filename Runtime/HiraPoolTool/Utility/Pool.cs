@@ -4,14 +4,9 @@ using Object = UnityEngine.Object;
 
 namespace HiraEngine.PoolTool
 {
-    internal readonly struct Pool : IPool
+    internal class Pool : IPool
     {
-        public Pool(Component bucket, Component target)
-        {
-            (this._bucket, this._target) = (bucket.transform, target);
-            _pooledObjects = new List<Component>();
-            _counter = new Counter();
-        }
+        public Pool(Component bucket, Component target) => (_bucket, _target) = (bucket.transform, target);
 
         // destroy all pooled objects and clear the references
         public void Dispose()
@@ -19,23 +14,21 @@ namespace HiraEngine.PoolTool
             foreach (var pooledObject in _pooledObjects) 
                 Object.Destroy(pooledObject.gameObject);
 
-            _counter.Reset();
+            PoolCount = 0;
             _pooledObjects.Clear();
         }
 
-        private readonly Counter _counter;
         private readonly Component _target;
-        private readonly List<Component> _pooledObjects;
+        private readonly List<Component> _pooledObjects = new List<Component>();
         private readonly Transform _bucket;
-
-        public int PoolCount => _counter.Value;
+        public int PoolCount { get; private set; } = 0;
 
         #region Pool Access
         
         // get an object from the pool
         public Component GetObject()
         {
-            _counter.Decrement();
+            PoolCount--;
             var pooledObject = _pooledObjects[PoolCount];
             _pooledObjects.RemoveAt(PoolCount);
             return pooledObject;
@@ -44,7 +37,7 @@ namespace HiraEngine.PoolTool
         // return an object to the pool
         public void ReturnObject(Component component)
         {
-            _counter.Increment();
+            PoolCount++;
             component.transform.SetParent(_bucket);
             component.gameObject.SetActive(false);
             _pooledObjects.Add(component);
@@ -66,13 +59,5 @@ namespace HiraEngine.PoolTool
         public void RemoveFromPool() => Object.Destroy(GetObject().gameObject);
         
         #endregion
-
-        private class Counter
-        {
-            public int Value { get; private set; } = 0;
-            public void Increment() => Value++;
-            public void Decrement() => Value--;
-            public void Reset() => Value = 0;
-        }
     }
 }

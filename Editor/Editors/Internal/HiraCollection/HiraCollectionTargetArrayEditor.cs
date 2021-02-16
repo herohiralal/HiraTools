@@ -290,8 +290,8 @@ namespace HiraEditor.Internal
             createdObject.hideFlags |= HideFlags.HideInHierarchy;
             createdObject.name = type.Name;
 
-            if (createdObject is ICollectionAwareTarget<T> collectionAwareObject
-                && _asset is HiraCollection<T> hiraCollectionAsset)
+            if (createdObject is IHiraCollectionAwareTarget collectionAwareObject
+                && _asset is HiraCollection hiraCollectionAsset)
             {
                 collectionAwareObject.ParentCollection = hiraCollectionAsset;
                 collectionAwareObject.Index = index;
@@ -313,10 +313,10 @@ namespace HiraEditor.Internal
 
             (_editors[index], _editors[index - 1]) = (_editors[index - 1], _editors[index]);
 
-            if (newCurrentObject is ICollectionAwareTarget<T> collectionAwareObject)
+            if (newCurrentObject is IHiraCollectionAwareTarget collectionAwareObject)
                 collectionAwareObject.Index = index;
 
-            if (newPreviousObject is ICollectionAwareTarget<T> collectionAwareObject2)
+            if (newPreviousObject is IHiraCollectionAwareTarget collectionAwareObject2)
                 collectionAwareObject2.Index = index - 1;
 
             _serializedObject.ApplyModifiedProperties();
@@ -341,10 +341,10 @@ namespace HiraEditor.Internal
 
             (_editors[index], _editors[index + 1]) = (_editors[index + 1], _editors[index]);
 
-            if (newCurrentObject is ICollectionAwareTarget<T> collectionAwareObject)
+            if (newCurrentObject is IHiraCollectionAwareTarget collectionAwareObject)
                 collectionAwareObject.Index = index;
 
-            if (newNextObject is ICollectionAwareTarget<T> collectionAwareObject2)
+            if (newNextObject is IHiraCollectionAwareTarget collectionAwareObject2)
                 collectionAwareObject2.Index = index + 1;
 
             _serializedObject.ApplyModifiedProperties();

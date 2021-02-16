@@ -11,14 +11,12 @@ namespace UnityEngine
         public Object[][] CollectionInternal { get; }
     }
 #endif
-    
-    public interface ICollectionAwareTarget<T>
+
+    public abstract class HiraCollection : ScriptableObject
     {
-        HiraCollection<T> ParentCollection { set; }
-        int Index { set; }
     }
 
-    public abstract class HiraCollection<T> : ScriptableObject, ISerializationCallbackReceiver
+    public abstract class HiraCollection<T> : HiraCollection, ISerializationCallbackReceiver
 #if UNITY_EDITOR && !STRIP_EDITOR_CODE
         , IDirtiable
         , IHiraCollectionEditorInterface

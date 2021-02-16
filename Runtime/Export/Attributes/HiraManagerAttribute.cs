@@ -8,7 +8,7 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class HiraManagerAttribute : Attribute
     {
-        public HiraManagerAttribute() : this("")
+        public HiraManagerAttribute() : this(null)
         {
         }
         
@@ -70,7 +70,18 @@ namespace UnityEngine
             }
         }
 
-        internal static void Clear() => database.Clear();
+        internal static void Clear()
+        {
+            var valueCollection = database.Values;
+            
+            foreach (var component in valueCollection)
+            {
+                if (Application.isPlaying) Object.Destroy(component.gameObject);
+                else Object.DestroyImmediate(component.gameObject);
+            }
+
+            database.Clear();
+        }
 
         public static void Add(Type type, Component component)
         {
