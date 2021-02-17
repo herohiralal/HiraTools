@@ -64,16 +64,32 @@ namespace System
         public static bool Get<T>(this Type type, string info, out T data) =>
             type.GetData(info, out data) || type.Retrieve(info, out data);
 
+        // Get static data (non-generic)
+        public static bool Get(this Type type, string info, out object data) =>
+            type.GetData(info, out data) || type.Retrieve(info, out data);
+
         // Get instance data
         public static bool Get<T>(this object o, string info, out T data) =>
+            o.GetData(info, out data) || o.Retrieve(info, out data);
+
+        // Get instance data (non-generic)
+        public static bool Get(this object o, string info, out object data) =>
             o.GetData(info, out data) || o.Retrieve(info, out data);
 
         // Set instance data
         public static bool Set<T>(this Type type, string info, T data) =>
             type.SetData(info, data) || type.Assign(info, data);
 
+        // Set instance data (non-generic)
+        public static bool Set(this Type type, string info, object data) =>
+            type.SetData(info, data) || type.Assign(info, data);
+
         // Set instance data
         public static bool Set<T>(this object o, string info, T data) =>
+            o.SetData(info, data) || o.Assign(info, data);
+
+        // Set instance data (non-generic)
+        public static bool Set(this object o, string info, object data) =>
             o.SetData(info, data) || o.Assign(info, data);
 
         // Get attribute data
@@ -106,6 +122,18 @@ namespace System
 
             return valid;
         }
+        
+        // Get static property (non-generic)
+        public static bool Retrieve(this Type type, string info, out object data)
+        {
+            var property = type.GetProperty(info, ReflectionLibrary.STATIC_MEMBER_BINDING_FLAGS);
+
+            var valid = property != null && property.CanRead;
+
+            data = valid ? property.GetValue(null) : null;
+
+            return valid;
+        }
 
         // Get instance property
         public static bool Retrieve<T>(this object o, string info, out T data)
@@ -116,6 +144,18 @@ namespace System
             var valid = property != null && property.CanRead;
 
             data = valid ? (T) property.GetValue(o) : default;
+
+            return valid;
+        }
+
+        // Get instance property (non-generic)
+        public static bool Retrieve(this object o, string info, out object data)
+        {
+            var property = o.GetType().GetProperty(info, ReflectionLibrary.INSTANCE_MEMBER_BINDING_FLAGS);
+
+            var valid = property != null && property.CanRead;
+
+            data = valid ? property.GetValue(o) : null;
 
             return valid;
         }
@@ -132,6 +172,18 @@ namespace System
 
             return valid;
         }
+        
+        // Set static property (non-generic)
+        public static bool Assign(this Type type, string info, object data)
+        {
+            var property = type.GetProperty(info, ReflectionLibrary.STATIC_MEMBER_BINDING_FLAGS);
+
+            var valid = property != null && property.CanWrite && property.PropertyType.IsInstanceOfType(data);
+
+            if (valid) property.SetValue(null, data);
+
+            return valid;
+        }
 
         // Set instance property
         public static bool Assign<T>(this object o, string info, T data)
@@ -140,6 +192,18 @@ namespace System
                 null, typeof(T), null!, null);
 
             var valid = property != null && property.CanWrite;
+
+            if (valid) property.SetValue(o, data);
+
+            return valid;
+        }
+
+        // Set instance property (non-generic)
+        public static bool Assign(this object o, string info, object data)
+        {
+            var property = o.GetType().GetProperty(info, ReflectionLibrary.INSTANCE_MEMBER_BINDING_FLAGS);
+
+            var valid = property != null && property.CanWrite && property.PropertyType.IsInstanceOfType(data);
 
             if (valid) property.SetValue(o, data);
 
@@ -201,15 +265,24 @@ namespace System
             var methodInfo = type.GetMethod(message, ReflectionLibrary.STATIC_MEMBER_BINDING_FLAGS, null,
                 parameters.GetTypeArray(), null);
 
-            if (methodInfo == null || methodInfo.ReturnType != typeof(T))
-            {
-                data = default;
-                return false;
-            }
+            var valid = methodInfo != null && methodInfo.ReturnType == typeof(T);
 
-            data = (T) methodInfo.Invoke(null, parameters);
+            data = valid ? (T) methodInfo.Invoke(null, parameters) : default;
 
-            return true;
+            return valid;
+        }
+
+        // Query static method (non-generic)
+        public static bool Query(this Type type, string message, out object data, params object[] parameters)
+        {
+            var methodInfo = type.GetMethod(message, ReflectionLibrary.STATIC_MEMBER_BINDING_FLAGS, null,
+                parameters.GetTypeArray(), null);
+
+            var valid = methodInfo != null;
+
+            data = valid ? methodInfo.Invoke(null, parameters) : null;
+
+            return valid;
         }
 
         // Query instance method
@@ -218,15 +291,24 @@ namespace System
             var methodInfo = o.GetType().GetMethod(message, ReflectionLibrary.INSTANCE_MEMBER_BINDING_FLAGS, null,
                 parameters.GetTypeArray(), null);
 
-            if (methodInfo == null || methodInfo.ReturnType != typeof(T))
-            {
-                data = default;
-                return false;
-            }
+            var valid = methodInfo != null && methodInfo.ReturnType == typeof(T);
 
-            data = (T) methodInfo.Invoke(o, parameters);
+            data = valid ? (T) methodInfo.Invoke(o, parameters) : default;
 
-            return true;
+            return valid;
+        }
+
+        // Query instance method (non-generic)
+        public static bool Query(this object o, string message, out object data, params object[] parameters)
+        {
+            var methodInfo = o.GetType().GetMethod(message, ReflectionLibrary.INSTANCE_MEMBER_BINDING_FLAGS, null,
+                parameters.GetTypeArray(), null);
+
+            var valid = methodInfo != null;
+
+            data = valid ? methodInfo.Invoke(o, parameters) : null;
+
+            return valid;
         }
 
         // Get static methods with attribute
@@ -263,6 +345,18 @@ namespace System
 
             return valid;
         }
+        
+        // Get static field (non-generic)
+        public static bool GetData(this Type type, string info, out object data)
+        {
+            var field = type.GetField(info, ReflectionLibrary.STATIC_MEMBER_BINDING_FLAGS);
+
+            var valid = field != null;
+
+            data = valid ? field.GetValue(null) : null;
+
+            return valid;
+        }
 
         // Get instance field
         public static bool GetData<T>(this object o, string info, out T data)
@@ -272,6 +366,18 @@ namespace System
             var valid = field != null && field.FieldType == typeof(T);
 
             data = valid ? (T) field.GetValue(o) : default;
+
+            return valid;
+        }
+
+        // Get instance field (non-generic)
+        public static bool GetData(this object o, string info, out object data)
+        {
+            var field = o.GetType().GetField(info, ReflectionLibrary.INSTANCE_MEMBER_BINDING_FLAGS);
+
+            var valid = field != null;
+
+            data = valid ? field.GetValue(o) : null;
 
             return valid;
         }
@@ -288,12 +394,36 @@ namespace System
             return valid;
         }
 
+        // Set static field (non-generic)
+        public static bool SetData(this Type type, string info, object data)
+        {
+            var field = type.GetField(info, ReflectionLibrary.STATIC_MEMBER_BINDING_FLAGS);
+
+            var valid = field != null && field.FieldType.IsInstanceOfType(data) && !field.IsInitOnly;
+
+            if (valid) field.SetValue(null, data);
+
+            return valid;
+        }
+
         // Set instance field
         public static bool SetData<T>(this object o, string info, T data)
         {
             var field = o.GetType().GetField(info, ReflectionLibrary.INSTANCE_MEMBER_BINDING_FLAGS);
 
             var valid = field != null && field.FieldType == typeof(T) && !field.IsInitOnly;
+
+            if (valid) field.SetValue(o, data);
+
+            return valid;
+        }
+
+        // Set instance field (non-generic)
+        public static bool SetData(this object o, string info, object data)
+        {
+            var field = o.GetType().GetField(info, ReflectionLibrary.INSTANCE_MEMBER_BINDING_FLAGS);
+
+            var valid = field != null && field.FieldType.IsInstanceOfType(data) && !field.IsInitOnly;
 
             if (valid) field.SetValue(o, data);
 
