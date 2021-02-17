@@ -23,7 +23,7 @@ namespace UnityEngine
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void OnInitialization()
         {
-            Clear();
+            Application.quitting += Clear;
 
             var managerTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes()
@@ -72,10 +72,16 @@ namespace UnityEngine
 
         internal static void Clear()
         {
+            Application.quitting -= Clear;
+            
             var valueCollection = database.Values;
             
             foreach (var component in valueCollection)
             {
+                component.GetType().Assign("Instance", null);
+                component.GetType().Assign("Current", null);
+
+                if (component == null) continue;
                 if (Application.isPlaying) Object.Destroy(component.gameObject);
                 else Object.DestroyImmediate(component.gameObject);
             }
@@ -87,10 +93,8 @@ namespace UnityEngine
         {
             Object.DontDestroyOnLoad(component);
 
-            var propertyInfo = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static);
-            if (propertyInfo == null)
-                propertyInfo = type.GetProperty("Current", BindingFlags.Public | BindingFlags.Static);
-            if (propertyInfo != null) propertyInfo.SetValue(null, component);
+            type.Assign("Instance", component);
+            type.Assign("Current", component);
 
             if (database.ContainsKey(type)) database[type] = component;
             else database.Add(type, component);
