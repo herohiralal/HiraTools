@@ -113,10 +113,9 @@ namespace System
         // Get static property
         public static bool Retrieve<T>(this Type type, string info, out T data)
         {
-            var property = type.GetProperty(info, ReflectionLibrary.STATIC_MEMBER_BINDING_FLAGS,
-                null, typeof(T), null!, null);
+            var property = type.GetProperty(info, ReflectionLibrary.STATIC_MEMBER_BINDING_FLAGS);
 
-            var valid = property != null && property.CanRead;
+            var valid = property != null && property.CanRead && typeof(T).IsAssignableFrom(property.PropertyType);
 
             data = valid ? (T) property.GetValue(null) : default;
 
@@ -138,10 +137,9 @@ namespace System
         // Get instance property
         public static bool Retrieve<T>(this object o, string info, out T data)
         {
-            var property = o.GetType().GetProperty(info, ReflectionLibrary.INSTANCE_MEMBER_BINDING_FLAGS,
-                null, typeof(T), null!, null);
+            var property = o.GetType().GetProperty(info, ReflectionLibrary.INSTANCE_MEMBER_BINDING_FLAGS);
 
-            var valid = property != null && property.CanRead;
+            var valid = property != null && property.CanRead && typeof(T).IsAssignableFrom(property.PropertyType);
 
             data = valid ? (T) property.GetValue(o) : default;
 
@@ -163,10 +161,9 @@ namespace System
         // Set static property
         public static bool Assign<T>(this Type type, string info, T data)
         {
-            var property = type.GetProperty(info, ReflectionLibrary.STATIC_MEMBER_BINDING_FLAGS,
-                null, typeof(T), null!, null);
+            var property = type.GetProperty(info, ReflectionLibrary.STATIC_MEMBER_BINDING_FLAGS);
 
-            var valid = property != null && property.CanWrite;
+            var valid = property != null && property.CanWrite && property.PropertyType.IsInstanceOfType(data);
 
             if (valid) property.SetValue(null, data);
 
@@ -188,10 +185,9 @@ namespace System
         // Set instance property
         public static bool Assign<T>(this object o, string info, T data)
         {
-            var property = o.GetType().GetProperty(info, ReflectionLibrary.INSTANCE_MEMBER_BINDING_FLAGS,
-                null, typeof(T), null!, null);
+            var property = o.GetType().GetProperty(info, ReflectionLibrary.INSTANCE_MEMBER_BINDING_FLAGS);
 
-            var valid = property != null && property.CanWrite;
+            var valid = property != null && property.CanWrite && property.PropertyType.IsInstanceOfType(data);
 
             if (valid) property.SetValue(o, data);
 
