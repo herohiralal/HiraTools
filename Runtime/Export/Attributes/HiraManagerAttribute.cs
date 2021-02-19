@@ -14,6 +14,7 @@ namespace UnityEngine
         
         public HiraManagerAttribute(string defaultPrefabLocation) => DefaultPrefabLocation = defaultPrefabLocation;
         public readonly string DefaultPrefabLocation;
+        public byte Priority { get; set; } = 0;
     }
 
     public static class HiraManagers
@@ -29,7 +30,8 @@ namespace UnityEngine
                 .SelectMany(assembly => assembly.GetTypes()
                     .Where(t => !t.IsAbstract && typeof(Component).IsAssignableFrom(t)))
                 .Select(type => (type, type.GetCustomAttribute<HiraManagerAttribute>()))
-                .Where(tuple => tuple.Item2 != null);
+                .Where(tuple => tuple.Item2 != null)
+                .OrderByDescending(tuple => tuple.Item2.Priority);
 
             foreach (var (t, m) in managerTypes)
             {
@@ -67,14 +69,17 @@ namespace UnityEngine
 
                 var addedComponent = new GameObject($"[{t.Name}]").AddComponent(t);
                 Add(t, addedComponent);
+#if UNITY_EDITOR
+                Debug.Log($"<color=green>Created HiraManager: </color>{addedComponent.gameObject.name}");
+#endif
             }
         }
 
-        internal static void Clear()
+        private static void Clear()
         {
             Application.quitting -= Clear;
             
-            var valueCollection = database.Values;
+            var valueCollection = database.Values.Reverse();
             
             foreach (var component in valueCollection)
             {
@@ -82,6 +87,10 @@ namespace UnityEngine
                 component.GetType().Assign("Current", null);
 
                 if (component == null) continue;
+                
+#if UNITY_EDITOR
+                Debug.Log($"<color=green>Destroying stale HiraManager: </color>{component.gameObject.name}");
+#endif
                 if (Application.isPlaying) Object.Destroy(component.gameObject);
                 else Object.DestroyImmediate(component.gameObject);
             }
