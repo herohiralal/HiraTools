@@ -1,0 +1,19 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HiraEngine-Native", "HiraEngine-Native\HiraEngine-Native.vcxproj", "{590AE2A0-554A-46F4-AB7B-482635D521C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+		ConsoleTesting|x64 = ConsoleTesting|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{590AE2A0-554A-46F4-AB7B-482635D521C9}.Debug|x64.ActiveCfg = Debug|x64
+		{590AE2A0-554A-46F4-AB7B-482635D521C9}.Debug|x64.Build.0 = Debug|x64
+		{590AE2A0-554A-46F4-AB7B-482635D521C9}.Release|x64.ActiveCfg = Release|x64
+		{590AE2A0-554A-46F4-AB7B-482635D521C9}.Release|x64.Build.0 = Release|x64
+		{590AE2A0-554A-46F4-AB7B-482635D521C9}.ConsoleTesting|x64.ActiveCfg = ConsoleTesting|x64
+		{590AE2A0-554A-46F4-AB7B-482635D521C9}.ConsoleTesting|x64.Build.0 = ConsoleTesting|x64
+	EndGlobalSection
+EndGlobal
