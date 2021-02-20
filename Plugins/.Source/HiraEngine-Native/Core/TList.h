@@ -45,12 +45,12 @@ T& TList<T>::operator[](const int Index)
     {
         if (BufferSize)
         {
-            Debug::LogToUnity("Attempted to access outside HiraList buffer.");
+            UNITY_LOG(Exception, "Attempted to access outside HiraList buffer.")
             return Container[0];
         }
         else
         {
-            Debug::LogToUnity("Attempted to access an item from an empty array.");
+            UNITY_LOG(Exception, "Attempted to access an item from an empty array.")
             return *new T();
         }
     }
