@@ -19,8 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CoreHiraObject\HiraObject.h" />
+    <ClInclude Include="CoreHiraObject\Internal\HiraObjectRegistryModification.h" />
     <ClInclude Include="CoreHiraObject\UnityHook.h" />
     <ClInclude Include="Core\Debug.h" />
+    <ClInclude Include="Core\TemplateConstraintsHelper.h" />
     <ClInclude Include="Core\TList.h" />
     <ClInclude Include="HelperMacros\ExporterMacros.h" />
     <ClInclude Include="HelperMacros\ImporterMacros.h" />
@@ -28,9 +31,14 @@
     <ClInclude Include="HelperMacros\SyntacticMacros.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CoreHiraObject\HiraObject.cpp" />
+    <ClCompile Include="CoreHiraObject\Internal\HiraObjectRegistryModification.cpp" />
     <ClCompile Include="CoreHiraObject\UnityHook.cpp" />
     <ClCompile Include="Core\Debug.cpp" />
     <ClCompile Include="Tester\ConsoleTester.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="HiraAsync" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
