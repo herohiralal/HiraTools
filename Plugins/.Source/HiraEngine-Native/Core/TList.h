@@ -7,7 +7,7 @@ template <typename T>
 class TList
 {
 PROPERTY(T*, Container, NONE, NONE)
-PROPERTY(int, BufferSize, STD, NONE)
+PROPERTY(int, BufferSize, STD, CUSTOM)
 PROPERTY(int, ElementCount, STD, NONE)
 
 public:
@@ -16,7 +16,6 @@ public:
 
     T& operator[](int Index);
 
-    void Resize(int NewSize);
     void Add(T Item);
     void Remove(T Item);
     void RemoveAt(int Index);
@@ -59,22 +58,22 @@ T& TList<T>::operator[](const int Index)
 }
 
 template <typename T>
-void TList<T>::Resize(const int NewSize)
+void TList<T>::SetBufferSize(const int InValue)
 {
-    ElementCount = ElementCount < NewSize ? ElementCount : NewSize;
-    T* NewContainer = new T[NewSize];
+    ElementCount = ElementCount < InValue ? ElementCount : InValue;
+    T* NewContainer = new T[InValue];
     for (auto I = 0; I < ElementCount; I++)
         NewContainer[I] = Container[I];
     delete[] Container;
     Container = NewContainer;
-    BufferSize = NewSize;
+    BufferSize = InValue;
 }
 
 template <typename T>
 void TList<T>::Add(T Item)
 {
     if (BufferSize == ElementCount)
-        Resize(BufferSize + 1);
+        SetBufferSize(BufferSize * 2);
 
     Container[ElementCount] = Item;
     ElementCount++;
