@@ -6,6 +6,16 @@
 
 #define SETTER_BASE(type, name) void Set##name(type InValue)
 
+// ref
+
+#define GETTER_REF(type, name) type& Get##name() { return name; }
+
+#define SETTER_REF(type, name) void Set##name(type& InValue) { name = InValue; }
+
+// ref const
+
+#define GETTER_REF_CONST(type, name) const type& Get##name() const { return name; }
+
 // default
 
 #define GETTER_DEFAULT_IMPL(type, name) const { return name; }
@@ -19,6 +29,14 @@
 // standard
 
 #define ACCESSOR_STD(what, type, name) what##_BASE(type, name) what##_DEFAULT_IMPL(type, name)
+
+// ref
+
+#define ACCESSOR_STD_REF(what, type, name) what##_REF(type, name)
+
+// ref const
+
+#define ACCESSOR_STD_REF_CONST(what, type, name) what##_REF_CONST(type, name)
 
 // virtual
 
