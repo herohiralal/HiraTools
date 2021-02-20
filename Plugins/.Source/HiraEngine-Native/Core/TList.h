@@ -23,7 +23,9 @@ public:
     const T& operator[](int Index) const;
 
     bool Contains(T Item) const;
-    int FindIndex(T Item) const;
+    int FindIndex(const T Item) const;
+
+    void Clear();
     int Add(T Item);
     int Append(const TList<T>& ToAppend);
     bool Remove(T Item);
@@ -185,7 +187,7 @@ bool TList<T>::Contains(const T Item) const
 }
 
 template <typename T>
-int TList<T>::FindIndex(T Item) const
+int TList<T>::FindIndex(const T Item) const
 {
     for (auto I = 0; I < ElementCount; I++)
     {
@@ -194,6 +196,12 @@ int TList<T>::FindIndex(T Item) const
     }
 
     return -1;
+}
+
+template <typename T>
+void TList<T>::Clear()
+{
+    ElementCount = 0;
 }
 
 template <typename T>
