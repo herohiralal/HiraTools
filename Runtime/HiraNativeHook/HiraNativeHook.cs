@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace UnityEngine.Internal
 {
@@ -32,7 +33,7 @@ namespace UnityEngine.Internal
             _nativeHook.Destroy();
         }
 
-        [DllImport(HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity, DllImport(HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         private static extern void InitDebugLogToUnity(Action<LogType, string> logger);
 
         [AOT.MonoPInvokeCallback(typeof(Action<LogType, string>))]
