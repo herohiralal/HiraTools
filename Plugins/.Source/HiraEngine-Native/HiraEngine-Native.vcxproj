@@ -23,6 +23,7 @@
     <ClInclude Include="CoreHiraObject\HiraObjectRegistry.h" />
     <ClInclude Include="CoreHiraObject\UnityHook.h" />
     <ClInclude Include="Core\Debug.h" />
+    <ClInclude Include="Core\Platform\Platform.h" />
     <ClInclude Include="Core\TemplateConstraintsHelper.h" />
     <ClInclude Include="Core\TList.h" />
     <ClInclude Include="Core\TListModificationBuffer.h" />
