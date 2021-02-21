@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "InteropCommonMacros.h"
+
 // base
 
 #define GETTER_BASE(type, name) type Get##name()
@@ -81,3 +83,34 @@
         typeName(const typeName&) = delete; \
         typeName& operator=(const typeName&) = delete; \
         static typeName& Get() { return *Instance; }
+
+#define WRITE_ENUM_NAME(x) x, 
+#define WRITE_ENUM_TEXT(x) #x, 
+
+#define DECLARE_ENUM(type, name, ...) \
+    enum class E##name : type \
+    { \
+        FOR_EACH(WRITE_ENUM_NAME, __VA_ARGS__) \
+        name##Max \
+    }; \
+    static const char* name##Text[] = \
+    { \
+        FOR_EACH(WRITE_ENUM_TEXT, __VA_ARGS__) \
+        "Invalid" \
+    };
+
+#define DECLARE_FLAGS(type, name, ...) \
+    enum class E##name : type \
+    { \
+        FOR_EACH(WRITE_ENUM_NAME, __VA_ARGS__) \
+    }; \
+    inline E##name operator~(const E##name A) { return static_cast<E##name>(~static_cast<type>(A)); } \
+    inline E##name operator|(const E##name A, const E##name B) { return static_cast<E##name>(static_cast<type>(A) | static_cast<type>(B)); } \
+    inline E##name operator&(const E##name A, const E##name B) { return static_cast<E##name>(static_cast<type>(A) & static_cast<type>(B)); } \
+    inline E##name operator^(const E##name A, const E##name B) { return static_cast<E##name>(static_cast<type>(A) ^ static_cast<type>(B)); } \
+    inline E##name& operator|=(E##name& A, const E##name B) { A = A | B; return A; } \
+    inline E##name& operator&=(E##name& A, const E##name B) { A = A & B; return A; } \
+    inline E##name& operator^=(E##name& A, const E##name B) { A = A ^ B; return A; } \
+    inline bool HasFlag(const E##name A, const E##name B) { return ((A & B) == B); } \
+    inline void AddFlag(E##name& A, const E##name B) { A |= B; } \
+    inline void RemoveFlag(E##name& A, const E##name B) { A &= ~B; }

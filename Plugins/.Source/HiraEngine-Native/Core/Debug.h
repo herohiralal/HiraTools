@@ -1,15 +1,9 @@
 ﻿#pragma once
 
 #include "ImporterMacros.h"
+#include "SyntacticMacros.h"
 
-enum ELogType
-{
-    Error,
-    Assert,
-    Warning,
-    Log,
-    Exception,
-};
+DECLARE_ENUM(int, LogType, Error, Assert, Warning, Log, Exception)
 
 class Debug
 {
