@@ -20,11 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreHiraObject\HiraObject.h" />
-    <ClInclude Include="CoreHiraObject\Internal\HiraObjectRegistryModification.h" />
+    <ClInclude Include="CoreHiraObject\HiraObjectRegistry.h" />
     <ClInclude Include="CoreHiraObject\UnityHook.h" />
     <ClInclude Include="Core\Debug.h" />
     <ClInclude Include="Core\TemplateConstraintsHelper.h" />
     <ClInclude Include="Core\TList.h" />
+    <ClInclude Include="Core\TListModificationBuffer.h" />
     <ClInclude Include="HelperMacros\ExporterMacros.h" />
     <ClInclude Include="HelperMacros\ImporterMacros.h" />
     <ClInclude Include="HelperMacros\InteropCommonMacros.h" />
@@ -32,7 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreHiraObject\HiraObject.cpp" />
-    <ClCompile Include="CoreHiraObject\Internal\HiraObjectRegistryModification.cpp" />
+    <ClCompile Include="CoreHiraObject\HiraObjectRegistry.cpp" />
     <ClCompile Include="CoreHiraObject\UnityHook.cpp" />
     <ClCompile Include="Core\Debug.cpp" />
     <ClCompile Include="Tester\ConsoleTester.cpp" />
