@@ -8,7 +8,10 @@ namespace UnityEngine.Internal
     internal struct NativeUnityHook
     {
         [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr CreateUnityHook(HiraNativeHookInitParams initParams);
+        private static extern IntPtr CreateUnityHook([In] ref HiraNativeHookInitParams initParams);
+
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void UnityHookDispose(IntPtr target);
 
         [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         private static extern void DestroyUnityHook(IntPtr target);
@@ -21,11 +24,12 @@ namespace UnityEngine.Internal
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static NativeUnityHook Create(HiraNativeHookInitParams initParams) =>
-            new NativeUnityHook {_target = CreateUnityHook(initParams)};
+            new NativeUnityHook {_target = CreateUnityHook(ref initParams)};
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Destroy()
         {
+            UnityHookDispose(_target);
             DestroyUnityHook(_target);
             _target = IntPtr.Zero;
         }

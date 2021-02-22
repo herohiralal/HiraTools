@@ -6,7 +6,6 @@ struct SUnityHookInitParams
 {
 public:
     int HiraObjectRegistryInitReserveSize;
-    int HiraObjectRegistryCommandBufferCleanUpThreshold;
 };
 
 class HiraObjectRegistry;

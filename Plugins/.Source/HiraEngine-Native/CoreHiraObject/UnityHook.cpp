@@ -1,7 +1,6 @@
 ﻿#include "UnityHook.h"
 #include "ExporterMacros.h"
 #include "Debug.h"
-#include "HiraObject.h"
 #include "HiraObjectRegistry.h"
 
 UnityHook* UnityHook::Instance = nullptr;
