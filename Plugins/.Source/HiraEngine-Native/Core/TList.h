@@ -9,7 +9,7 @@ class TList
 {
 PROPERTY(T*, Container, STD, NONE)
 PROPERTY(int32, BufferSize, STD, CUSTOM)
-PROPERTY(int32, ElementCount, STD, NONE)
+PROPERTY(int32, ElementCount, STD, STD)
 
     template <typename TRandom>
     struct ConstArgumentType { using Type = const TRandom&; };
@@ -30,14 +30,18 @@ public:
     T& operator[](int32 Index);
     const T& operator[](int32 Index) const;
 
+int32 ModifyBufferSize(int32 Delta);
+
     bool Contains(ConstT Item) const;
     int32 FindIndex(ConstT Item) const;
 
     void Clear();
     int32 Add(T Item);
+    void Push(T Item);
     int32 Append(const TList<T>& ToAppend);
     bool Remove(T Item);
     bool RemoveAt(int32 Index);
+    T Pop();
 
     static TList<T> Combine(const TList<T>& A, const TList<T>& B);
 };
@@ -186,6 +190,14 @@ const T& TList<T>::operator[](int32 Index) const
 }
 
 template <typename T>
+int32 TList<T>::ModifyBufferSize(const int32 Delta)
+{
+    const int32 NewBufferSize = BufferSize + Delta;
+    SetBufferSize(NewBufferSize);
+    return NewBufferSize;
+}
+
+template <typename T>
 void TList<T>::SetBufferSize(int32 InValue)
 {
     InValue = InValue < 0 ? 0 : InValue;
@@ -238,13 +250,20 @@ void TList<T>::Clear()
 template <typename T>
 int32 TList<T>::Add(T Item)
 {
+    Push(Item);
+    return ElementCount - 1;
+}
+
+template <typename T>
+void TList<T>::Push(T Item)
+{
     if (BufferSize == ElementCount)
     {
         SetBufferSize(BufferSize * 2);
     }
 
     Container[ElementCount] = Item;
-    return ElementCount++;
+    ElementCount++;
 }
 
 template <typename T>
@@ -292,6 +311,12 @@ bool TList<T>::RemoveAt(const int32 Index)
 
     ElementCount--;
     return true;
+}
+
+template <typename T>
+T TList<T>::Pop()
+{
+    return Container[ElementCount--];
 }
 
 template <typename T>

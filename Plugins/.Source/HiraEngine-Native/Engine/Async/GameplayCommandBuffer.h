@@ -6,16 +6,15 @@ class GameplayCommandBuffer;
 
 struct SActiveTimer
 {
-    explicit constexpr SActiveTimer(const bool InActive = false, const float InTimeRemaining = 0, const uint64 InHash = 0)
+    static constexpr uint8 BufferSize = 15;
+    explicit constexpr SActiveTimer(const bool InActive = false, const float InTimeRemaining = 0)
         : Active(InActive),
-          TimeRemaining(InTimeRemaining),
-          Hash(InHash)
+          TimeRemaining(InTimeRemaining)
     {
     }
 
-    uint8 Active;
-    float TimeRemaining;
-    uint64 Hash;
+    uint16 Active;
+    float TimeRemaining[BufferSize];
 };
 
 struct STimerHandle
@@ -37,16 +36,19 @@ class GameplayCommandBuffer final : public NativeObject
     typedef NativeObject Super;
 
 PROPERTY(TList<SActiveTimer>, ActiveTimers, NONE, NONE)
-PROPERTY(uint64, Hash, NONE, NONE)
+PROPERTY(TList<uint64>, Hash, NONE, NONE)
+PROPERTY(uint64, CurrentHash, NONE, NONE)
 PROPERTY(TList<uint16>, UnusedCommandBufferIndices, NONE, NONE)
 
 public:
     explicit GameplayCommandBuffer(uint16 StartingBufferSize);
     ~GameplayCommandBuffer();
 
-    void OnAwake() override;
-    void OnDestroy() override;
-    void OnUpdate(float UnscaledDeltaTime, float DeltaTime) override;
+    virtual void OnAwake() override;
+    virtual void OnDestroy() override;
+    virtual void OnUpdate(float UnscaledDeltaTime, float DeltaTime) override;
+
+    STimerHandle SetTimer(float Time);
 
 DECLARE_IMPORTED_LIBRARY_FUNCTION(void, ExecuteBufferedCommands, uint16*, Indices)
 };
