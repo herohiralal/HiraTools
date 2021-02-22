@@ -1,7 +1,7 @@
-﻿#include "HiraObject.h"
-#include "HiraObjectRegistry.h"
+﻿#include "NativeObject.h"
+#include "NativeObjectRegistry.h"
 
-HiraObjectRegistry::HiraObjectRegistry(const int InitReserveSize)
+NativeObjectRegistry::NativeObjectRegistry(const int InitReserveSize)
     : Registry(InitReserveSize),
       ToUpdate(InitReserveSize * 0.5f),
       ToFixedUpdate(5),
@@ -11,11 +11,11 @@ HiraObjectRegistry::HiraObjectRegistry(const int InitReserveSize)
 {
 }
 
-HiraObjectRegistry::~HiraObjectRegistry()
+NativeObjectRegistry::~NativeObjectRegistry()
 {
 }
 
-void HiraObjectRegistry::Update(const float UnscaledDeltaTime, const float DeltaTime)
+void NativeObjectRegistry::Update(const float UnscaledDeltaTime, const float DeltaTime)
 {
     CurrentIterationType = ERegistryIterationType::Update;
     {
@@ -27,7 +27,7 @@ void HiraObjectRegistry::Update(const float UnscaledDeltaTime, const float Delta
     CurrentIterationType = ERegistryIterationType::None;
 }
 
-void HiraObjectRegistry::FixedUpdate(const float FixedUnscaledDeltaTime, const float FixedDeltaTime)
+void NativeObjectRegistry::FixedUpdate(const float FixedUnscaledDeltaTime, const float FixedDeltaTime)
 {
     CurrentIterationType = ERegistryIterationType::FixedUpdate;
     {
@@ -39,7 +39,7 @@ void HiraObjectRegistry::FixedUpdate(const float FixedUnscaledDeltaTime, const f
     CurrentIterationType = ERegistryIterationType::None;
 }
 
-void HiraObjectRegistry::LateUpdate(const float UnscaledDeltaTime, const float DeltaTime)
+void NativeObjectRegistry::LateUpdate(const float UnscaledDeltaTime, const float DeltaTime)
 {
     CurrentIterationType = ERegistryIterationType::LateUpdate;
     {
@@ -51,7 +51,7 @@ void HiraObjectRegistry::LateUpdate(const float UnscaledDeltaTime, const float D
     CurrentIterationType = ERegistryIterationType::None;
 }
 
-void HiraObjectRegistry::Dispose()
+void NativeObjectRegistry::Dispose()
 {
     CurrentIterationType = ERegistryIterationType::Disposal;
     {
@@ -77,7 +77,7 @@ void HiraObjectRegistry::Dispose()
     CurrentIterationType = ERegistryIterationType::None;
 }
 
-void HiraObjectRegistry::Register(HiraObject* Target)
+void NativeObjectRegistry::Register(NativeObject* Target)
 {
     const auto Enabled = Target->GetEnabled();
 
@@ -108,7 +108,7 @@ void HiraObjectRegistry::Register(HiraObject* Target)
     }
 }
 
-void HiraObjectRegistry::Unregister(HiraObject* Target)
+void NativeObjectRegistry::Unregister(NativeObject* Target)
 {
     const auto Enabled = Target->GetEnabled();
 
@@ -134,7 +134,7 @@ void HiraObjectRegistry::Unregister(HiraObject* Target)
     delete Target;
 }
 
-void HiraObjectRegistry::Enable(HiraObject* Target)
+void NativeObjectRegistry::Enable(NativeObject* Target)
 {
     if (!Target->GetEnabled())
     {
@@ -146,7 +146,7 @@ void HiraObjectRegistry::Enable(HiraObject* Target)
     }
 }
 
-void HiraObjectRegistry::Disable(HiraObject* Target)
+void NativeObjectRegistry::Disable(NativeObject* Target)
 {
     if (Target->GetEnabled())
     {
@@ -166,7 +166,7 @@ void HiraObjectRegistry::Disable(HiraObject* Target)
     if (HasFlag(TargetUpdateType, EUpdateType::type)) \
         RemoveFromListAndUpdateIndex(To##type, Target);
 
-void HiraObjectRegistry::AddToTickingLists(HiraObject* Target)
+void NativeObjectRegistry::AddToTickingLists(NativeObject* Target)
 {
     const auto TargetUpdateType = Target->GetUpdateType();
     MODIFY_LIST_IF_APPROPRIATE(Update, Add)
@@ -174,7 +174,7 @@ void HiraObjectRegistry::AddToTickingLists(HiraObject* Target)
     MODIFY_LIST_IF_APPROPRIATE(LateUpdate, Add)
 }
 
-void HiraObjectRegistry::RemoveFromTickingLists(HiraObject* Target)
+void NativeObjectRegistry::RemoveFromTickingLists(NativeObject* Target)
 {
     const auto TargetUpdateType = Target->GetUpdateType();
     switch (CurrentIterationType)
@@ -214,7 +214,7 @@ void HiraObjectRegistry::RemoveFromTickingLists(HiraObject* Target)
 
 #undef MODIFY_LIST_IF_APPROPRIATE
 
-void HiraObjectRegistry::RemoveFromListAndUpdateIndex(TList<HiraObject*>& List, HiraObject* Target)
+void NativeObjectRegistry::RemoveFromListAndUpdateIndex(TList<NativeObject*>& List, NativeObject* Target)
 {
     const int TargetIndex = List.FindIndex(Target);
     if (TargetIndex < 0)

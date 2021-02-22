@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CoreHiraObject\HiraObject.h" />
-    <ClInclude Include="CoreHiraObject\HiraObjectRegistry.h" />
-    <ClInclude Include="CoreHiraObject\UnityHook.h" />
+    <ClInclude Include="CoreNativeObject\NativeObject.h" />
+    <ClInclude Include="CoreNativeObject\NativeObjectRegistry.h" />
+    <ClInclude Include="CoreNativeObject\UnityHook.h" />
     <ClInclude Include="Core\Debug.h" />
     <ClInclude Include="Core\Platform\Platform.h" />
     <ClInclude Include="Core\TemplateConstraintsHelper.h" />
@@ -33,14 +33,11 @@
     <ClInclude Include="HelperMacros\SyntacticMacros.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CoreHiraObject\HiraObject.cpp" />
-    <ClCompile Include="CoreHiraObject\HiraObjectRegistry.cpp" />
-    <ClCompile Include="CoreHiraObject\UnityHook.cpp" />
+    <ClCompile Include="CoreNativeObject\NativeObject.cpp" />
+    <ClCompile Include="CoreNativeObject\NativeObjectRegistry.cpp" />
+    <ClCompile Include="CoreNativeObject\UnityHook.cpp" />
     <ClCompile Include="Core\Debug.cpp" />
     <ClCompile Include="Tester\ConsoleTester.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="HiraAsync" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -124,9 +121,20 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DEBUG;CPPDYNAMICLIBRARYTEMPLATE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>
+        DEBUG;
+        CPPDYNAMICLIBRARYTEMPLATE_EXPORTS;
+        _WINDOWS;
+        _USRDLL;
+        %(PreprocessorDefinitions);
+      </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\HelperMacros;$(ProjectDir)\Core;$(ProjectDir)\CoreHiraObject</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+        $(ProjectDir)\HelperMacros;
+        $(ProjectDir)\Core;
+        $(ProjectDir)\CoreNativeObject;
+        $(ProjectDir)\Engine;
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,9 +149,20 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NODEBUG;CPPDYNAMICLIBRARYTEMPLATE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>
+        NODEBUG;
+        CPPDYNAMICLIBRARYTEMPLATE_EXPORTS;
+        _WINDOWS;
+        _USRDLL;
+        %(PreprocessorDefinitions);
+      </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\HelperMacros;$(ProjectDir)\Core;$(ProjectDir)\CoreHiraObject</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+        $(ProjectDir)\HelperMacros;
+        $(ProjectDir)\Core;
+        $(ProjectDir)\CoreNativeObject;
+        $(ProjectDir)\Engine;
+      </AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -165,9 +184,21 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_EDITOR;NODEBUG;CPPDYNAMICLIBRARYTEMPLATE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>
+        _EDITOR;
+        NODEBUG;
+        CPPDYNAMICLIBRARYTEMPLATE_EXPORTS;
+        _WINDOWS;
+        _USRDLL;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\HelperMacros;$(ProjectDir)\Core;$(ProjectDir)\CoreHiraObject</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+        $(ProjectDir)\HelperMacros;
+        $(ProjectDir)\Core;
+        $(ProjectDir)\CoreNativeObject;
+        $(ProjectDir)\Engine;
+      </AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -184,9 +215,19 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>
+        DEBUG;
+        _CONSOLE;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\HelperMacros;$(ProjectDir)\Core;$(ProjectDir)\CoreHiraObject;$(ProjectDir)\Tester</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+        $(ProjectDir)\HelperMacros;
+        $(ProjectDir)\Core;
+        $(ProjectDir)\CoreNativeObject;
+        $(ProjectDir)\Engine;
+        $(ProjectDir)\Tester;
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

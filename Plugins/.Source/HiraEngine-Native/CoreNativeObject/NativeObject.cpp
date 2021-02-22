@@ -1,26 +1,26 @@
-﻿#include "HiraObject.h"
-#include "HiraObjectRegistry.h"
+﻿#include "NativeObject.h"
+#include "NativeObjectRegistry.h"
 #include "UnityHook.h"
 
-HiraObject::HiraObject(const EUpdateType UpdateTypes, const bool StartEnabled) : Enabled(StartEnabled), UpdateType(UpdateTypes)
+NativeObject::NativeObject(const EUpdateType UpdateTypes, const bool StartEnabled) : Enabled(StartEnabled), UpdateType(UpdateTypes)
 {
 }
 
-void HiraObject::Initialize()
+void NativeObject::Initialize()
 {
     UnityHook::Get()
         .GetRegistry()
         ->Register(this);
 }
 
-void HiraObject::Destroy()
+void NativeObject::Destroy()
 {
     UnityHook::Get()
         .GetRegistry()
         ->Unregister(this);
 }
 
-void HiraObject::SetEnabled(const bool InValue)
+void NativeObject::SetEnabled(const bool InValue)
 {
     if (GetEnabled() == InValue) return;
 
@@ -41,37 +41,37 @@ void HiraObject::SetEnabled(const bool InValue)
 
 #pragma region Messages
 
-void HiraObject::OnAwake()
+void NativeObject::OnAwake()
 {
     // Empty in base class
 }
 
-void HiraObject::OnEnable()
+void NativeObject::OnEnable()
 {
     // Empty in base class
 }
 
-void HiraObject::OnUpdate(const float UnscaledDeltaTime, const float DeltaTime)
+void NativeObject::OnUpdate(const float UnscaledDeltaTime, const float DeltaTime)
 {
     // Empty in base class
 }
 
-void HiraObject::OnFixedUpdate(const float FixedUnscaledDeltaTime, const float DeltaTime)
+void NativeObject::OnFixedUpdate(const float FixedUnscaledDeltaTime, const float DeltaTime)
 {
     // Empty in base class
 }
 
-void HiraObject::OnLateUpdate(const float UnscaledDeltaTime, const float DeltaTime)
+void NativeObject::OnLateUpdate(const float UnscaledDeltaTime, const float DeltaTime)
 {
     // Empty in base class
 }
 
-void HiraObject::OnDisable()
+void NativeObject::OnDisable()
 {
     // Empty in base class
 }
 
-void HiraObject::OnDestroy()
+void NativeObject::OnDestroy()
 {
     // Empty in base class
 }

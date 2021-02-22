@@ -1,7 +1,7 @@
 ﻿#include "UnityHook.h"
 #include "ExporterMacros.h"
 #include "Debug.h"
-#include "HiraObjectRegistry.h"
+#include "NativeObjectRegistry.h"
 
 UnityHook* UnityHook::Instance = nullptr;
 
@@ -10,7 +10,7 @@ IMPLEMENT_EXPORTED_CONSTRUCTOR(UnityHook, CreateUnityHook, const SUnityHookInitP
     UNITY_EDITOR_LOG(Log, "UnityHook created")
     Instance = this;
 
-    Registry = new HiraObjectRegistry(InitParams.HiraObjectRegistryInitReserveSize);
+    Registry = new NativeObjectRegistry(InitParams.NativeObjectRegistryInitReserveSize);
 }
 
 IMPLEMENT_EXPORTED_DESTRUCTOR(UnityHook)
