@@ -29,10 +29,12 @@
     <ClInclude Include="Core\TemplateConstraintsHelper.h" />
     <ClInclude Include="Core\TList.h" />
     <ClInclude Include="Core\TListModificationBuffer.h" />
+    <ClInclude Include="Engine\Async\GameplayCommandBuffer.h" />
     <ClInclude Include="HelperMacros\ExporterMacros.h" />
     <ClInclude Include="HelperMacros\HelperMacros.h" />
     <ClInclude Include="HelperMacros\ImporterMacros.h" />
     <ClInclude Include="HelperMacros\InteropCommonMacros.h" />
+    <ClInclude Include="HelperMacros\NativeObjectExporterMacros.h" />
     <ClInclude Include="HelperMacros\SyntacticMacros.h" />
   </ItemGroup>
   <ItemGroup>
@@ -40,6 +42,7 @@
     <ClCompile Include="CoreNativeObject\NativeObjectRegistry.cpp" />
     <ClCompile Include="CoreNativeObject\UnityHook.cpp" />
     <ClCompile Include="Core\Debug.cpp" />
+    <ClCompile Include="Engine\Async\GameplayCommandBuffer.cpp" />
     <ClCompile Include="Tester\ConsoleTester.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
