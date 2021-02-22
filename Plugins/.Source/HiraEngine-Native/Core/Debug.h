@@ -2,8 +2,9 @@
 
 #include "ImporterMacros.h"
 #include "SyntacticMacros.h"
+#include "Platform/Platform.h"
 
-DECLARE_ENUM(int, LogType, Error, Assert, Warning, Log, Exception)
+DECLARE_ENUM(int32, LogType, Error, Assert, Warning, Log, Exception)
 
 class Debug
 {

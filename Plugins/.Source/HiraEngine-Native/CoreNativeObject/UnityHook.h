@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-#include "SyntacticMacros.h"
+#include "Core.h"
 
 struct SUnityHookInitParams
 {
 public:
-    int NativeObjectRegistryInitReserveSize;
+    int32 NativeObjectRegistryInitReserveSize;
 };
 
 class NativeObjectRegistry;

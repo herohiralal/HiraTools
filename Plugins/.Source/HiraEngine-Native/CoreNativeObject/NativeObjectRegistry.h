@@ -1,11 +1,10 @@
 ﻿#pragma once
 
-#include "SyntacticMacros.h"
-#include "TList.h"
+#include "Core.h"
 
 class NativeObject;
 
-DECLARE_ENUM(int, RegistryIterationType, None, Update, FixedUpdate, LateUpdate, Disposal)
+DECLARE_ENUM(uint8, RegistryIterationType, None, Update, FixedUpdate, LateUpdate, Disposal)
 
 class NativeObjectRegistry
 {
@@ -14,15 +13,15 @@ PROPERTY(TList<NativeObject*>, ToUpdate, NONE, NONE)
 PROPERTY(TList<NativeObject*>, ToFixedUpdate, NONE, NONE)
 PROPERTY(TList<NativeObject*>, ToLateUpdate, NONE, NONE)
 PROPERTY(ERegistryIterationType, CurrentIterationType, NONE, NONE)
-PROPERTY(int, CurrentIterationIndex, NONE, NONE)
+PROPERTY(int32, CurrentIterationIndex, NONE, NONE)
 
 public:
-    explicit NativeObjectRegistry(int InitReserveSize);
+    explicit NativeObjectRegistry(int32 InitReserveSize);
     ~NativeObjectRegistry();
 
-    void Update(const float UnscaledDeltaTime, const float DeltaTime);
-    void FixedUpdate(const float FixedUnscaledDeltaTime, const float FixedDeltaTime);
-    void LateUpdate(const float UnscaledDeltaTime, const float DeltaTime);
+    void Update(float UnscaledDeltaTime, float DeltaTime);
+    void FixedUpdate(float FixedUnscaledDeltaTime, float FixedDeltaTime);
+    void LateUpdate(float UnscaledDeltaTime, float DeltaTime);
     void Dispose();
     
     void Register(NativeObject* Target);
@@ -33,5 +32,5 @@ public:
 private:
     void AddToTickingLists(NativeObject* Target);
     void RemoveFromTickingLists(NativeObject* Target);
-    void RemoveFromListAndUpdateIndex(TList<NativeObject*>& List, NativeObject* Target);
+    void RemoveFromListAndUpdateIndex(TList<NativeObject*>& List, const NativeObject* Target);
 };

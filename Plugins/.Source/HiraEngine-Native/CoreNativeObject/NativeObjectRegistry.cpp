@@ -1,7 +1,7 @@
 ﻿#include "NativeObject.h"
 #include "NativeObjectRegistry.h"
 
-NativeObjectRegistry::NativeObjectRegistry(const int InitReserveSize)
+NativeObjectRegistry::NativeObjectRegistry(const int32 InitReserveSize)
     : Registry(InitReserveSize),
       ToUpdate(InitReserveSize * 0.5f),
       ToFixedUpdate(5),
@@ -20,7 +20,9 @@ void NativeObjectRegistry::Update(const float UnscaledDeltaTime, const float Del
     CurrentIterationType = ERegistryIterationType::Update;
     {
         for (CurrentIterationIndex = 0; CurrentIterationIndex < ToUpdate.GetElementCount(); CurrentIterationIndex++)
+        {
             ToUpdate[CurrentIterationIndex]->OnUpdate(UnscaledDeltaTime, DeltaTime);
+        }
 
         CurrentIterationIndex = -1;
     }
@@ -32,7 +34,9 @@ void NativeObjectRegistry::FixedUpdate(const float FixedUnscaledDeltaTime, const
     CurrentIterationType = ERegistryIterationType::FixedUpdate;
     {
         for (CurrentIterationIndex = 0; CurrentIterationIndex < ToFixedUpdate.GetElementCount(); CurrentIterationIndex++)
+        {
             ToFixedUpdate[CurrentIterationIndex]->OnFixedUpdate(FixedUnscaledDeltaTime, FixedDeltaTime);
+        }
 
         CurrentIterationIndex = -1;
     }
@@ -44,7 +48,9 @@ void NativeObjectRegistry::LateUpdate(const float UnscaledDeltaTime, const float
     CurrentIterationType = ERegistryIterationType::LateUpdate;
     {
         for (CurrentIterationIndex = 0; CurrentIterationIndex < ToLateUpdate.GetElementCount(); CurrentIterationIndex++)
+        {
             ToLateUpdate[CurrentIterationIndex]->OnLateUpdate(UnscaledDeltaTime, DeltaTime);
+        }
 
         CurrentIterationIndex = -1;
     }
@@ -73,6 +79,8 @@ void NativeObjectRegistry::Dispose()
 
             delete Current;
         }
+
+        CurrentIterationIndex = -1;
     }
     CurrentIterationType = ERegistryIterationType::None;
 }
@@ -214,9 +222,9 @@ void NativeObjectRegistry::RemoveFromTickingLists(NativeObject* Target)
 
 #undef MODIFY_LIST_IF_APPROPRIATE
 
-void NativeObjectRegistry::RemoveFromListAndUpdateIndex(TList<NativeObject*>& List, NativeObject* Target)
+void NativeObjectRegistry::RemoveFromListAndUpdateIndex(TList<NativeObject*>& List, const NativeObject* Target)
 {
-    const int TargetIndex = List.FindIndex(Target);
+    const int32 TargetIndex = List.FindIndex(Target);
     if (TargetIndex < 0)
     {
         UNITY_EDITOR_LOG(Error, "Attempted to remove an index from a ticking list that didn't contain it.")

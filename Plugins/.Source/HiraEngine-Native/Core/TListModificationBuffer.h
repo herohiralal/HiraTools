@@ -8,7 +8,7 @@ struct TListModification
     typedef void (*ModificationDelegate)(TList<T>&, T);
 
     TListModification();
-    TListModification(T InTarget, const ModificationDelegate InModification);
+    TListModification(T InTarget, ModificationDelegate InModification);
 
     T Target;
     ModificationDelegate Delegate;
@@ -70,13 +70,13 @@ class TListModificationBuffer
 
 public:
     TListModificationBuffer();
-    explicit TListModificationBuffer(int InitReserveSize,
+    explicit TListModificationBuffer(int32 InitReserveSize,
                                      ModificationDelegate InAdditionDelegate = &TListModificationBuffer<T>::DefaultAddition,
                                      ModificationDelegate InRemovalDelegate = &TListModificationBuffer<T>::DefaultRemoval);
 
-    int GetCommandCount() const;
-    int GetBufferSize() const;
-    void SetBufferSize(int NewSize);
+    int32 GetCommandCount() const;
+    int32 GetBufferSize() const;
+    void SetBufferSize(int32 NewSize);
     
     void ScheduleAddition(T Target);
     void ScheduleRemoval(T Target);
@@ -102,7 +102,7 @@ TListModificationBuffer<T>::TListModificationBuffer()
 template <typename T>
 TListModificationBuffer<T>::TListModificationBuffer
 (
-    int InitReserveSize,
+    int32 InitReserveSize,
     const ModificationDelegate InAdditionDelegate,
     const ModificationDelegate InRemovalDelegate
 )
@@ -113,19 +113,19 @@ TListModificationBuffer<T>::TListModificationBuffer
 }
 
 template <typename T>
-int TListModificationBuffer<T>::GetCommandCount() const
+int32 TListModificationBuffer<T>::GetCommandCount() const
 {
     return CommandBuffer.GetElementCount();
 }
 
 template <typename T>
-int TListModificationBuffer<T>::GetBufferSize() const
+int32 TListModificationBuffer<T>::GetBufferSize() const
 {
     return CommandBuffer.GetBufferSize();
 }
 
 template <typename T>
-void TListModificationBuffer<T>::SetBufferSize(int NewSize)
+void TListModificationBuffer<T>::SetBufferSize(int32 NewSize)
 {
     CommandBuffer.SetBufferSize(NewSize);
 }
@@ -152,10 +152,10 @@ void TListModificationBuffer<T>::ExecuteAndClear(TList<T>& Target)
 template <typename T>
 void TListModificationBuffer<T>::ExecuteOn(TList<T>& Target) const
 {
-    const auto Count = CommandBuffer.GetElementCount();
-    for (int I = 0; I < Count; I++)
+    const int32 Count = CommandBuffer.GetElementCount();
+    for (uint16 I = 0; I < Count; I++)
     {
-        auto& Current = CommandBuffer[I];
+        const TListModification<T>& Current = CommandBuffer[I];
         Current.Delegate(Target, Current.Target);
     }
 }

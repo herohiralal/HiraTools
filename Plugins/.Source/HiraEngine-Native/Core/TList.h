@@ -2,34 +2,42 @@
 
 #include "Debug.h"
 #include "SyntacticMacros.h"
+#include "Platform/Platform.h"
 
 template <typename T>
 class TList
 {
 PROPERTY(T*, Container, STD, NONE)
-PROPERTY(int, BufferSize, STD, CUSTOM)
-PROPERTY(int, ElementCount, STD, NONE)
+PROPERTY(int32, BufferSize, STD, CUSTOM)
+PROPERTY(int32, ElementCount, STD, NONE)
+
+    template <typename TRandom>
+    struct ConstArgumentType { using Type = const TRandom&; };
+    template <typename TRandom>
+    struct ConstArgumentType<TRandom*> { using Type = const TRandom*; };
+
+    typedef typename ConstArgumentType<T>::Type ConstT;
 
 public:
     TList(); // parameterless constructor
-    explicit TList(int StartBufferSize); // basic constructor
+    explicit TList(int32 StartBufferSize); // basic constructor
     TList(const TList& Other); // copy constructor
     TList& operator=(const TList& Other); // copy assignment
     TList(TList&& Other) noexcept; // move constructor
     TList& operator=(TList&& Other) noexcept; // move assignment
     ~TList(); // destructor
 
-    T& operator[](int Index);
-    const T& operator[](int Index) const;
+    T& operator[](int32 Index);
+    const T& operator[](int32 Index) const;
 
-    bool Contains(T Item) const;
-    int FindIndex(const T Item) const;
+    bool Contains(ConstT Item) const;
+    int32 FindIndex(ConstT Item) const;
 
     void Clear();
-    int Add(T Item);
-    int Append(const TList<T>& ToAppend);
+    int32 Add(T Item);
+    int32 Append(const TList<T>& ToAppend);
     bool Remove(T Item);
-    bool RemoveAt(int Index);
+    bool RemoveAt(int32 Index);
 
     static TList<T> Combine(const TList<T>& A, const TList<T>& B);
 };
@@ -40,8 +48,9 @@ TList<T>::TList() : TList(0)
 }
 
 template <typename T>
-TList<T>::TList(const int StartBufferSize)
+TList<T>::TList(int32 StartBufferSize)
 {
+    StartBufferSize = StartBufferSize < 0 ? 0 : StartBufferSize;
     BufferSize = StartBufferSize;
     Container = new T[StartBufferSize];
     ElementCount = 0;
@@ -51,13 +60,15 @@ template <typename T>
 TList<T>::TList(const TList& Other)
 {
     // acquire new container
-    const int OtherBufferSize = Other.BufferSize;
-    auto NewContainer = new T[OtherBufferSize];
+    const int32 OtherBufferSize = Other.BufferSize;
+    T* NewContainer = new T[OtherBufferSize];
 
     // initialize new container
-    const int OtherElementCount = Other.ElementCount;
-    for (int I = 0; I < OtherElementCount; I++)
+    const int32 OtherElementCount = Other.ElementCount;
+    for (uint16 I = 0; I < OtherElementCount; I++)
+    {
         NewContainer[I] = Other.Container[I];
+    }
 
     Container = NewContainer;
     BufferSize = OtherBufferSize;
@@ -70,13 +81,15 @@ TList<T>& TList<T>::operator=(const TList& Other)
     if (this != &Other)
     {
         // acquire new container
-        const int OtherBufferSize = Other.BufferSize;
-        auto NewContainer = new T[OtherBufferSize];
+        const int32 OtherBufferSize = Other.BufferSize;
+        T* NewContainer = new T[OtherBufferSize];
 
         // initialize new container
-        const int OtherElementCount = Other.ElementCount;
-        for (int I = 0; I < OtherElementCount; I++)
+        const int32 OtherElementCount = Other.ElementCount;
+        for (uint16 I = 0; I < OtherElementCount; I++)
+        {
             NewContainer[I] = Other.Container[I];
+        }
 
         delete[] Container;
         Container = NewContainer;
@@ -123,13 +136,18 @@ TList<T>::~TList()
 }
 
 template <typename T>
-T& TList<T>::operator[](const int Index)
+T& TList<T>::operator[](const int32 Index)
 {
+    if (Index < 0)
+    {
+        UNITY_LOG(Exception, "Attempted to access a negative index.")
+    }
+
     if (Index >= BufferSize)
     {
         if (BufferSize)
         {
-            UNITY_LOG(Exception, "Attempted to access outside HiraList buffer.")
+            UNITY_LOG(Exception, "Attempted to access outside List buffer.")
             return Container[0];
         }
         else
@@ -143,13 +161,18 @@ T& TList<T>::operator[](const int Index)
 }
 
 template <typename T>
-const T& TList<T>::operator[](int Index) const
+const T& TList<T>::operator[](int32 Index) const
 {
+    if (Index < 0)
+    {
+        UNITY_LOG(Exception, "Attempted to access a negative index.")
+    }
+
     if (Index >= BufferSize)
     {
         if (BufferSize)
         {
-            UNITY_LOG(Exception, "Attempted to access outside HiraList buffer.")
+            UNITY_LOG(Exception, "Attempted to access outside List buffer.")
             return Container[0];
         }
         else
@@ -163,36 +186,44 @@ const T& TList<T>::operator[](int Index) const
 }
 
 template <typename T>
-void TList<T>::SetBufferSize(const int InValue)
+void TList<T>::SetBufferSize(int32 InValue)
 {
+    InValue = InValue < 0 ? 0 : InValue;
+
     ElementCount = ElementCount < InValue ? ElementCount : InValue;
     T* NewContainer = new T[InValue];
-    for (auto I = 0; I < ElementCount; I++)
+    for (uint16 I = 0; I < ElementCount; I++)
+    {
         NewContainer[I] = Container[I];
+    }
     delete[] Container;
     Container = NewContainer;
     BufferSize = InValue;
 }
 
 template <typename T>
-bool TList<T>::Contains(const T Item) const
+bool TList<T>::Contains(ConstT Item) const
 {
-    for (auto I = 0; I < ElementCount; I++)
+    for (uint16 I = 0; I < ElementCount; I++)
     {
         if (Container[I] == Item)
+        {
             return true;
+        }
     }
 
     return false;
 }
 
 template <typename T>
-int TList<T>::FindIndex(const T Item) const
+int32 TList<T>::FindIndex(ConstT Item) const
 {
-    for (auto I = 0; I < ElementCount; I++)
+    for (uint16 I = 0; I < ElementCount; I++)
     {
         if (Container[I] == Item)
+        {
             return I;
+        }
     }
 
     return -1;
@@ -205,26 +236,30 @@ void TList<T>::Clear()
 }
 
 template <typename T>
-int TList<T>::Add(T Item)
+int32 TList<T>::Add(T Item)
 {
     if (BufferSize == ElementCount)
+    {
         SetBufferSize(BufferSize * 2);
+    }
 
     Container[ElementCount] = Item;
     return ElementCount++;
 }
 
 template <typename T>
-int TList<T>::Append(const TList<T>& ToAppend)
+int32 TList<T>::Append(const TList<T>& ToAppend)
 {
-    const auto CurrentElementCount = ElementCount;
-    const auto OtherElementCount = ToAppend.ElementCount;
-    const auto TotalElementCount = CurrentElementCount + OtherElementCount;
-    
+    const int32 CurrentElementCount = ElementCount;
+    const int32 OtherElementCount = ToAppend.ElementCount;
+    const int32 TotalElementCount = CurrentElementCount + OtherElementCount;
+
     if (BufferSize < TotalElementCount) SetBufferSize(TotalElementCount);
 
-    for (auto I = 0; I < OtherElementCount; I++)
+    for (uint16 I = 0; I < OtherElementCount; I++)
+    {
         Container[CurrentElementCount + I] = ToAppend.Container[I];
+    }
 
     ElementCount = TotalElementCount;
     return CurrentElementCount;
@@ -233,23 +268,27 @@ int TList<T>::Append(const TList<T>& ToAppend)
 template <typename T>
 bool TList<T>::Remove(const T Item)
 {
-    for (auto I = 0; I < ElementCount; I++)
+    for (uint16 I = 0; I < ElementCount; I++)
+    {
         if (Container[I] == Item)
         {
             return RemoveAt(I);
         }
+    }
 
     return false;
 }
 
 template <typename T>
-bool TList<T>::RemoveAt(const int Index)
+bool TList<T>::RemoveAt(const int32 Index)
 {
     if (Index >= ElementCount) return false;
 
-    const auto LastIndex = ElementCount - 1;
-    for (auto I = Index; I < LastIndex; I++)
+    const int32 LastIndex = ElementCount - 1;
+    for (int32 I = Index; I < LastIndex; I++)
+    {
         Container[I] = Container[I + 1];
+    }
 
     ElementCount--;
     return true;

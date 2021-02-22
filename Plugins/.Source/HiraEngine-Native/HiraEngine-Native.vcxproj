@@ -19,15 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CoreNativeObject\CoreNativeObject.h" />
     <ClInclude Include="CoreNativeObject\NativeObject.h" />
     <ClInclude Include="CoreNativeObject\NativeObjectRegistry.h" />
     <ClInclude Include="CoreNativeObject\UnityHook.h" />
+    <ClInclude Include="Core\Core.h" />
     <ClInclude Include="Core\Debug.h" />
     <ClInclude Include="Core\Platform\Platform.h" />
     <ClInclude Include="Core\TemplateConstraintsHelper.h" />
     <ClInclude Include="Core\TList.h" />
     <ClInclude Include="Core\TListModificationBuffer.h" />
     <ClInclude Include="HelperMacros\ExporterMacros.h" />
+    <ClInclude Include="HelperMacros\HelperMacros.h" />
     <ClInclude Include="HelperMacros\ImporterMacros.h" />
     <ClInclude Include="HelperMacros\InteropCommonMacros.h" />
     <ClInclude Include="HelperMacros\SyntacticMacros.h" />

@@ -76,6 +76,12 @@
         ACCESSOR_##get(GETTER, type, name) \
         ACCESSOR_##set(SETTER, type, name)
 
+#define BITFIELD(intType, name, get, set) \
+    private: intType name:1; \
+    public: \
+        ACCESSOR_##get(GETTER, bool, name) \
+        ACCESSOR_##set(SETTER, bool, name)
+
 #define DECLARE_SINGLETON( typeName) \
     private: \
         static typeName* Instance; \
