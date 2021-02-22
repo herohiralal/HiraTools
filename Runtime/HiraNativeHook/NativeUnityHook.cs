@@ -17,7 +17,13 @@ namespace UnityEngine.Internal
         private static extern void DestroyUnityHook(IntPtr target);
 
         [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        private static extern void UnityHookUpdate(IntPtr target, float deltaTime);
+        private static extern void UnityHookUpdate(IntPtr target, float unscaledDeltaTime, float deltaTime);
+
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void UnityHookFixedUpdate(IntPtr target, float fixedUnscaledDeltaTime, float fixedDeltaTime);
+
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void UnityHookLateUpdate(IntPtr target, float unscaledDeltaTime, float deltaTime);
 
         public bool IsValid => _target != IntPtr.Zero;
         private IntPtr _target;
@@ -35,6 +41,12 @@ namespace UnityEngine.Internal
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Update(float deltaTime) => UnityHookUpdate(_target, deltaTime);
+        public void Update(float unscaledDeltaTime, float deltaTime) => UnityHookUpdate(_target, unscaledDeltaTime, deltaTime);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void FixedUpdate(float fixedUnscaledDeltaTime, float fixedDeltaTime) => UnityHookFixedUpdate(_target, fixedUnscaledDeltaTime, fixedDeltaTime);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void LateUpdate(float unscaledDeltaTime, float deltaTime) => UnityHookLateUpdate(_target, unscaledDeltaTime, deltaTime);
     }
 }

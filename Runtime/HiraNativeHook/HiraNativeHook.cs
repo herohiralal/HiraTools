@@ -25,7 +25,17 @@ namespace UnityEngine.Internal
 
         private void Update()
         {
-            _nativeHook.Update(Time.deltaTime);
+            _nativeHook.Update(Time.unscaledDeltaTime, Time.deltaTime);
+        }
+
+        private void FixedUpdate()
+        {
+            _nativeHook.FixedUpdate(Time.fixedUnscaledDeltaTime, Time.fixedDeltaTime);
+        }
+
+        private void LateUpdate()
+        {
+            _nativeHook.LateUpdate(Time.unscaledDeltaTime, Time.deltaTime);
         }
 
         private void OnDestroy()
