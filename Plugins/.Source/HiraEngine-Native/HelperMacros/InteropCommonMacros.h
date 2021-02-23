@@ -1494,8 +1494,6 @@
 
 #if _WIN32
 #define DLLEXPORT(type) extern "C" __declspec(dllexport) type __stdcall
-#define DLLEXPORT_INLINE(type) extern "C" inline __declspec(dllexport) type __stdcall
 #else
 #define DLLEXPORT(type) extern "C" type __stdcall
-#define DLLEXPORT_INLINE(type) extern "C" inline type __stdcall
 #endif
