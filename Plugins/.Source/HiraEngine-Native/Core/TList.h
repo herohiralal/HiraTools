@@ -316,7 +316,7 @@ bool TList<T>::RemoveAt(const int32 Index)
 template <typename T>
 T TList<T>::Pop()
 {
-    return Container[ElementCount--];
+    return Container[--ElementCount];
 }
 
 template <typename T>

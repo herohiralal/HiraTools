@@ -8,12 +8,14 @@ namespace UnityEngine.Internal
     public class HiraNativeHook : MonoBehaviour
     {
         private NativeUnityHook _nativeHook = default;
+        public static event Action OnNativeHookCreated = delegate { };
+        public static event Action OnNativeHookDestroyed = delegate { };
 #if UNITY_EDITOR
         public const string HIRA_ENGINE_NATIVE_DLL_NAME = "HiraEngine-Native-Editor";
 #else
         public const string HIRA_ENGINE_NATIVE_DLL_NAME = "HiraEngine-Native";
 #endif
-        
+
         private void Awake()
         {
             InitDebugLogToUnity(LogToUnity);
@@ -21,6 +23,8 @@ namespace UnityEngine.Internal
             var properties = Resources.Load<HiraNativeHookProperties>("HiraNativeHookProperties");
             _nativeHook = NativeUnityHook.Create(properties);
             Resources.UnloadAsset(properties);
+            
+            OnNativeHookCreated.Invoke();
         }
 
         private void Update()
@@ -40,6 +44,8 @@ namespace UnityEngine.Internal
 
         private void OnDestroy()
         {
+            OnNativeHookDestroyed.Invoke();
+            
             _nativeHook.Destroy();
         }
 
@@ -50,9 +56,11 @@ namespace UnityEngine.Internal
         private static void LogToUnity(LogType type, string message) =>
             Debug.LogFormat(type, LogOption.NoStacktrace, null, $"<color=red><b>Native log: </b></color>{message}");
 
+#if !UNITY_EDITOR
         private void OnGUI()
         {
             if (GUILayout.Button("Quit")) Application.Quit();
         }
+#endif
     }
 }

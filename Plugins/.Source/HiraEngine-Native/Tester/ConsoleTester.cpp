@@ -8,19 +8,19 @@ void __stdcall LogToConsole(const ELogType LogType, const char* ToLog)
 {
     switch (LogType)
     {
-        case Error:
+        case ELogType::Error:
             std::cout << ">> [ERROR]     ";
             break;
-        case Assert:
+        case ELogType::Assert:
             std::cout << ">> [ASSERTION] ";
             break;
-        case Warning:
+        case ELogType::Warning:
             std::cout << ">> [WARNING]   ";
             break;
-        case Log:
+        case ELogType::Log:
             std::cout << ">> [MESSAGE]   ";
             break;
-        case Exception:
+        case ELogType::Exception:
             std::cout << ">> [EXCEPTION] ";
             break;
         default: ;
