@@ -35,7 +35,6 @@ class GameplayCommandBuffer final : public NativeObject
 PROPERTY(TList<SActiveTimer>, ActiveTimers, NONE, NONE)
 PROPERTY(TList<uint64>, Hash, NONE, NONE)
 PROPERTY(uint64, CurrentHash, NONE, NONE)
-PROPERTY(TList<uint16>, UnusedCommandBufferIndices, NONE, NONE)
 
 public:
     explicit GameplayCommandBuffer(uint16 StartingBufferSize);
@@ -53,4 +52,7 @@ public:
     void CancelTimer(const STimerHandle& InHandle);
 
 DECLARE_IMPORTED_LIBRARY_FUNCTION(void, ExecuteBufferedCommands, GameplayCommandBuffer*, CommandBuffer, uint16*, Indices)
+
+private:
+    uint8 TryGetHash(uint16& OutHash) const;
 };

@@ -4,8 +4,7 @@ EXPORT_NATIVEOBJECT_CONSTRUCTOR(GameplayCommandBuffer, CreateGameplayCommandBuff
     : Super(EUpdateType::Update),
       ActiveTimers((StartingBufferSize / SActiveTimer::BufferSize) + 1),
       Hash(((StartingBufferSize / SActiveTimer::BufferSize) + 1) * SActiveTimer::BufferSize),
-      CurrentHash(0),
-      UnusedCommandBufferIndices(((StartingBufferSize / SActiveTimer::BufferSize) + 1) * SActiveTimer::BufferSize)
+      CurrentHash(0)
 {
 }
 
@@ -20,14 +19,7 @@ void GameplayCommandBuffer::OnAwake()
     const int32 ActiveTimersBufferSize = ActiveTimers.GetBufferSize();
     const int32 TotalBufferSize = ActiveTimersBufferSize * SActiveTimer::BufferSize;
 
-    uint16* CurrentIndex = UnusedCommandBufferIndices.GetContainer();
-    for (uint16 I = 0; I < TotalBufferSize; ++I, ++CurrentIndex)
-    {
-        *CurrentIndex = I;
-    }
-
     ActiveTimers.SetElementCount(ActiveTimersBufferSize);
-    UnusedCommandBufferIndices.SetElementCount(TotalBufferSize);
     Hash.SetElementCount(TotalBufferSize);
 
     UNITY_EDITOR_LOG(Log, "Gameplay command buffer has awoken.!")
@@ -36,11 +28,10 @@ void GameplayCommandBuffer::OnAwake()
 void GameplayCommandBuffer::OnDestroy()
 {
     UNITY_EDITOR_LOG(Log, "Gameplay command buffer is dying...")
-    
+
     CurrentHash = 0;
 
     ActiveTimers.SetBufferSize(0);
-    UnusedCommandBufferIndices.SetBufferSize(0);
     Hash.SetBufferSize(0);
 }
 
@@ -72,7 +63,6 @@ void GameplayCommandBuffer::OnUpdate(const float UnscaledDeltaTime, const float 
                 {
                     const uint16 ActualIndex = (I * SActiveTimer::BufferSize) + J;
                     It.Active &= ~(1 << J);
-                    UnusedCommandBufferIndices.Push(ActualIndex);
                     Hash[ActualIndex] = 0;
                     TimersFinished.Push(ActualIndex);
                     SuccessCount++;
@@ -89,31 +79,27 @@ static_assert(0 % 5 == 0, "0 % <any non-zero number> must be 0.");
 
 IMPLEMENT_EXPORTED_FUNCTION(STimerHandle, GameplayCommandBuffer, SetTimer, const float, Time)
 {
-    if (!UnusedCommandBufferIndices.GetElementCount())
+    uint16 Index;
+    if (!TryGetHash(Index))
     {
         const int32 NewBufferSize = ActiveTimers.ModifyBufferSize(1);
-        UnusedCommandBufferIndices.ModifyBufferSize(SActiveTimer::BufferSize);
         const int32 NewTotalBufferSize = Hash.ModifyBufferSize(SActiveTimer::BufferSize);
 
-        uint16* const ItStart = UnusedCommandBufferIndices.GetContainer();
-        for (uint16 I = 0; I < SActiveTimer::BufferSize; ++I)
-        {
-            *(ItStart + I) = NewBufferSize + I;
-        }
-        UnusedCommandBufferIndices.SetElementCount(SActiveTimer::BufferSize);
+        ActiveTimers.SetElementCount(NewBufferSize);
         Hash.SetElementCount(NewTotalBufferSize);
+
+        TryGetHash(Index);
     }
 
-    const uint16 Index = UnusedCommandBufferIndices.Pop();
     const uint64 NewHash = CurrentHash++;
 
-    const uint16 MainIndex = Index / SActiveTimer::BufferSize;    
+    const uint16 MainIndex = Index / SActiveTimer::BufferSize;
     const uint8 InternalIndex = Index % SActiveTimer::BufferSize;
 
     SActiveTimer* AssignedTimer = ActiveTimers.GetContainer() + MainIndex;
     AssignedTimer->Active |= (1 << InternalIndex);
     AssignedTimer->TimeRemaining[InternalIndex] = Time;
-    *(Hash.GetContainer()+Index) = NewHash;
+    *(Hash.GetContainer() + Index) = NewHash;
 
     return STimerHandle{Index, reinterpret_cast<intptr>(this), NewHash};
 }
@@ -157,9 +143,25 @@ IMPLEMENT_EXPORTED_FUNCTION(void, GameplayCommandBuffer, CancelTimer, const STim
 
     ActiveTimers[InHandle.BufferIndex / SActiveTimer::BufferSize].Active &= ~(1 << (InHandle.BufferIndex % SActiveTimer::BufferSize));
     Hash[InHandle.BufferIndex] = 0;
-    UnusedCommandBufferIndices.Add(InHandle.BufferIndex);
 }
 
 #undef ASSERT_HANDLE_VALID
 
 IMPLEMENT_IMPORTED_LIBRARY_FUNCTION(void, GameplayCommandBuffer, ExecuteBufferedCommands, GameplayCommandBuffer*, CommandBuffer, uint16*, Indices)
+
+uint8 GameplayCommandBuffer::TryGetHash(uint16& OutHash) const
+{
+    const int32 BufferSize = Hash.GetBufferSize();
+    uint64* It = Hash.GetContainer();
+
+    for (uint16 I = 0; I < BufferSize; ++I)
+    {
+        if (!(*It))
+        {
+            OutHash = I;
+            return true;
+        }
+    }
+
+    return false;
+}
