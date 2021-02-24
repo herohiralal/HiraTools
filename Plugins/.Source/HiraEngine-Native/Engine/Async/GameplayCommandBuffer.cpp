@@ -19,6 +19,13 @@ void GameplayCommandBuffer::OnAwake()
     const int32 ActiveTimersBufferSize = ActiveTimers.GetBufferSize();
     const int32 TotalBufferSize = ActiveTimersBufferSize * SActiveTimer::BufferSize;
 
+    uint64* It = Hash.GetContainer();
+    uint64* const ItMax = It + TotalBufferSize;
+    for (; It < ItMax; ++It)
+    {
+        *It = 0; 
+    }
+
     ActiveTimers.SetElementCount(ActiveTimersBufferSize);
     Hash.SetElementCount(TotalBufferSize);
 
@@ -156,7 +163,7 @@ uint8 GameplayCommandBuffer::TryGetBufferIndex(uint16& OutBufferIndex) const
 
     for (uint16 I = 0; I < BufferSize; ++I)
     {
-        if (!(*It))
+        if (!(*It++))
         {
             OutBufferIndex = I;
             return true;
