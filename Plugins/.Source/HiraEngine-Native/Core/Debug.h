@@ -15,20 +15,31 @@ struct Logger
 
 #define DECLARE_LOGGER_OPERATOR(x) Logger& operator<<(Logger& OutLogger, x Other);
 
-FOR_EACH(DECLARE_LOGGER_OPERATOR, const char*, int32, float)
+FOR_EACH(DECLARE_LOGGER_OPERATOR,
+    const char*,
+    int8,
+    uint8,
+    int16,
+    uint16,
+    int32,
+    uint32,
+    int64,
+    uint64,
+    float,
+    double)
 
 #undef DECLARE_LOGGER_OPERATOR
 
 // end logging
 
-void operator<<(Logger& OutLogger, const Logger* OtherLogger);
+void operator<<(const Logger& OutLogger, const Logger* OtherLogger);
 
 #if !_CONSOLE   // print to unity logger
 
 #define UNITY_LOG(type, msg) \
     { \
         Logger NewLogger = Logger(ELogType::type); \
-        NewLogger << msg << static_cast<const Logger*>(nullptr); \
+        NewLogger << msg << "\nFrom " << __FUNCTION__ << "() (at Packages\\com.rohanjadav.hiraengine\\Plugins\\.Source\\HiraEngine-Native\\" << __FILE__ << ": " << __LINE__ << ")" << static_cast<const Logger*>(nullptr); \
     }
 
 #else   // print log to console 

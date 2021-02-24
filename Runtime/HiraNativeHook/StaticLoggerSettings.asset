@@ -13,10 +13,26 @@ MonoBehaviour:
   m_Name: StaticLoggerSettings
   m_EditorClassIdentifier: 
   typeData:
-  - name: Integer
-    type: int
   - name: String
     type: string
+  - name: SignedByte
+    type: sbyte
+  - name: Byte
+    type: byte
+  - name: Short
+    type: short
+  - name: UnsignedShort
+    type: ushort
+  - name: Integer
+    type: int
+  - name: UnsignedInteger
+    type: uint
+  - name: Long
+    type: long
+  - name: UnsignedLong
+    type: ulong
   - name: Float
     type: float
-  cachedFilePath: Assets/StaticLogger.cs
+  - name: Double
+    type: double
+  cachedFilePath: Packages/com.rohanjadav.hiraengine/Runtime/HiraNativeHook/StaticLogger.cs

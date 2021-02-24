@@ -28,7 +28,18 @@ Logger::Logger(const ELogType LogType)
 
 // left shift operators
 
-FOR_EACH_2_ARGUMENTS(IMPLEMENT_LOGGER_OPERATOR, const char*, String, const int32, Integer, const float, Float)
+FOR_EACH_2_ARGUMENTS(IMPLEMENT_LOGGER_OPERATOR,
+    const char*, String,
+    const int8, SignedByte,
+    const uint8, Byte,
+    const int16, Short,
+    const uint16, UnsignedShort,
+    const int32, Integer,
+    const uint32, UnsignedInteger,
+    const int64, Long,
+    const uint64, UnsignedLong,
+    const float, Float,
+    const double, Double)
 
 // end log
 
@@ -39,7 +50,7 @@ DLLEXPORT(void) InitLoggerLogEnd(void (CALLING_CONVENTION*InDelegate)())
     GLogEnd = InDelegate;
 }
 
-void operator<<(Logger& OutLogger, const Logger* OtherLogger)
+void operator<<(const Logger& OutLogger, const Logger* OtherLogger)
 {
     GLogEnd();
 }
