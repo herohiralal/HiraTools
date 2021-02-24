@@ -54,5 +54,5 @@ public:
 DECLARE_IMPORTED_LIBRARY_FUNCTION(void, ExecuteBufferedCommands, GameplayCommandBuffer*, CommandBuffer, uint16*, Indices)
 
 private:
-    uint8 TryGetHash(uint16& OutHash) const;
+    uint8 TryGetBufferIndex(uint16& OutBufferIndex) const;
 };

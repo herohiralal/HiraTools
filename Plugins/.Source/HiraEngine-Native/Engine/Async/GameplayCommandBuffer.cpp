@@ -80,7 +80,7 @@ static_assert(0 % 5 == 0, "0 % <any non-zero number> must be 0.");
 IMPLEMENT_EXPORTED_FUNCTION(STimerHandle, GameplayCommandBuffer, SetTimer, const float, Time)
 {
     uint16 Index;
-    if (!TryGetHash(Index))
+    if (!TryGetBufferIndex(Index))
     {
         const int32 NewBufferSize = ActiveTimers.ModifyBufferSize(1);
         const int32 NewTotalBufferSize = Hash.ModifyBufferSize(SActiveTimer::BufferSize);
@@ -88,7 +88,7 @@ IMPLEMENT_EXPORTED_FUNCTION(STimerHandle, GameplayCommandBuffer, SetTimer, const
         ActiveTimers.SetElementCount(NewBufferSize);
         Hash.SetElementCount(NewTotalBufferSize);
 
-        TryGetHash(Index);
+        TryGetBufferIndex(Index);
     }
 
     const uint64 NewHash = CurrentHash++;
@@ -149,7 +149,7 @@ IMPLEMENT_EXPORTED_FUNCTION(void, GameplayCommandBuffer, CancelTimer, const STim
 
 IMPLEMENT_IMPORTED_LIBRARY_FUNCTION(void, GameplayCommandBuffer, ExecuteBufferedCommands, GameplayCommandBuffer*, CommandBuffer, uint16*, Indices)
 
-uint8 GameplayCommandBuffer::TryGetHash(uint16& OutHash) const
+uint8 GameplayCommandBuffer::TryGetBufferIndex(uint16& OutBufferIndex) const
 {
     const int32 BufferSize = Hash.GetBufferSize();
     uint64* It = Hash.GetContainer();
@@ -158,7 +158,7 @@ uint8 GameplayCommandBuffer::TryGetHash(uint16& OutHash) const
     {
         if (!(*It))
         {
-            OutHash = I;
+            OutBufferIndex = I;
             return true;
         }
     }

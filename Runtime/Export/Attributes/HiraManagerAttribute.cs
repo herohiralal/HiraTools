@@ -57,7 +57,8 @@ namespace UnityEngine
                         // checking if the instantiated object has the component
                         if (component == null)
                         {
-                            Debug.LogErrorFormat($"Target prefab at {m.DefaultPrefabLocation} does not contain " +
+                            Debug.LogFormat(LogType.Error, LogOption.NoStacktrace, null, 
+                                $"Target prefab at {m.DefaultPrefabLocation} does not contain " +
                                                  $"a {t.Name} component. Adding one to the instance.");
                             component = instantiatedObject.AddComponent(t);
                         }
@@ -70,7 +71,8 @@ namespace UnityEngine
                 var addedComponent = new GameObject($"[{t.Name}]").AddComponent(t);
                 Add(t, addedComponent);
 #if UNITY_EDITOR
-                Debug.Log($"<color=green>Created HiraManager: </color>{addedComponent.gameObject.name}");
+                Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, null, 
+                    $"<color=green>Created HiraManager: </color>{addedComponent.gameObject.name}");
 #endif
             }
         }
@@ -89,7 +91,8 @@ namespace UnityEngine
                 if (component == null) continue;
                 
 #if UNITY_EDITOR
-                Debug.Log($"<color=green>Destroying stale HiraManager: </color>{component.gameObject.name}");
+                Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, null, 
+                    $"<color=green>Destroying stale HiraManager: </color>{component.gameObject.name}");
 #endif
                 if (Application.isPlaying) Object.Destroy(component.gameObject);
                 else Object.DestroyImmediate(component.gameObject);
