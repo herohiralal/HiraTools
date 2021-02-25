@@ -102,24 +102,24 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir).$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir).intermediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(ProjectDir)..\.$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)..\.intermediate\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)..\</OutDir>
-    <IntDir>$(SolutionDir).intermediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(ProjectDir)..\..\</OutDir>
+    <IntDir>$(ProjectDir)..\.intermediate\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Editor|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)..\</OutDir>
-    <IntDir>$(SolutionDir).intermediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(ProjectDir)..\..\</OutDir>
+    <IntDir>$(ProjectDir)..\.intermediate\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)-Editor</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ConsoleTesting|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir).$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir).intermediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(ProjectDir)..\.$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)..\.intermediate\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -136,10 +136,10 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>
-        $(ProjectDir)\HelperMacros;
-        $(ProjectDir)\Core;
-        $(ProjectDir)\CoreNativeObject;
-        $(ProjectDir)\Engine;
+        $(ProjectDir)HelperMacros;
+        $(ProjectDir)Core;
+        $(ProjectDir)CoreNativeObject;
+        $(ProjectDir)Engine;
       </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -164,10 +164,10 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>
-        $(ProjectDir)\HelperMacros;
-        $(ProjectDir)\Core;
-        $(ProjectDir)\CoreNativeObject;
-        $(ProjectDir)\Engine;
+        $(ProjectDir)HelperMacros;
+        $(ProjectDir)Core;
+        $(ProjectDir)CoreNativeObject;
+        $(ProjectDir)Engine;
       </AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
@@ -179,7 +179,7 @@
       <Profile>false</Profile>
     </Link>
     <PostBuildEvent>
-      <Command>del /f "$(SolutionDir)..\$(ProjectName).pdb", "$(SolutionDir)..\$(ProjectName).lib";</Command>
+      <Command>del /f "$(ProjectDir)..\..\$(ProjectName).pdb", "$(ProjectDir)..\..\$(ProjectName).lib";</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Editor|x64'">
@@ -200,10 +200,10 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>
-        $(ProjectDir)\HelperMacros;
-        $(ProjectDir)\Core;
-        $(ProjectDir)\CoreNativeObject;
-        $(ProjectDir)\Engine;
+        $(ProjectDir)HelperMacros;
+        $(ProjectDir)Core;
+        $(ProjectDir)CoreNativeObject;
+        $(ProjectDir)Engine;
       </AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
@@ -228,11 +228,11 @@
       </PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>
-        $(ProjectDir)\HelperMacros;
-        $(ProjectDir)\Core;
-        $(ProjectDir)\CoreNativeObject;
-        $(ProjectDir)\Engine;
-        $(ProjectDir)\Tester;
+        $(ProjectDir)HelperMacros;
+        $(ProjectDir)Core;
+        $(ProjectDir)CoreNativeObject;
+        $(ProjectDir)Engine;
+        $(ProjectDir)Tester;
       </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
