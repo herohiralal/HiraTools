@@ -23,7 +23,7 @@ void GameplayCommandBuffer::OnAwake()
     uint64* const ItMax = It + TotalBufferSize;
     for (; It < ItMax; ++It)
     {
-        *It = 0; 
+        *It = 0;
     }
 
     ActiveTimers.SetElementCount(ActiveTimersBufferSize);
@@ -78,8 +78,11 @@ void GameplayCommandBuffer::OnUpdate(const float UnscaledDeltaTime, const float 
         }
     }
 
-    TimersFinished[0] = SuccessCount;
-    ExecuteBufferedCommands(this, TimersFinished.GetContainer());
+    if (SuccessCount)
+    {
+        TimersFinished[0] = SuccessCount;
+        ExecuteBufferedCommands(this, TimersFinished.GetContainer());
+    }
 }
 
 static_assert(0 % 5 == 0, "0 % <any non-zero number> must be 0.");
