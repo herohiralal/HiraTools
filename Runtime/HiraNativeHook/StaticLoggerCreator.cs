@@ -4,11 +4,20 @@ using System.Text;
 namespace UnityEngine.Internal
 {
     [CreateAssetMenu]
-    public class StaticLoggerCreator : ScriptableObject, IHiraScriptCreator
+    public class StaticLoggerCreator : ScriptableObject
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
+        , IHiraScriptCreator
+#endif
     {
         [Serializable]
         private struct TypeData
         {
+            public TypeData(string name, string type)
+            {
+                this.name = name;
+                this.type = type;
+            }
+            
             public string name;
             public string type;
         }
@@ -28,70 +37,62 @@ namespace UnityEngine.Internal
 
         private const string dll_import_string = "[SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]";
 
-        public string FileData
-        {
-            get
-            {
-                var sb = new StringBuilder(1000);
-                sb
-                    .AppendLine(@"// ReSharper disable All")
-                    .AppendLine(@"using System;")
-                    .AppendLine(@"using System.Runtime.InteropServices;")
-                    .AppendLine(@"using System.Security;")
-                    .AppendLine(@"")
-                    .AppendLine(@"namespace UnityEngine.Internal")
-                    .AppendLine(@"{")
-                    .AppendLine(@"    public static class StaticLogger")
-                    .AppendLine(@"    {")
-                    .AppendLine(@"        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]")
-                    .AppendLine(@"        public static void OnLoad()")
-                    .AppendLine(@"        {")
-                    .AppendLine(@"            HiraNativeHook.PreNativeHookCreated -= Initialize;")
-                    .AppendLine(@"            HiraNativeHook.PreNativeHookCreated += Initialize;")
-                    .AppendLine(@"        }")
-                    .AppendLine(@"")
-                    .AppendLine(@"        private static void Initialize()")
-                    .AppendLine(@"        {")
-                    .AppendLine(@"            InitLoggerLogStart(LogStart);")
-                    .Append(BooleanInitializer)
-                    .Append(Initializers)
-                    .AppendLine(@"            InitLoggerLogEnd(LogEnd);")
-                    .AppendLine(@"        }")
-                    .AppendLine(@"")
-                    .AppendLine(@"        private const string prefix = ""<color=red><b>Native log: </b></color>"";")
-                    .AppendLine(@"        private static LogType _trackedLogType = LogType.Log;")
-                    .AppendLine(@"        private static readonly System.Text.StringBuilder string_builder = new System.Text.StringBuilder(1000);")
-                    .AppendLine(@"")
-                    .AppendLine(@"        // Start Logger")
-                    .AppendLine($"        {dll_import_string}")
-                    .AppendLine(@"        private static extern void InitLoggerLogStart(Action<LogType> logger);")
-                    .AppendLine(@"")
-                    .AppendLine(@"        [AOT.MonoPInvokeCallback(typeof(Action<LogType>))]")
-                    .AppendLine(@"        private static void LogStart(LogType type)")
-                    .AppendLine(@"        {")
-                    .AppendLine(@"            _trackedLogType = type;")
-                    .AppendLine(@"            string_builder.Clear();")
-                    .AppendLine(@"            string_builder.Append(prefix);")
-                    .AppendLine(@"        }")
-                    .AppendLine(@"")
-                    .AppendLine(@"        // End Logger")
-                    .AppendLine($"        {dll_import_string}")
-                    .AppendLine(@"        private static extern void InitLoggerLogEnd(Action logger);")
-                    .AppendLine(@"")
-                    .AppendLine(@"        [AOT.MonoPInvokeCallback(typeof(Action))]")
-                    .AppendLine(@"        private static void LogEnd()")
-                    .AppendLine(@"        {")
-                    .AppendLine(@"            Debug.LogFormat(_trackedLogType, LogOption.NoStacktrace, null, string_builder.ToString());")
-                    .AppendLine(@"        }")
-                    .Append(BooleanLogger)
-                    .Append(Loggers)
-                    .AppendLine(@"    }")
-                    .AppendLine(@"}");
-                
-                
-                return sb.ToString();
-            }
-        }
+        public string FileData =>
+            new StringBuilder(1000)
+                .AppendLine(@"// ReSharper disable All")
+                .AppendLine(@"using System;")
+                .AppendLine(@"using System.Runtime.InteropServices;")
+                .AppendLine(@"using System.Security;")
+                .AppendLine(@"")
+                .AppendLine(@"namespace UnityEngine.Internal")
+                .AppendLine(@"{")
+                .AppendLine(@"    public static class StaticLogger")
+                .AppendLine(@"    {")
+                .AppendLine(@"        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]")
+                .AppendLine(@"        public static void OnLoad()")
+                .AppendLine(@"        {")
+                .AppendLine(@"            HiraNativeHook.PreNativeHookCreated -= Initialize;")
+                .AppendLine(@"            HiraNativeHook.PreNativeHookCreated += Initialize;")
+                .AppendLine(@"        }")
+                .AppendLine(@"")
+                .AppendLine(@"        private static void Initialize()")
+                .AppendLine(@"        {")
+                .AppendLine(@"            InitLoggerLogStart(LogStart);")
+                .Append(BooleanInitializer)
+                .Append(Initializers)
+                .AppendLine(@"            InitLoggerLogEnd(LogEnd);")
+                .AppendLine(@"        }")
+                .AppendLine(@"")
+                .AppendLine(@"        private const string prefix = ""<color=red><b>Native log: </b></color>"";")
+                .AppendLine(@"        private static LogType _trackedLogType = LogType.Log;")
+                .AppendLine(@"        private static readonly System.Text.StringBuilder string_builder = new System.Text.StringBuilder(1000);")
+                .AppendLine(@"")
+                .AppendLine(@"        // Start Logger")
+                .AppendLine($"        {dll_import_string}")
+                .AppendLine(@"        private static extern void InitLoggerLogStart(Action<LogType> logger);")
+                .AppendLine(@"")
+                .AppendLine(@"        [AOT.MonoPInvokeCallback(typeof(Action<LogType>))]")
+                .AppendLine(@"        private static void LogStart(LogType type)")
+                .AppendLine(@"        {")
+                .AppendLine(@"            _trackedLogType = type;")
+                .AppendLine(@"            string_builder.Clear();")
+                .AppendLine(@"            string_builder.Append(prefix);")
+                .AppendLine(@"        }")
+                .AppendLine(@"")
+                .AppendLine(@"        // End Logger")
+                .AppendLine($"        {dll_import_string}")
+                .AppendLine(@"        private static extern void InitLoggerLogEnd(Action logger);")
+                .AppendLine(@"")
+                .AppendLine(@"        [AOT.MonoPInvokeCallback(typeof(Action))]")
+                .AppendLine(@"        private static void LogEnd()")
+                .AppendLine(@"        {")
+                .AppendLine(@"            Debug.LogFormat(_trackedLogType, LogOption.NoStacktrace, null, string_builder.ToString());")
+                .AppendLine(@"        }")
+                .Append(BooleanLogger)
+                .Append(Loggers)
+                .AppendLine(@"    }")
+                .AppendLine(@"}")
+                .ToString();
 
         private string BooleanInitializer =>
             autoImportBooleanAsByte 
