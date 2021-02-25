@@ -2,7 +2,7 @@
 #include "NativeObjectRegistry.h"
 #include "UnityHook.h"
 
-NativeObject::NativeObject(const EUpdateType UpdateTypes, const bool StartEnabled) : Enabled(StartEnabled), UpdateType(UpdateTypes)
+NativeObject::NativeObject(const EUpdateType UpdateTypes, const bool8 StartEnabled) : Enabled(StartEnabled), UpdateType(UpdateTypes)
 {
 }
 
@@ -20,7 +20,7 @@ void NativeObject::Destroy()
         ->Unregister(this);
 }
 
-void NativeObject::SetEnabled(const bool InValue)
+void NativeObject::SetEnabled(const bool8 InValue)
 {
     if (GetEnabled() == InValue) return;
 

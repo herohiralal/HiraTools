@@ -79,8 +79,8 @@
 #define BITFIELD(intType, name, get, set) \
     private: intType name:1; \
     public: \
-        ACCESSOR_##get(GETTER, bool, name) \
-        ACCESSOR_##set(SETTER, bool, name)
+        ACCESSOR_##get(GETTER, bool8, name) \
+        ACCESSOR_##set(SETTER, bool8, name)
 
 #define DECLARE_SINGLETON( typeName) \
     private: \
@@ -117,6 +117,6 @@
     constexpr E##name& operator|=(E##name& A, const E##name B) { A = A | B; return A; } \
     constexpr E##name& operator&=(E##name& A, const E##name B) { A = A & B; return A; } \
     constexpr E##name& operator^=(E##name& A, const E##name B) { A = A ^ B; return A; } \
-    constexpr bool HasFlag(const E##name A, const E##name B) { return ((A & B) == B); } \
+    constexpr bool8 HasFlag(const E##name A, const E##name B) { return ((A & B) == B); } \
     constexpr void AddFlag(E##name& A, const E##name B) { A |= B; } \
     constexpr void RemoveFlag(E##name& A, const E##name B) { A &= ~B; }

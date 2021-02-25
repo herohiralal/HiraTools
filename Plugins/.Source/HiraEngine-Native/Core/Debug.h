@@ -8,7 +8,7 @@ DECLARE_ENUM(int32, LogType, Error, Assert, Warning, Log, Exception)
 struct Logger
 {
     // start logging
-    explicit Logger(ELogType LogType);
+    explicit Logger(ELogType LogType = ELogType::Log);
 };
 
 // main operators
@@ -17,6 +17,7 @@ struct Logger
 
 FOR_EACH(DECLARE_LOGGER_OPERATOR,
     const char*,
+    bool8,
     int8,
     uint8,
     int16,

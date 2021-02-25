@@ -30,6 +30,7 @@ Logger::Logger(const ELogType LogType)
 
 FOR_EACH_2_ARGUMENTS(IMPLEMENT_LOGGER_OPERATOR,
     const char*, String,
+    const bool8, Boolean,
     const int8, SignedByte,
     const uint8, Byte,
     const int16, Short,
@@ -55,6 +56,8 @@ void operator<<(const Logger OutLogger, const Logger* OtherLogger)
     GLogEnd();
 }
 
+#if _CONSOLE
+
 const char* GetLogPrefix(const ELogType LogType)
 {
     switch (LogType)
@@ -73,5 +76,7 @@ const char* GetLogPrefix(const ELogType LogType)
             return ">> [UNKNOWN]   ";
     }
 }
+
+#endif
 
 #undef IMPLEMENT_LOGGER_OPERATOR

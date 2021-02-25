@@ -13,6 +13,7 @@ namespace UnityEngine.Internal
             public string type;
         }
 
+        [SerializeField] private bool autoImportBooleanAsByte = true;
         [SerializeField] private TypeData[] typeData = { };
         
         public ScriptableObject[] Dependencies { get; } = { };
@@ -52,6 +53,7 @@ namespace UnityEngine.Internal
                     .AppendLine(@"        private static void Initialize()")
                     .AppendLine(@"        {")
                     .AppendLine(@"            InitLoggerLogStart(LogStart);")
+                    .Append(BooleanInitializer)
                     .Append(Initializers)
                     .AppendLine(@"            InitLoggerLogEnd(LogEnd);")
                     .AppendLine(@"        }")
@@ -81,6 +83,7 @@ namespace UnityEngine.Internal
                     .AppendLine(@"        {")
                     .AppendLine(@"            Debug.LogFormat(_trackedLogType, LogOption.NoStacktrace, null, string_builder.ToString());")
                     .AppendLine(@"        }")
+                    .Append(BooleanLogger)
                     .Append(Loggers)
                     .AppendLine(@"    }")
                     .AppendLine(@"}");
@@ -89,6 +92,11 @@ namespace UnityEngine.Internal
                 return sb.ToString();
             }
         }
+
+        private string BooleanInitializer =>
+            autoImportBooleanAsByte 
+                ? "            InitBooleanLogger(LogBoolean);\n" 
+                : "";
 
         private string Initializers
         {
@@ -105,6 +113,17 @@ namespace UnityEngine.Internal
             }
         }
 
+        private string BooleanLogger =>
+            autoImportBooleanAsByte
+                ? $"\n" +
+                  $"        // Boolean\n" +
+                  $"        {dll_import_string}\n" +
+                  $"        private static extern void InitBooleanLogger(Action<byte> logger);\n" +
+                  $"\n" +
+                  $"        [AOT.MonoPInvokeCallback(typeof(Action<byte>))]\n" +
+                  $"        private static void LogBoolean(byte toLog) => string_builder.Append((toLog != 0).ToString());\n"
+                : "";
+
         private string Loggers
         {
             get
@@ -119,6 +138,7 @@ namespace UnityEngine.Internal
                         .AppendLine($"        {dll_import_string}")
                         .AppendLine($"        private static extern void Init{data.name}Logger(Action<{data.type}> logger);")
                         .AppendLine(@"")
+                        .AppendLine($"        [AOT.MonoPInvokeCallback(typeof(Action<{data.type}>))]")
                         .AppendLine($"        private static void Log{data.name}({data.type} toLog) => string_builder.Append(toLog.ToString());");
                 }
 

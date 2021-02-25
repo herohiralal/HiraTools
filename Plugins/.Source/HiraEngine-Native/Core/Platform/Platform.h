@@ -37,6 +37,39 @@ typedef uint32 char32;
 typedef SelectIntPointerType<uint32, uint64, sizeof(void*)>::IntPointer uintptr;
 typedef SelectIntPointerType<int32, int64, sizeof(void*)>::IntPointer intptr;
 
+// ReSharper disable once CppInconsistentNaming
+struct bool8
+{
+public:
+    constexpr bool8() : Data(0)
+    {
+    }
+    
+    constexpr bool8(const uint8 InData) : Data(InData!=0)
+    {
+    }
+
+    explicit constexpr bool8(const bool InData) : Data(InData)
+    {
+    }
+
+    explicit constexpr operator bool() const
+    {
+        return Data;
+    }
+
+    // ReSharper disable once CppNonExplicitConversionOperator
+    operator uint8() const
+    {
+        return Data;
+    }
+
+private:
+    uint8 Data;
+};
+
+static_assert(sizeof(bool8) == 1, "bool8 size test failed.");
+
 static_assert(sizeof(uint8) == 1, "uint8 size test failed.");
 static_assert(sizeof(uint16) == 2, "uint16 size test failed.");
 static_assert(sizeof(uint32) == 4, "uint32 size test failed.");

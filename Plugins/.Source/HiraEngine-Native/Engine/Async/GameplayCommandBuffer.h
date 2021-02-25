@@ -8,7 +8,7 @@ struct SActiveTimer
 {
     static constexpr uint8 BufferSize = 15;
 
-    explicit SActiveTimer(const bool InActive = false)
+    explicit SActiveTimer(const bool8 InActive = false)
         : Active(InActive)
     {
         for (uint8 I = 0; I < BufferSize; ++I)

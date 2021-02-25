@@ -32,15 +32,15 @@ public:
 
 int32 ModifyBufferSize(int32 Delta);
 
-    bool Contains(ConstT Item) const;
+    bool8 Contains(ConstT Item) const;
     int32 FindIndex(ConstT Item) const;
 
     void Clear();
     int32 Add(T Item);
     void Push(T Item);
     int32 Append(const TList<T>& ToAppend);
-    bool Remove(T Item);
-    bool RemoveAt(int32 Index);
+    bool8 Remove(T Item);
+    bool8 RemoveAt(int32 Index);
     T Pop();
 
     static TList<T> Combine(const TList<T>& A, const TList<T>& B);
@@ -214,7 +214,7 @@ void TList<T>::SetBufferSize(int32 InValue)
 }
 
 template <typename T>
-bool TList<T>::Contains(ConstT Item) const
+bool8 TList<T>::Contains(ConstT Item) const
 {
     for (uint16 I = 0; I < ElementCount; I++)
     {
@@ -285,7 +285,7 @@ int32 TList<T>::Append(const TList<T>& ToAppend)
 }
 
 template <typename T>
-bool TList<T>::Remove(const T Item)
+bool8 TList<T>::Remove(const T Item)
 {
     for (uint16 I = 0; I < ElementCount; I++)
     {
@@ -299,7 +299,7 @@ bool TList<T>::Remove(const T Item)
 }
 
 template <typename T>
-bool TList<T>::RemoveAt(const int32 Index)
+bool8 TList<T>::RemoveAt(const int32 Index)
 {
     if (Index >= ElementCount) return false;
 

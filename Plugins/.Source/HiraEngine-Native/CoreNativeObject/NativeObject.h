@@ -14,7 +14,7 @@ BITFIELD(uint8, Enabled, STD, CUSTOM)
 PROPERTY(EUpdateType, UpdateType, STD, NONE)
 
 public:
-    explicit NativeObject(EUpdateType UpdateTypes = EUpdateType::None, bool StartEnabled = true);
+    explicit NativeObject(EUpdateType UpdateTypes = EUpdateType::None, bool8 StartEnabled = true);
     virtual ~NativeObject() = default;
 
     void Initialize();

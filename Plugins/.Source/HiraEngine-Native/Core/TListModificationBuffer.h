@@ -13,8 +13,8 @@ struct TListModification
     T Target;
     ModificationDelegate Delegate;
 
-    bool operator==(const TListModification& Other) const;
-    bool operator!=(const TListModification& Other) const;
+    bool8 operator==(const TListModification& Other) const;
+    bool8 operator!=(const TListModification& Other) const;
     TListModification& operator=(const TListModification& Other);
     TListModification& operator=(const TListModification&& Other);
 };
@@ -34,13 +34,13 @@ TListModification<T>::TListModification(T InTarget, const ModificationDelegate I
 }
 
 template <typename T>
-bool TListModification<T>::operator==(const TListModification& Other) const
+bool8 TListModification<T>::operator==(const TListModification& Other) const
 {
     return Target == Other.Target && Delegate == Other.Delegate;
 }
 
 template <typename T>
-bool TListModification<T>::operator!=(const TListModification& Other) const
+bool8 TListModification<T>::operator!=(const TListModification& Other) const
 {
     return !(this == Other);
 }
