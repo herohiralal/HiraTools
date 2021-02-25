@@ -6,7 +6,7 @@
     { \
         GLog##typeName = InDelegate; \
     } \
-    Logger& operator<<(Logger& OutLogger, type Other) \
+    Logger operator<<(const Logger OutLogger, type Other) \
     { \
         GLog##typeName(Other); \
         return OutLogger; \
@@ -50,7 +50,7 @@ DLLEXPORT(void) InitLoggerLogEnd(void (CALLING_CONVENTION*InDelegate)())
     GLogEnd = InDelegate;
 }
 
-void operator<<(const Logger& OutLogger, const Logger* OtherLogger)
+void operator<<(const Logger OutLogger, const Logger* OtherLogger)
 {
     GLogEnd();
 }
