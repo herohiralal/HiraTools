@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "InteropCommonMacros.h"
+
 template<typename T32Bits, typename T64Bits, int TPointerSize>
 struct SelectIntPointerType
 {
@@ -98,5 +100,8 @@ static_assert(sizeof(wchar) == 2 || sizeof(wchar) == 4, "Wchar size test failed.
 
 static_assert(sizeof(intptr) == sizeof(void*), "IntPtr size test failed.");
 static_assert(sizeof(uintptr) == sizeof(void*), "UIntPtr size test failed.");
-static_assert(static_cast<intptr>(-1) < static_cast<intptr>(0), "Intptr sign test failed.");
+static_assert(static_cast<intptr>(-1) < static_cast<intptr>(0), "IntPtr sign test failed.");
 static_assert(static_cast<uintptr>(-1) > static_cast<uintptr>(0), "UIntPtr sign test failed.");
+
+#define WFILE CONCATENATE_WRAPPED(L, __FILE__)
+#define WFUNC CONCATENATE_WRAPPED(L, __FUNCTION__)
