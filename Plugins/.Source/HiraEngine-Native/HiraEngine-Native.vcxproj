@@ -23,6 +23,7 @@
     <ClInclude Include="CoreNativeObject\NativeObject.h" />
     <ClInclude Include="CoreNativeObject\NativeObjectRegistry.h" />
     <ClInclude Include="CoreNativeObject\UnityHook.h" />
+    <ClInclude Include="Core\CallStack.h" />
     <ClInclude Include="Core\Core.h" />
     <ClInclude Include="Core\Debug.h" />
     <ClInclude Include="Core\Platform\Platform.h" />
@@ -41,6 +42,7 @@
     <ClCompile Include="CoreNativeObject\NativeObject.cpp" />
     <ClCompile Include="CoreNativeObject\NativeObjectRegistry.cpp" />
     <ClCompile Include="CoreNativeObject\UnityHook.cpp" />
+    <ClCompile Include="Core\CallStack.cpp" />
     <ClCompile Include="Core\Debug.cpp" />
     <ClCompile Include="Engine\Async\GameplayCommandBuffer.cpp" />
     <ClCompile Include="Tester\ConsoleTester.cpp" />
