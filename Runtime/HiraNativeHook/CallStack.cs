@@ -72,7 +72,7 @@ namespace UnityEngine.Internal
                 var functionName = new string((char*) (it + 3));
                 var fileName = new string((char*) (it + 3 + functionNameSize));
 
-                s += $"(size: {functionNameSize}){functionName}() (at (size: {fileNameSize}){fileName}:{lineNumber})\n";
+                s += $"{functionName}() (at {fileName}:{lineNumber})\n";
                 it += 0
                       + 1 // function-name size
                       + 1 // file-name size

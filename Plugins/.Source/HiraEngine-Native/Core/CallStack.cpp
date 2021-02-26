@@ -3,8 +3,9 @@
 
 static uint16 GAllocatedSizeInBytes = 0;
 static uint16 GUsedSizeInBytes = 0;
-static wchar* GData = nullptr;
-static wchar* GDataMax = nullptr;
+static uint16* GData = nullptr;
+static uint16* GDataMax = nullptr;
+static uint16* GPreviousLineNumber = nullptr;
 
 namespace CallStackHelpers
 {
@@ -28,10 +29,11 @@ namespace CallStackHelpers
 DLLEXPORT(void*) CallStackInitialize(const uint16 MaxStackSizeHint)
 {
     GAllocatedSizeInBytes = CallStackHelpers::CalculateSizeToAllocate(MaxStackSizeHint);
-    GUsedSizeInBytes = 1;
-    GData = new wchar[GAllocatedSizeInBytes / sizeof(uint16)];
+    GUsedSizeInBytes = 2;
+    GData = new uint16[GAllocatedSizeInBytes / sizeof(uint16)];
     *GData = 0;
     GDataMax = GData + (GAllocatedSizeInBytes / sizeof(uint16));
+    GPreviousLineNumber = GDataMax - 1;
 
     return GData;
 }
@@ -42,21 +44,19 @@ DLLEXPORT(void) CallStackShutdown()
     delete[] GData;
     GData = nullptr;
     GDataMax = nullptr;
+    GPreviousLineNumber = nullptr;
     GAllocatedSizeInBytes = 0;
     GUsedSizeInBytes = 0;
 }
 
-void CallStack::Push(const wchar* FunctionName, const wchar* FileName, const uint16 Line)
+uint16* CallStack::Push(const wchar* FunctionName, const wchar* FileName)
 {
     // get index to use
-    wchar* Index = GData + GUsedSizeInBytes;
-
-    // line number
-    Index[2] = Line;
+    uint16* const Index = GData + GUsedSizeInBytes / 2;
 
     // function name
     uint16 FunctionNameSize;
-    wchar* const Function = Index + 3;
+    uint16* const Function = Index + 3;
 
     for (FunctionNameSize = 0; FunctionName[FunctionNameSize] != 0; ++FunctionNameSize)
     {
@@ -67,7 +67,7 @@ void CallStack::Push(const wchar* FunctionName, const wchar* FileName, const uin
 
     // file name
     uint16 FileNameSize;
-    wchar* File = Function + FunctionNameSize;
+    uint16* File = Function + FunctionNameSize;
 
     for (FileNameSize = 0; FileName[FileNameSize] != 0; ++FileNameSize)
     {
@@ -77,7 +77,7 @@ void CallStack::Push(const wchar* FunctionName, const wchar* FileName, const uin
     Index[1] = FileNameSize; // file name size meta-data
 
     // update stack size
-    (*GData)++;
+    *GData = *GData + 1;
 
     GUsedSizeInBytes += 0
         + sizeof(uint16) // function-name size
@@ -85,21 +85,37 @@ void CallStack::Push(const wchar* FunctionName, const wchar* FileName, const uin
         + sizeof(uint16) // line number
         + (FunctionNameSize * sizeof(uint16)) // function-name
         + (FileNameSize * sizeof(uint16)); // file-name
+
+    return Index;
 }
 
-void CallStack::Pop()
+void CallStack::Pop(const uint16* Target)
 {
     // update stack size; we're not particularly concerned with zero-ing the freed data because it will get reused
-    (*GData)--;
+    *GData = *GData - 1;
 
-    wchar* Index = GData + GUsedSizeInBytes;
+    GUsedSizeInBytes = (Target - GData) * sizeof(uint16);
+}
 
-    GUsedSizeInBytes -= 0
-        + sizeof(uint16) // function-name size
-        + sizeof(uint16) // file-name size
-        + sizeof(uint16) // line number
-        + (Index[0] * sizeof(uint16)) // function-name
-        + (Index[1] * sizeof(uint16)); // file-name
+CallStackElement::CallStackElement(const wchar* FunctionName, const wchar* FileName)
+    : PreviousLineNumber(GPreviousLineNumber),
+      Element(CallStack::Push(FunctionName, FileName))
+{
+    GPreviousLineNumber = Element + 2;
+}
+
+CallStackElement::CallStackElement(const wchar* FunctionName, const wchar* FileName, const uint16 PreviousLineNumber)
+    : PreviousLineNumber(GPreviousLineNumber),
+      Element(CallStack::Push(FunctionName, FileName))
+{
+    *GPreviousLineNumber = PreviousLineNumber;
+    GPreviousLineNumber = Element + 2;
+}
+
+CallStackElement::~CallStackElement()
+{
+    CallStack::Pop(Element);
+    GPreviousLineNumber = PreviousLineNumber;
 }
 
 void (CALLING_CONVENTION*GCheckCallStack)() = nullptr;
@@ -111,26 +127,25 @@ DLLEXPORT(void) InitCheckCallStack(void (CALLING_CONVENTION*InDelegate)())
     GCheckCallStack = InDelegate;
 }
 
-void TestCallStack2(const wchar* FileName, const uint16 Line)
+void TestCallStack2(STACK_DATA)
 {
     CHECK_CALL_STACK
-    CallStack::Push(L"TestCallStack2", FileName, Line);
+    UPDATE_STACK_TRACE
     CHECK_CALL_STACK
-    CallStack::Pop();
 }
 
-void TestCallStack1(const wchar* FileName, const uint16 Line)
+void TestCallStack1(STACK_DATA)
 {
     CHECK_CALL_STACK
-    CallStack::Push(L"TestCallStack1", FileName, Line);
-    TestCallStack2(L"CallStack.cpp", 126);
-    CallStack::Pop();
+    UPDATE_STACK_TRACE
+    TestCallStack2(STACK_INFO);
+    CHECK_CALL_STACK
 }
 
 DLLEXPORT(void) TestCallStack()
 {
     CHECK_CALL_STACK
-    CallStack::Push(L"TestCallStack");
-    TestCallStack1(L"CallStack.cpp", 134);
-    CallStack::Pop();
+    START_STACK_TRACE
+    TestCallStack1(STACK_INFO);
+    CHECK_CALL_STACK
 }
