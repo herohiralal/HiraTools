@@ -13,9 +13,7 @@ namespace UnityEngine
         public static event Action OnNativeHookCreated;
         public static event Action OnNativeHookDestroyed;
         public static event Action PostNativeHookDestroyed;
-#if UNITY_EDITOR
-        public const string HIRA_ENGINE_NATIVE_DLL_NAME = "HiraEngine-Native-Editor";
-#elif UNITY_IOS
+#if UNITY_IOS
         public const string HIRA_ENGINE_NATIVE_DLL_NAME = "__Internal";
 #else
         public const string HIRA_ENGINE_NATIVE_DLL_NAME = "HiraEngine-Native";

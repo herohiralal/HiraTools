@@ -20,7 +20,7 @@ private:
     uint16* const Element = nullptr;
 };
 
-#if _EDITOR
+#if UNITY_EDITOR
 
 #define STACK_DATA uint16 __StackDataPreviousLineNumber
 #define STACK_INFO __LINE__

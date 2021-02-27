@@ -54,7 +54,7 @@ const char* GetLogPrefix(ELogType LogType);
 
 #endif
 
-#if _EDITOR || _CONSOLE   // get all log for console
+#if UNITY_EDITOR || _CONSOLE   // get all log for console
 #define UNITY_EDITOR_LOG(type, msg) UNITY_LOG(type, msg)
 #else
 #define UNITY_EDITOR_LOG(type, msg)
