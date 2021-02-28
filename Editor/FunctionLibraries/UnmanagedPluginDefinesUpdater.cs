@@ -1,0 +1,44 @@
+﻿using System.IO;
+using System.Text;
+using UnityEditor;
+using UnityEngine;
+
+namespace HiraEditor
+{
+	internal static class UnmanagedPluginDefinesUpdater
+	{
+		[MenuItem("Assets/Update Native Plugin Defines")]
+		private static void UpdateNativePluginDefines()
+		{
+			var activeObject = Selection.activeObject;
+			
+			var pluginDefinesPath = Path.Combine(
+				Application.dataPath
+					.Replace("/Assets", "")
+					.Replace("\\Assets", ""),
+				$"NativeDefines/{activeObject.name}.h");
+				
+			var sb = new StringBuilder(500);
+
+			sb
+				.AppendLine("// ReSharper disable All")
+				.AppendLine("#pragma once")
+				.AppendLine("");
+
+			var activeDefines = EditorUserBuildSettings.activeScriptCompilationDefines;
+			foreach (var activeDefine in activeDefines)
+				sb.AppendLine($"#define {activeDefine} 1");
+
+			File.WriteAllText(pluginDefinesPath, sb.ToString());
+		}
+		
+		[MenuItem("Assets/Update Native Plugin Defines", true)]
+		private static bool ValidateUpdateNativePluginDefines()
+		{
+			var activeObject = Selection.activeObject;
+			var path = AssetDatabase.GetAssetPath(activeObject);
+
+			return activeObject is DefaultAsset && path.EndsWith(".dll");
+		}
+	}
+}

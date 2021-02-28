@@ -22,7 +22,7 @@
     <ClInclude Include="Core\TemplateConstraintsHelper.h" />
     <ClInclude Include="Core\TList.h" />
     <ClInclude Include="Core\TListModificationBuffer.h" />
-    <ClInclude Include="Defines.h" />
+    <ClInclude Include="$(SolutionDir)NativeDefines\$(ProjectName).h" />
     <ClInclude Include="Engine\Async\GameplayCommandBuffer.h" />
     <ClInclude Include="HelperMacros\ExporterMacros.h" />
     <ClInclude Include="HelperMacros\HelperMacros.h" />
@@ -105,7 +105,7 @@
         $(ProjectDir)CoreNativeObject;
         $(ProjectDir)Engine;
       </AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ProjectDir)Defines.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>$(SolutionDir)NativeDefines\$(ProjectName).h</ForcedIncludeFiles>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -134,7 +134,7 @@
         $(ProjectDir)Engine;
         $(ProjectDir)Tester;
       </AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ProjectDir)Defines.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>$(SolutionDir)NativeDefines\$(ProjectName).h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
