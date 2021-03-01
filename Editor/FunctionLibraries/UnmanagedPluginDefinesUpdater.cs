@@ -5,40 +5,45 @@ using UnityEngine;
 
 namespace HiraEditor
 {
-	internal static class UnmanagedPluginDefinesUpdater
-	{
-		[MenuItem("Assets/Update Native Plugin Defines")]
-		private static void UpdateNativePluginDefines()
-		{
-			var activeObject = Selection.activeObject;
-			
-			var pluginDefinesPath = Path.Combine(
-				Application.dataPath
-					.Replace("/Assets", "")
-					.Replace("\\Assets", ""),
-				$"NativeDefines/{activeObject.name}.h");
-				
-			var sb = new StringBuilder(500);
+    internal static class UnmanagedPluginDefinesUpdater
+    {
+        [MenuItem("Assets/Update Native Plugin Defines")]
+        private static void UpdateNativePluginDefines()
+        {
+            var activeObject = Selection.activeObject;
 
-			sb
-				.AppendLine("// ReSharper disable All")
-				.AppendLine("#pragma once")
-				.AppendLine("");
+            var pluginDefinesPath = Path.Combine(
+                Application.dataPath
+                    .Replace("/Assets", "")
+                    .Replace("\\Assets", ""),
+                $"NativeDefines/{activeObject.name}.h");
 
-			var activeDefines = EditorUserBuildSettings.activeScriptCompilationDefines;
-			foreach (var activeDefine in activeDefines)
-				sb.AppendLine($"#define {activeDefine} 1");
+            var sb = new StringBuilder(500);
 
-			File.WriteAllText(pluginDefinesPath, sb.ToString());
-		}
-		
-		[MenuItem("Assets/Update Native Plugin Defines", true)]
-		private static bool ValidateUpdateNativePluginDefines()
-		{
-			var activeObject = Selection.activeObject;
-			var path = AssetDatabase.GetAssetPath(activeObject);
+            sb
+                .AppendLine("// ReSharper disable All")
+                .AppendLine("#pragma once");
 
-			return activeObject is DefaultAsset && path.EndsWith(".dll");
-		}
-	}
+            var activeDefines = EditorUserBuildSettings.activeScriptCompilationDefines;
+            foreach (var activeDefine in activeDefines)
+                sb
+                    .AppendLine(@"")
+                    .AppendLine($"#if !defined({activeDefine})")
+                    .AppendLine($"    #define {activeDefine} 1")
+                    .AppendLine(@"#else")
+                    .AppendLine($"    #error Unity-related native-define \"{activeDefine}\" has been defined elsewhere.")
+                    .AppendLine(@"#endif");
+
+            File.WriteAllText(pluginDefinesPath, sb.ToString());
+        }
+
+        [MenuItem("Assets/Update Native Plugin Defines", true)]
+        private static bool ValidateUpdateNativePluginDefines()
+        {
+            var activeObject = Selection.activeObject;
+            var path = AssetDatabase.GetAssetPath(activeObject);
+
+            return activeObject is DefaultAsset && path.EndsWith(".dll");
+        }
+    }
 }
