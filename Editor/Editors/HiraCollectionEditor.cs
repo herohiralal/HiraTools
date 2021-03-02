@@ -103,7 +103,9 @@ namespace HiraEditor
                 var generic = currentType.GetGenericTypeDefinition();
                 if (generic == typeof(HiraCollection<>) ||
                     generic == typeof(HiraCollection<,>) ||
-                    generic == typeof(HiraCollection<,,>))
+                    generic == typeof(HiraCollection<,,>) ||
+                    generic == typeof(HiraCollection<,,,>) ||
+                    generic == typeof(HiraCollection<,,,,>))
                     return currentType.GenericTypeArguments;
             }
 

@@ -140,4 +140,54 @@ namespace UnityEngine
             }
         }
     }
+
+    public abstract class HiraCollection<T1, T2, T3, T4> : HiraCollection<T1, T2, T3>
+    {
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
+        public override Object[][] CollectionInternal => new[] {collection1, collection2, collection3, collection4};
+#endif
+        [SerializeField] protected Object[] collection4 = { };
+        private T4[] _collection4Actual = { };
+
+        protected override void UpdateMainCollection()
+        {
+            base.UpdateMainCollection();
+            _collection4Actual = Consume<T4>(collection4);
+        }
+        
+        public T4[] Collection4
+        {
+            get => _collection4Actual;
+            set
+            {
+                _collection4Actual = value;
+                collection4 = Consume(value);
+            }
+        }
+    }
+
+    public abstract class HiraCollection<T1, T2, T3, T4, T5> : HiraCollection<T1, T2, T3, T4>
+    {
+#if UNITY_EDITOR && !STRIP_EDITOR_CODE
+        public override Object[][] CollectionInternal => new[] {collection1, collection2, collection3, collection4, collection5};
+#endif
+        [SerializeField] protected Object[] collection5 = { };
+        private T5[] _collection5Actual = { };
+
+        protected override void UpdateMainCollection()
+        {
+            base.UpdateMainCollection();
+            _collection5Actual = Consume<T5>(collection5);
+        }
+        
+        public T5[] Collection5
+        {
+            get => _collection5Actual;
+            set
+            {
+                _collection5Actual = value;
+                collection5 = Consume(value);
+            }
+        }
+    }
 }
