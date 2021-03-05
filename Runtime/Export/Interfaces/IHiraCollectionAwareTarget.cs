@@ -2,7 +2,7 @@
 {
     public interface IHiraCollectionAwareTarget
     {
-        HiraCollection ParentCollection { set; }
-        int Index { set; }
+        HiraCollection ParentCollection { get; set; }
+        int Index { get; set; }
     }
 }
