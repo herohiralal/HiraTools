@@ -21,8 +21,19 @@ namespace HiraEditor
             var sb = new StringBuilder(500);
 
             sb
-                .AppendLine("// ReSharper disable All")
-                .AppendLine("#pragma once");
+                .AppendLine(@"// ReSharper disable All")
+                .AppendLine(@"#pragma once")
+                .AppendLine(@"")
+                .AppendLine(@"#define NULL nullptr")
+                .AppendLine(@"");
+
+            var pluginAPIPath = Path.Combine(EditorApplication.applicationContentsPath, "PluginAPI");
+            var pluginAPIFiles = new DirectoryInfo(pluginAPIPath).GetFiles("*.h");
+            foreach (var pluginAPIFile in pluginAPIFiles)
+            {
+                if (!pluginAPIFile.Name.Contains("Graphics"))
+                    sb.AppendLine($"#include \"{pluginAPIFile.FullName}\"");
+            }
 
             var activeDefines = EditorUserBuildSettings.activeScriptCompilationDefines;
             foreach (var activeDefine in activeDefines)
