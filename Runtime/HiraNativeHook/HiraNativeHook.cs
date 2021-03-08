@@ -18,7 +18,7 @@ namespace UnityEngine
 #else
         public const string HIRA_ENGINE_NATIVE_DLL_NAME = "HiraEngine-Native";
 #endif
-        public const CallingConvention CALLING_CONVENTION = CallingConvention.Cdecl;
+        public const CallingConvention CALLING_CONVENTION = CallingConvention.StdCall;
 
         private void Awake()
         {

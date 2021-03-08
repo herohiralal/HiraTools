@@ -1492,7 +1492,7 @@
 
 #define PASS_TYPES(...) ( CONCATENATE_WRAPPED(PASS_TYPES_, COUNT_PAIRS(__VA_ARGS__))(__VA_ARGS__) )
 
-#define CALLING_CONVENTION __cdecl
+#define CALLING_CONVENTION __stdcall
 
 #if _WIN32
 #define DLLEXPORT(type) extern "C" __declspec(dllexport) type CALLING_CONVENTION

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Mono Condition="'$(Mono)' == ''">
+      C:\Program Files\Mono\
+    </Mono>
+  </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="DLL|x64">
       <Configuration>DLL</Configuration>
@@ -104,9 +109,11 @@
         $(ProjectDir)Core;
         $(ProjectDir)CoreNativeObject;
         $(ProjectDir)Engine;
+        $(MONO)\include\mono-2.0\;
       </AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(SolutionDir)NativeDefines\$(ProjectName).h</ForcedIncludeFiles>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallingConvention>StdCall</CallingConvention>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,6 +121,22 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
+      <AdditionalDependencies>
+        $(Mono)lib\mono-2.0-sgen.lib;
+        kernel32.lib;
+        user32.lib;
+        gdi32.lib;
+        winspool.lib;
+        comdlg32.lib;
+        advapi32.lib;
+        shell32.lib;
+        ole32.lib;
+        oleaut32.lib;
+        uuid.lib;
+        odbc32.lib;
+        odbccp32.lib;
+        %(AdditionalDependencies)
+      </AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ConsoleTesting|x64'">
@@ -133,6 +156,7 @@
         $(ProjectDir)CoreNativeObject;
         $(ProjectDir)Engine;
         $(ProjectDir)Tester;
+        $(MONO)\include\mono-2.0\;
       </AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(SolutionDir)NativeDefines\$(ProjectName).h</ForcedIncludeFiles>
     </ClCompile>
