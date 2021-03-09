@@ -1,32 +1,30 @@
 ﻿#include "UnityHook.h"
-#include "ExporterMacros.h"
-#include "Debug.h"
 #include "NativeObjectRegistry.h"
 
 UnityHook* UnityHook::Instance = nullptr;
 
-IMPLEMENT_EXPORTED_CONSTRUCTOR(UnityHook, CreateUnityHook, const SUnityHookInitParams&, InitParams)
+EXPORT_CONSTRUCTOR(UnityHook, CreateUnityHook, const SUnityHookInitParams&, InitParams)
 {
-    UNITY_EDITOR_LOG(Log, "UnityHook created")
+    UNITY_EDITOR_LOG(Log, L"UnityHook created")
     Instance = this;
 
     Registry = new NativeObjectRegistry(InitParams.NativeObjectRegistryInitReserveSize);
 }
 
-IMPLEMENT_EXPORTED_DESTRUCTOR(UnityHook)
+EXPORT_DESTRUCTOR(UnityHook)
 {
     Instance = nullptr;
-    UNITY_EDITOR_LOG(Log, "UnityHook destroyed")
+    UNITY_EDITOR_LOG(Log, L"UnityHook destroyed")
 }
 
-IMPLEMENT_EXPORTED_FUNCTION(void, UnityHook, Dispose)
+EXPORT_FUNCTION(void, UnityHook, Dispose)
 {
     Registry->Dispose();
     delete Registry;
     Registry = nullptr;
 }
 
-IMPLEMENT_EXPORTED_FUNCTION(void, UnityHook, Update, const float, InUnscaledDeltaTime, const float, InDeltaTime)
+EXPORT_FUNCTION(void, UnityHook, Update, const float, InUnscaledDeltaTime, const float, InDeltaTime)
 {
     UnscaledDeltaTime = InUnscaledDeltaTime;
     DeltaTime = InDeltaTime;
@@ -34,7 +32,7 @@ IMPLEMENT_EXPORTED_FUNCTION(void, UnityHook, Update, const float, InUnscaledDelt
     Registry->Update(InUnscaledDeltaTime, InDeltaTime);
 }
 
-IMPLEMENT_EXPORTED_FUNCTION(void, UnityHook, FixedUpdate, const float, InFixedUnscaledDeltaTime, const float, InFixedDeltaTime)
+EXPORT_FUNCTION(void, UnityHook, FixedUpdate, const float, InFixedUnscaledDeltaTime, const float, InFixedDeltaTime)
 {
     FixedUnscaledDeltaTime = InFixedUnscaledDeltaTime;
     FixedDeltaTime = InFixedDeltaTime;
@@ -42,7 +40,7 @@ IMPLEMENT_EXPORTED_FUNCTION(void, UnityHook, FixedUpdate, const float, InFixedUn
     Registry->FixedUpdate(InFixedUnscaledDeltaTime, InFixedDeltaTime);
 }
 
-IMPLEMENT_EXPORTED_FUNCTION(void, UnityHook, LateUpdate, const float, InUnscaledDeltaTime, const float, InDeltaTime)
+EXPORT_FUNCTION(void, UnityHook, LateUpdate, const float, InUnscaledDeltaTime, const float, InDeltaTime)
 {
     UnscaledDeltaTime = InUnscaledDeltaTime;
     DeltaTime = InDeltaTime;

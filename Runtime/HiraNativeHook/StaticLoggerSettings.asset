@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db629890b3bf4f0fabb156e197f3d852, type: 3}
   m_Name: StaticLoggerSettings
   m_EditorClassIdentifier: 
+  autoImportBooleanAsByte: 1
+  autoImportWideString: 1
   typeData:
-  - name: String
-    type: string
   - name: SignedByte
     type: sbyte
   - name: Byte

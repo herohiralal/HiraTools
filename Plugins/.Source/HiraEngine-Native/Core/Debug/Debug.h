@@ -1,9 +1,9 @@
 ﻿#pragma once
 
-#include "SyntacticMacros.h"
-#include "Platform/Platform.h"
+#include "HelperMacros.h"
+#include "Platform.h"
 
-DECLARE_ENUM(int32, LogType, Error, Assert, Warning, Log, Exception)
+enum class ELogType : int32 { FOR_EACH(WRITE_ENUM_NAME, Error, Assert, Warning, Log, Exception) LogTypeMax };
 
 class Debug
 {
@@ -20,7 +20,7 @@ public:
 #define DECLARE_LOGGER_OPERATOR(x) Debug::Logger operator<<(Debug::Logger OutLogger, x Other);
 
 FOR_EACH(DECLARE_LOGGER_OPERATOR,
-         const char*,
+         const wchar*,
          bool8,
          int8,
          uint8,
@@ -37,13 +37,13 @@ FOR_EACH(DECLARE_LOGGER_OPERATOR,
 
 // end logging
 
-void operator<<(const Debug::Logger OutLogger, const Debug::Logger* OtherLogger);
+void operator<<(Debug::Logger OutLogger, const Debug::Logger* OtherLogger);
 
 #if !_CONSOLE   // print to unity logger
 
 #define UNITY_LOG(type, msg) \
     Debug::Logger(ELogType::type) << \
-    msg << "\nFrom " << __FUNCTION__ << "() (at " << __FILE__ << ": " << __LINE__ << ")" \
+    msg << L"\nFrom " << WFUNC << L"() (at " << WFILE << L": " << __LINE__ << L")" \
     << static_cast<const Debug::Logger*>(nullptr);
 
 #else   // print log to console 

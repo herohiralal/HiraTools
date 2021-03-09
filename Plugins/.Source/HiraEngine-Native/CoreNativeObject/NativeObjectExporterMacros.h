@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "InteropCommonMacros.h"
+#include "Core.h"
 
 #define EXPORT_NATIVEOBJECT_CONSTRUCTOR(typeName, functionName, ...) \
     DLLEXPORT(typeName*) functionName DECLARE_ARGUMENTS(__VA_ARGS__) \

@@ -10,36 +10,62 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+
   <ItemGroup>
-    <ClInclude Include="CoreNativeObject\CoreNativeObject.h" />
-    <ClInclude Include="CoreNativeObject\NativeObject.h" />
-    <ClInclude Include="CoreNativeObject\NativeObjectRegistry.h" />
-    <ClInclude Include="CoreNativeObject\UnityHook.h" />
-    <ClInclude Include="Core\CallStack.h" />
-    <ClInclude Include="Core\Core.h" />
-    <ClInclude Include="Core\Debug.h" />
-    <ClInclude Include="Core\Platform\Platform.h" />
-    <ClInclude Include="Core\TemplateConstraintsHelper.h" />
-    <ClInclude Include="Core\TList.h" />
-    <ClInclude Include="Core\TListModificationBuffer.h" />
-    <ClInclude Include="$(SolutionDir)NativeDefines\$(ProjectName).h" />
-    <ClInclude Include="Engine\Async\GameplayCommandBuffer.h" />
-    <ClInclude Include="HelperMacros\ExporterMacros.h" />
-    <ClInclude Include="HelperMacros\HelperMacros.h" />
-    <ClInclude Include="HelperMacros\ImporterMacros.h" />
-    <ClInclude Include="HelperMacros\InteropCommonMacros.h" />
-    <ClInclude Include="HelperMacros\NativeObjectExporterMacros.h" />
-    <ClInclude Include="HelperMacros\SyntacticMacros.h" />
+
+    <!-- Native defines -->
+    <ClInclude Include="$(SolutionDir)NativeDefines\$(ProjectName).h"/>
+
+    <!-- Helper Macros -->
+    <ClInclude Include="HelperMacros\HelperMacros.h"/>
+    <ClInclude Include="HelperMacros\BasicMacros.h"/>
+    <ClInclude Include="HelperMacros\EnumMacros.h"/>
+    <ClInclude Include="HelperMacros\InteropSettings.h"/>
+    <ClInclude Include="HelperMacros\PropertyMacros.h"/>
+
+    <!-- Platform -->
+    <ClInclude Include="Platform\Platform.h"/>
+    <ClInclude Include="Platform\GlobalTypes.h"/>
+    <ClInclude Include="Platform\TemplateConstraintsHelper.h"/>
+
+    <!-- Core -->
+    <ClInclude Include="Core\Core.h"/>
+    <ClInclude Include="Core\Containers\TList.h"/>
+    <ClInclude Include="Core\Containers\TListModificationBuffer.h"/>
+    <ClInclude Include="Core\Debug\Debug.h"/>
+    <ClInclude Include="Core\Interop\InteropCommonMacros.h"/>
+    <ClInclude Include="Core\Interop\ManagedAPIMacros.h"/>
+
+    <!-- Core NativeObject -->
+    <ClInclude Include="CoreNativeObject\CoreNativeObject.h"/>
+    <ClInclude Include="CoreNativeObject\NativeObject.h"/>
+    <ClInclude Include="CoreNativeObject\NativeObjectRegistry.h"/>
+    <ClInclude Include="CoreNativeObject\UnityHook.h"/>
+    <ClInclude Include="CoreNativeObject\NativeObjectExporterMacros.h"/>
+
+    <!-- Engine -->
+    <ClInclude Include="Engine\Async\GameplayCommandBuffer.h"/>
+
   </ItemGroup>
+
   <ItemGroup>
-    <ClCompile Include="CoreNativeObject\NativeObject.cpp" />
-    <ClCompile Include="CoreNativeObject\NativeObjectRegistry.cpp" />
-    <ClCompile Include="CoreNativeObject\UnityHook.cpp" />
-    <ClCompile Include="Core\CallStack.cpp" />
-    <ClCompile Include="Core\Debug.cpp" />
-    <ClCompile Include="Engine\Async\GameplayCommandBuffer.cpp" />
-    <ClCompile Include="Tester\ConsoleTester.cpp" />
+
+    <!-- Core -->
+    <ClCompile Include="Core\Debug\Debug.cpp"/>
+
+    <!-- Core NativeObject -->
+    <ClCompile Include="CoreNativeObject\NativeObject.cpp"/>
+    <ClCompile Include="CoreNativeObject\NativeObjectRegistry.cpp"/>
+    <ClCompile Include="CoreNativeObject\UnityHook.cpp"/>
+
+    <!-- Engine -->
+    <ClCompile Include="Engine\Async\GameplayCommandBuffer.cpp"/>
+
+    <!-- Console Testing -->
+    <ClCompile Include="Tester\ConsoleTester.cpp"/>
+
   </ItemGroup>
+
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{590AE2A0-554A-46F4-AB7B-482635D521C9}</ProjectGuid>
@@ -47,7 +73,7 @@
     <RootNamespace>HiraEngine_Native</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
   <PropertyGroup>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
@@ -64,18 +90,18 @@
     <PlatformToolset>ClangCL</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='DLL|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='ConsoleTesting|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
   </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="UserMacros"/>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DLL|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\..\</OutDir>
@@ -101,6 +127,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>
         $(ProjectDir)HelperMacros;
+        $(ProjectDir)Platform;
         $(ProjectDir)Core;
         $(ProjectDir)CoreNativeObject;
         $(ProjectDir)Engine;
@@ -115,6 +142,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
+      <StripPrivateSymbols>False</StripPrivateSymbols>
+      <AssemblyDebug>true</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ConsoleTesting|x64'">
@@ -130,19 +159,24 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>
         $(ProjectDir)HelperMacros;
+        $(ProjectDir)Platform;
+        $(ProjectDir)InteropCore;
         $(ProjectDir)Core;
         $(ProjectDir)CoreNativeObject;
         $(ProjectDir)Engine;
         $(ProjectDir)Tester;
       </AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(SolutionDir)NativeDefines\$(ProjectName).h</ForcedIncludeFiles>
+      <CallingConvention>StdCall</CallingConvention>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <StripPrivateSymbols>False</StripPrivateSymbols>
+      <AssemblyDebug>true</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>

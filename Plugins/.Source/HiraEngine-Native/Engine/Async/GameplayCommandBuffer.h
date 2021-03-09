@@ -50,8 +50,7 @@ public:
     void PauseTimer(const STimerHandle& InHandle);
     void ResumeTimer(const STimerHandle& InHandle);
     void CancelTimer(const STimerHandle& InHandle);
-
-DECLARE_IMPORTED_LIBRARY_FUNCTION(void, ExecuteBufferedCommands, GameplayCommandBuffer*, CommandBuffer, uint16*, Indices)
+    void ExecuteBufferedCommands(uint16* Indices);
 
 private:
     uint8 TryGetBufferIndex(uint16& OutBufferIndex) const;

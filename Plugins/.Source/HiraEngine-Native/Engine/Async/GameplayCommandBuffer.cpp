@@ -1,4 +1,5 @@
 ﻿#include "GameplayCommandBuffer.h"
+#include "NativeObjectExporterMacros.h"
 
 EXPORT_NATIVEOBJECT_CONSTRUCTOR(GameplayCommandBuffer, CreateGameplayCommandBuffer, const uint16, StartingBufferSize)
     : Super(EUpdateType::Update),
@@ -29,12 +30,12 @@ void GameplayCommandBuffer::OnAwake()
     ActiveTimers.SetElementCount(ActiveTimersBufferSize);
     Hash.SetElementCount(TotalBufferSize);
 
-    UNITY_EDITOR_LOG(Log, "Gameplay command buffer has awoken.!")
+    UNITY_EDITOR_LOG(Log, L"Gameplay command buffer has awoken.!")
 }
 
 void GameplayCommandBuffer::OnDestroy()
 {
-    UNITY_EDITOR_LOG(Log, "Gameplay command buffer is dying...")
+    UNITY_EDITOR_LOG(Log, L"Gameplay command buffer is dying...")
 
     CurrentHash = 0;
 
@@ -81,13 +82,13 @@ void GameplayCommandBuffer::OnUpdate(const float UnscaledDeltaTime, const float 
     if (SuccessCount)
     {
         TimersFinished[0] = SuccessCount;
-        ExecuteBufferedCommands(this, TimersFinished.GetContainer());
+        ExecuteBufferedCommands(TimersFinished.GetContainer());
     }
 }
 
 static_assert(0 % 5 == 0, "0 % <any non-zero number> must be 0.");
 
-IMPLEMENT_EXPORTED_FUNCTION(STimerHandle, GameplayCommandBuffer, SetTimer, const float, Time)
+EXPORT_FUNCTION(STimerHandle, GameplayCommandBuffer, SetTimer, const float, Time)
 {
     uint16 Index;
     if (!TryGetBufferIndex(Index))
@@ -114,7 +115,7 @@ IMPLEMENT_EXPORTED_FUNCTION(STimerHandle, GameplayCommandBuffer, SetTimer, const
     return STimerHandle{Index, reinterpret_cast<intptr>(this), NewHash};
 }
 
-IMPLEMENT_EXPORTED_FUNCTION(uint8, GameplayCommandBuffer, IsHandleValid, const STimerHandle&, InHandle)
+EXPORT_FUNCTION(uint8, GameplayCommandBuffer, IsHandleValid, const STimerHandle&, InHandle)
 {
     return Hash[InHandle.BufferIndex] == InHandle.Hash;
 }
@@ -122,32 +123,32 @@ IMPLEMENT_EXPORTED_FUNCTION(uint8, GameplayCommandBuffer, IsHandleValid, const S
 #define ASSERT_HANDLE_VALID(expr) \
     if (!IsHandleValid(InHandle)) \
     { \
-        UNITY_LOG(Warning, "Invalid gameplay handle passed."); \
+        UNITY_LOG(Warning, L"Invalid gameplay handle passed."); \
         expr \
     }
 
-IMPLEMENT_EXPORTED_FUNCTION(float, GameplayCommandBuffer, GetTimeRemaining, const STimerHandle&, InHandle)
+EXPORT_FUNCTION(float, GameplayCommandBuffer, GetTimeRemaining, const STimerHandle&, InHandle)
 {
     ASSERT_HANDLE_VALID(return 0.0f;)
 
     return ActiveTimers[InHandle.BufferIndex / SActiveTimer::BufferSize].TimeRemaining[InHandle.BufferIndex % SActiveTimer::BufferSize];
 }
 
-IMPLEMENT_EXPORTED_FUNCTION(void, GameplayCommandBuffer, PauseTimer, const STimerHandle&, InHandle)
+EXPORT_FUNCTION(void, GameplayCommandBuffer, PauseTimer, const STimerHandle&, InHandle)
 {
     ASSERT_HANDLE_VALID(return;)
 
     ActiveTimers[InHandle.BufferIndex / SActiveTimer::BufferSize].Active &= ~(1 << (InHandle.BufferIndex % SActiveTimer::BufferSize));
 }
 
-IMPLEMENT_EXPORTED_FUNCTION(void, GameplayCommandBuffer, ResumeTimer, const STimerHandle&, InHandle)
+EXPORT_FUNCTION(void, GameplayCommandBuffer, ResumeTimer, const STimerHandle&, InHandle)
 {
     ASSERT_HANDLE_VALID(return;)
 
     ActiveTimers[InHandle.BufferIndex / SActiveTimer::BufferSize].Active |= (1 << (InHandle.BufferIndex % SActiveTimer::BufferSize));
 }
 
-IMPLEMENT_EXPORTED_FUNCTION(void, GameplayCommandBuffer, CancelTimer, const STimerHandle&, InHandle)
+EXPORT_FUNCTION(void, GameplayCommandBuffer, CancelTimer, const STimerHandle&, InHandle)
 {
     ASSERT_HANDLE_VALID(return;)
 
@@ -157,7 +158,7 @@ IMPLEMENT_EXPORTED_FUNCTION(void, GameplayCommandBuffer, CancelTimer, const STim
 
 #undef ASSERT_HANDLE_VALID
 
-IMPLEMENT_IMPORTED_LIBRARY_FUNCTION(void, GameplayCommandBuffer, ExecuteBufferedCommands, GameplayCommandBuffer*, CommandBuffer, uint16*, Indices)
+IMPORT_FUNCTION_AND_CALL(void, GameplayCommandBuffer, ExecuteBufferedCommands, uint16*, Indices)
 
 uint8 GameplayCommandBuffer::TryGetBufferIndex(uint16& OutBufferIndex) const
 {

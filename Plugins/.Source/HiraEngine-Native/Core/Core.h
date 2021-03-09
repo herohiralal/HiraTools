@@ -1,8 +1,12 @@
 ﻿#pragma once
 
+// Dependencies
 #include "HelperMacros.h"
-#include "Platform/Platform.h"
-#include "Debug.h"
-#include "TList.h"
-#include "TListModificationBuffer.h"
-#include "TemplateConstraintsHelper.h"
+#include "Platform.h"
+
+// API
+#include "Containers/TList.h"
+#include "Containers/TListModificationBuffer.h"
+#include "Debug/Debug.h"
+#include "Interop/InteropCommonMacros.h"
+#include "Interop/ManagedAPIMacros.h"

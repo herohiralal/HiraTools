@@ -227,7 +227,7 @@ void NativeObjectRegistry::RemoveFromListAndUpdateIndex(TList<NativeObject*>& Li
     const int32 TargetIndex = List.FindIndex(Target);
     if (TargetIndex < 0)
     {
-        UNITY_EDITOR_LOG(Error, "Attempted to remove an index from a ticking list that didn't contain it.")
+        UNITY_EDITOR_LOG(Error, L"Attempted to remove an index from a ticking list that didn't contain it.")
     }
     else
     {

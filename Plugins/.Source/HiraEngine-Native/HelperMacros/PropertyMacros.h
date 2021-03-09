@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "InteropCommonMacros.h"
+#include "Platform.h"
 
 // base
 
@@ -82,41 +82,9 @@
         ACCESSOR_##get(GETTER, bool8, name) \
         ACCESSOR_##set(SETTER, bool8, name)
 
-#define DECLARE_SINGLETON( typeName) \
-    private: \
-        static typeName* Instance; \
+#define DECLARE_SINGLETON(typeName) \
+    private: static typeName* Instance; \
     public: \
         typeName(const typeName&) = delete; \
         typeName& operator=(const typeName&) = delete; \
         static typeName& Get() { return *Instance; }
-
-#define WRITE_ENUM_NAME(x) x, 
-#define WRITE_ENUM_TEXT(x) #x, 
-
-#define DECLARE_ENUM(type, name, ...) \
-    enum class E##name : type \
-    { \
-        FOR_EACH(WRITE_ENUM_NAME, __VA_ARGS__) \
-        name##Max \
-    }; \
-    static const char* name##Text[] = \
-    { \
-        FOR_EACH(WRITE_ENUM_TEXT, __VA_ARGS__) \
-        "Invalid" \
-    };
-
-#define DECLARE_FLAGS(type, name, ...) \
-    enum class E##name : type \
-    { \
-        FOR_EACH(WRITE_ENUM_NAME, __VA_ARGS__) \
-    }; \
-    constexpr E##name operator~(const E##name A) { return static_cast<E##name>(~static_cast<type>(A)); } \
-    constexpr E##name operator|(const E##name A, const E##name B) { return static_cast<E##name>(static_cast<type>(A) | static_cast<type>(B)); } \
-    constexpr E##name operator&(const E##name A, const E##name B) { return static_cast<E##name>(static_cast<type>(A) & static_cast<type>(B)); } \
-    constexpr E##name operator^(const E##name A, const E##name B) { return static_cast<E##name>(static_cast<type>(A) ^ static_cast<type>(B)); } \
-    constexpr E##name& operator|=(E##name& A, const E##name B) { A = A | B; return A; } \
-    constexpr E##name& operator&=(E##name& A, const E##name B) { A = A & B; return A; } \
-    constexpr E##name& operator^=(E##name& A, const E##name B) { A = A ^ B; return A; } \
-    constexpr bool8 HasFlag(const E##name A, const E##name B) { return ((A & B) == B); } \
-    constexpr void AddFlag(E##name& A, const E##name B) { A |= B; } \
-    constexpr void RemoveFlag(E##name& A, const E##name B) { A &= ~B; }

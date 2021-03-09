@@ -17,8 +17,8 @@ namespace UnityEngine.Internal
         private static void Initialize()
         {
             InitLoggerLogStart(LogStart);
+            unsafe { InitWideStringLogger(LogWideString); }
             InitBooleanLogger(LogBoolean);
-            InitStringLogger(LogString);
             InitSignedByteLogger(LogSignedByte);
             InitByteLogger(LogByte);
             InitShortLogger(LogShort);
@@ -37,7 +37,7 @@ namespace UnityEngine.Internal
         private static readonly System.Text.StringBuilder string_builder = new System.Text.StringBuilder(1000);
 
         // Start Logger
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
         private static extern void InitLoggerLogStart(Action<LogType> logger);
 
         [AOT.MonoPInvokeCallback(typeof(Action<LogType>))]
@@ -49,7 +49,7 @@ namespace UnityEngine.Internal
         }
 
         // End Logger
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
         private static extern void InitLoggerLogEnd(Action logger);
 
         [AOT.MonoPInvokeCallback(typeof(Action))]
@@ -58,88 +58,124 @@ namespace UnityEngine.Internal
             Debug.LogFormat(_trackedLogType, LogOption.NoStacktrace, null, string_builder.ToString());
         }
 
-        // Boolean
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
-        private static extern void InitBooleanLogger(Action<byte> logger);
+        // WideString
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private static extern void InitWideStringLogger(LogWideStringDelegate logger);
 
-        [AOT.MonoPInvokeCallback(typeof(Action<byte>))]
+        [UnmanagedFunctionPointer(HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private unsafe delegate void LogWideStringDelegate(char* x);
+
+        [AOT.MonoPInvokeCallback(typeof(LogWideStringDelegate))]
+        private static unsafe void LogWideString(char* toLog) => string_builder.Append(new string(toLog));
+
+        // Boolean
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private static extern void InitBooleanLogger(LogBooleanDelegate logger);
+
+        [UnmanagedFunctionPointer(HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private delegate void LogBooleanDelegate(byte toLog);
+
+        [AOT.MonoPInvokeCallback(typeof(LogBooleanDelegate))]
         private static void LogBoolean(byte toLog) => string_builder.Append((toLog != 0).ToString());
 
-        // String
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
-        private static extern void InitStringLogger(Action<string> logger);
-
-        [AOT.MonoPInvokeCallback(typeof(Action<string>))]
-        private static void LogString(string toLog) => string_builder.Append(toLog.ToString());
-
         // SignedByte
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
-        private static extern void InitSignedByteLogger(Action<sbyte> logger);
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private static extern void InitSignedByteLogger(LogSignedByteDelegate logger);
 
-        [AOT.MonoPInvokeCallback(typeof(Action<sbyte>))]
+        [UnmanagedFunctionPointer(HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private delegate void LogSignedByteDelegate(sbyte toLog);
+
+        [AOT.MonoPInvokeCallback(typeof(LogSignedByteDelegate))]
         private static void LogSignedByte(sbyte toLog) => string_builder.Append(toLog.ToString());
 
         // Byte
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
-        private static extern void InitByteLogger(Action<byte> logger);
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private static extern void InitByteLogger(LogByteDelegate logger);
 
-        [AOT.MonoPInvokeCallback(typeof(Action<byte>))]
+        [UnmanagedFunctionPointer(HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private delegate void LogByteDelegate(byte toLog);
+
+        [AOT.MonoPInvokeCallback(typeof(LogByteDelegate))]
         private static void LogByte(byte toLog) => string_builder.Append(toLog.ToString());
 
         // Short
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
-        private static extern void InitShortLogger(Action<short> logger);
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private static extern void InitShortLogger(LogShortDelegate logger);
 
-        [AOT.MonoPInvokeCallback(typeof(Action<short>))]
+        [UnmanagedFunctionPointer(HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private delegate void LogShortDelegate(short toLog);
+
+        [AOT.MonoPInvokeCallback(typeof(LogShortDelegate))]
         private static void LogShort(short toLog) => string_builder.Append(toLog.ToString());
 
         // UnsignedShort
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
-        private static extern void InitUnsignedShortLogger(Action<ushort> logger);
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private static extern void InitUnsignedShortLogger(LogUnsignedShortDelegate logger);
 
-        [AOT.MonoPInvokeCallback(typeof(Action<ushort>))]
+        [UnmanagedFunctionPointer(HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private delegate void LogUnsignedShortDelegate(ushort toLog);
+
+        [AOT.MonoPInvokeCallback(typeof(LogUnsignedShortDelegate))]
         private static void LogUnsignedShort(ushort toLog) => string_builder.Append(toLog.ToString());
 
         // Integer
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
-        private static extern void InitIntegerLogger(Action<int> logger);
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private static extern void InitIntegerLogger(LogIntegerDelegate logger);
 
-        [AOT.MonoPInvokeCallback(typeof(Action<int>))]
+        [UnmanagedFunctionPointer(HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private delegate void LogIntegerDelegate(int toLog);
+
+        [AOT.MonoPInvokeCallback(typeof(LogIntegerDelegate))]
         private static void LogInteger(int toLog) => string_builder.Append(toLog.ToString());
 
         // UnsignedInteger
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
-        private static extern void InitUnsignedIntegerLogger(Action<uint> logger);
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private static extern void InitUnsignedIntegerLogger(LogUnsignedIntegerDelegate logger);
 
-        [AOT.MonoPInvokeCallback(typeof(Action<uint>))]
+        [UnmanagedFunctionPointer(HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private delegate void LogUnsignedIntegerDelegate(uint toLog);
+
+        [AOT.MonoPInvokeCallback(typeof(LogUnsignedIntegerDelegate))]
         private static void LogUnsignedInteger(uint toLog) => string_builder.Append(toLog.ToString());
 
         // Long
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
-        private static extern void InitLongLogger(Action<long> logger);
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private static extern void InitLongLogger(LogLongDelegate logger);
 
-        [AOT.MonoPInvokeCallback(typeof(Action<long>))]
+        [UnmanagedFunctionPointer(HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private delegate void LogLongDelegate(long toLog);
+
+        [AOT.MonoPInvokeCallback(typeof(LogLongDelegate))]
         private static void LogLong(long toLog) => string_builder.Append(toLog.ToString());
 
         // UnsignedLong
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
-        private static extern void InitUnsignedLongLogger(Action<ulong> logger);
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private static extern void InitUnsignedLongLogger(LogUnsignedLongDelegate logger);
 
-        [AOT.MonoPInvokeCallback(typeof(Action<ulong>))]
+        [UnmanagedFunctionPointer(HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private delegate void LogUnsignedLongDelegate(ulong toLog);
+
+        [AOT.MonoPInvokeCallback(typeof(LogUnsignedLongDelegate))]
         private static void LogUnsignedLong(ulong toLog) => string_builder.Append(toLog.ToString());
 
         // Float
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
-        private static extern void InitFloatLogger(Action<float> logger);
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private static extern void InitFloatLogger(LogFloatDelegate logger);
 
-        [AOT.MonoPInvokeCallback(typeof(Action<float>))]
+        [UnmanagedFunctionPointer(HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private delegate void LogFloatDelegate(float toLog);
+
+        [AOT.MonoPInvokeCallback(typeof(LogFloatDelegate))]
         private static void LogFloat(float toLog) => string_builder.Append(toLog.ToString());
 
         // Double
-        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION)]
-        private static extern void InitDoubleLogger(Action<double> logger);
+        [SuppressUnmanagedCodeSecurity, DllImport(HiraNativeHook.HIRA_ENGINE_NATIVE_DLL_NAME, CallingConvention = HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private static extern void InitDoubleLogger(LogDoubleDelegate logger);
 
-        [AOT.MonoPInvokeCallback(typeof(Action<double>))]
+        [UnmanagedFunctionPointer(HiraNativeHook.CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+        private delegate void LogDoubleDelegate(double toLog);
+
+        [AOT.MonoPInvokeCallback(typeof(LogDoubleDelegate))]
         private static void LogDouble(double toLog) => string_builder.Append(toLog.ToString());
     }
 }

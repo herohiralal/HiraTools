@@ -1,17 +1,5 @@
 ﻿#include "Debug.h"
 
-#define IMPLEMENT_LOGGER_OPERATOR(type, typeName) \
-    void (CALLING_CONVENTION*GLog##typeName)(type) = nullptr; \
-    DLLEXPORT(void) Init##typeName##Logger(void (CALLING_CONVENTION*InDelegate)(type)) \
-    { \
-        GLog##typeName = InDelegate; \
-    } \
-    Debug::Logger operator<<(const Debug::Logger OutLogger, type Other) \
-    { \
-        GLog##typeName(Other); \
-        return OutLogger; \
-    }
-
 // start log
 
 void (CALLING_CONVENTION*GLogStart)(ELogType) = nullptr;
@@ -28,9 +16,20 @@ Debug::Logger::Logger(const ELogType LogType)
 
 // left shift operators
 
+#define IMPLEMENT_LOGGER_OPERATOR(type, typeName) \
+    void (CALLING_CONVENTION*GLog##typeName)(type) = nullptr; \
+    DLLEXPORT(void) Init##typeName##Logger(void (CALLING_CONVENTION*InDelegate)(type)) \
+    { \
+        GLog##typeName = InDelegate; \
+    } \
+    Debug::Logger operator<<(const Debug::Logger OutLogger, type Other) \
+    { \
+        GLog##typeName(Other); \
+        return OutLogger; \
+    }
+
 FOR_EACH_2_ARGUMENTS(IMPLEMENT_LOGGER_OPERATOR,
-                     const wchar*, ManagedString,
-                     const char*, String,
+                     const wchar*, WideString,
                      const bool8, Boolean,
                      const int8, SignedByte,
                      const uint8, Byte,
@@ -42,6 +41,8 @@ FOR_EACH_2_ARGUMENTS(IMPLEMENT_LOGGER_OPERATOR,
                      const uint64, UnsignedLong,
                      const float, Float,
                      const double, Double)
+
+#undef IMPLEMENT_LOGGER_OPERATOR
 
 // end log
 
@@ -79,5 +80,3 @@ const char* GetLogPrefix(const ELogType LogType)
 }
 
 #endif
-
-#undef IMPLEMENT_LOGGER_OPERATOR

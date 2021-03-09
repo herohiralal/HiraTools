@@ -1,24 +1,28 @@
 ﻿#pragma once
 
-#include "HelperMacros.h"
-
-template <typename T32Bits, typename T64Bits, int TPointerSize>
-struct SelectIntPointerType
+namespace Platform
 {
-    // nothing here are is it an error if the partial specializations fail
-};
+    namespace PointerSizeHelper
+    {
+        template <typename T32Bits, typename T64Bits, int TPointerSize>
+        struct SelectIntPointerType
+        {
+            // nothing here are is it an error if the partial specializations fail
+        };
 
-template <typename T32Bits, typename T64Bits>
-struct SelectIntPointerType<T32Bits, T64Bits, 8>
-{
-    typedef T64Bits IntPointer;
-};
+        template <typename T32Bits, typename T64Bits>
+        struct SelectIntPointerType<T32Bits, T64Bits, 8>
+        {
+            typedef T64Bits IntPointer;
+        };
 
-template <typename T32Bits, typename T64Bits>
-struct SelectIntPointerType<T32Bits, T64Bits, 4>
-{
-    typedef T32Bits IntPointer;
-};
+        template <typename T32Bits, typename T64Bits>
+        struct SelectIntPointerType<T32Bits, T64Bits, 4>
+        {
+            typedef T32Bits IntPointer;
+        };
+    }
+}
 
 typedef unsigned char uint8;
 typedef unsigned short int uint16;
@@ -36,8 +40,8 @@ typedef uint8 char8;
 typedef uint16 char16;
 typedef uint32 char32;
 
-typedef SelectIntPointerType<uint32, uint64, sizeof(void*)>::IntPointer uintptr;
-typedef SelectIntPointerType<int32, int64, sizeof(void*)>::IntPointer intptr;
+typedef Platform::PointerSizeHelper::SelectIntPointerType<uint32, uint64, sizeof(void*)>::IntPointer uintptr;
+typedef Platform::PointerSizeHelper::SelectIntPointerType<int32, int64, sizeof(void*)>::IntPointer intptr;
 
 struct bool8
 {
@@ -105,6 +109,3 @@ FOR_EACH_2_ARGUMENTS(SIGN_TEST,
                      UIntPtr, static_cast<uintptr>(-1) > static_cast<uintptr>(0))
 
 #undef SIGN_TEST
-
-#define WFILE CONCATENATE_WRAPPED(L, __FILE__)
-#define WFUNC CONCATENATE_WRAPPED(L, __FUNCTION__)

@@ -1,8 +1,7 @@
 ﻿#pragma once
 
-#include "Debug.h"
-#include "SyntacticMacros.h"
-#include "Platform/Platform.h"
+#include "PropertyMacros.h"
+#include "Debug/Debug.h"
 
 template <typename T>
 class TList
@@ -144,19 +143,19 @@ T& TList<T>::operator[](const int32 Index)
 {
     if (Index < 0)
     {
-        UNITY_LOG(Exception, "Attempted to access a negative index.")
+        UNITY_LOG(Exception, L"Attempted to access a negative index.")
     }
 
     if (Index >= BufferSize)
     {
         if (BufferSize)
         {
-            UNITY_LOG(Exception, "Attempted to access outside List buffer.")
+            UNITY_LOG(Exception, L"Attempted to access outside List buffer.")
             return Container[0];
         }
         else
         {
-            UNITY_LOG(Exception, "Attempted to access an item from an empty array.")
+            UNITY_LOG(Exception, L"Attempted to access an item from an empty array.")
             return *new T();
         }
     }
@@ -169,19 +168,19 @@ const T& TList<T>::operator[](int32 Index) const
 {
     if (Index < 0)
     {
-        UNITY_LOG(Exception, "Attempted to access a negative index.")
+        UNITY_LOG(Exception, L"Attempted to access a negative index.")
     }
 
     if (Index >= BufferSize)
     {
         if (BufferSize)
         {
-            UNITY_LOG(Exception, "Attempted to access outside List buffer.")
+            UNITY_LOG(Exception, L"Attempted to access outside List buffer.")
             return Container[0];
         }
         else
         {
-            UNITY_LOG(Exception, "Attempted to access an item from an empty array.")
+            UNITY_LOG(Exception, L"Attempted to access an item from an empty array.")
             return *new T();
         }
     }
