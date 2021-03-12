@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "Platform.h"
 #include "BasicMacros.h"
 
 #define WRITE_ENUM_NAME(x) x, 

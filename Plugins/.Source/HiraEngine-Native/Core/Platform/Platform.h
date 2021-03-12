@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "HelperMacros.h"
+
 namespace Platform
 {
     namespace PointerSizeHelper
@@ -42,6 +44,9 @@ typedef uint32 char32;
 
 typedef Platform::PointerSizeHelper::SelectIntPointerType<uint32, uint64, sizeof(void*)>::IntPointer uintptr;
 typedef Platform::PointerSizeHelper::SelectIntPointerType<int32, int64, sizeof(void*)>::IntPointer intptr;
+
+typedef uintptr size;
+typedef intptr ssize;
 
 struct bool8
 {
@@ -109,3 +114,10 @@ FOR_EACH_2_ARGUMENTS(SIGN_TEST,
                      UIntPtr, static_cast<uintptr>(-1) > static_cast<uintptr>(0))
 
 #undef SIGN_TEST
+
+/**
+ * Convert a char/char-array to a WideChar/WideChar-array.
+ * @param x Input
+ * @returns WideChar variant of string or character literal.
+ */
+#define TEXT(x) L##x

@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include "Platform.h"
-
 // base
 
 #define GETTER_BASE(type, name) type Get##name()

@@ -1,4 +1,5 @@
 ﻿#include "Debug.h"
+#include "StringHandling/NativeString.h"
 
 // start log
 
@@ -43,6 +44,12 @@ FOR_EACH_2_ARGUMENTS(IMPLEMENT_LOGGER_OPERATOR,
                      const double, Double)
 
 #undef IMPLEMENT_LOGGER_OPERATOR
+
+Debug::Logger operator<<(const Debug::Logger OutLogger, const SNativeString& Other)
+{
+    GLogWideString(Other.GetRaw());
+    return OutLogger;
+}
 
 // end log
 

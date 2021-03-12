@@ -14,55 +14,61 @@
   <ItemGroup>
 
     <!-- Native defines -->
-    <ClInclude Include="$(SolutionDir)NativeDefines\$(ProjectName).h"/>
+    <ClInclude Include="$(SolutionDir)NativeDefines\$(ProjectName).h" />
 
     <!-- Helper Macros -->
-    <ClInclude Include="HelperMacros\HelperMacros.h"/>
-    <ClInclude Include="HelperMacros\BasicMacros.h"/>
-    <ClInclude Include="HelperMacros\EnumMacros.h"/>
-    <ClInclude Include="HelperMacros\InteropSettings.h"/>
-    <ClInclude Include="HelperMacros\PropertyMacros.h"/>
-
-    <!-- Platform -->
-    <ClInclude Include="Platform\Platform.h"/>
-    <ClInclude Include="Platform\GlobalTypes.h"/>
-    <ClInclude Include="Platform\TemplateConstraintsHelper.h"/>
+    <ClInclude Include="HelperMacros\HelperMacros.h" />
+    <ClInclude Include="HelperMacros\BasicMacros.h" />
+    <ClInclude Include="HelperMacros\EnumMacros.h" />
+    <ClInclude Include="HelperMacros\InteropSettings.h" />
+    <ClInclude Include="HelperMacros\PropertyMacros.h" />
 
     <!-- Core -->
-    <ClInclude Include="Core\Core.h"/>
-    <ClInclude Include="Core\Containers\TList.h"/>
-    <ClInclude Include="Core\Containers\TListModificationBuffer.h"/>
-    <ClInclude Include="Core\Debug\Debug.h"/>
-    <ClInclude Include="Core\Interop\InteropCommonMacros.h"/>
-    <ClInclude Include="Core\Interop\ManagedAPIMacros.h"/>
+    <ClInclude Include="Core\Core.h" />
+    <ClInclude Include="Core\Containers\TList.h" />
+    <ClInclude Include="Core\Containers\TListModificationBuffer.h" />
+    <ClInclude Include="Core\Debug\Debug.h" />
+    <ClInclude Include="Core\Interop\InteropCommonMacros.h" />
+    <ClInclude Include="Core\Interop\ManagedAPIMacros.h" />
+    <ClInclude Include="Core\Platform\Platform.h" />
+    <ClInclude Include="Core\StringHandling\NativeString.h" />
+    <ClInclude Include="Core\StringHandling\ManagedString.h" />
+    <ClInclude Include="Core\StringHandling\NativeStringBuilder.h" />
+    <ClInclude Include="Core\Memory\Memory.h" />
+    <ClInclude Include="Core\Math\Math.h" />
 
     <!-- Core NativeObject -->
-    <ClInclude Include="CoreNativeObject\CoreNativeObject.h"/>
-    <ClInclude Include="CoreNativeObject\NativeObject.h"/>
-    <ClInclude Include="CoreNativeObject\NativeObjectRegistry.h"/>
-    <ClInclude Include="CoreNativeObject\UnityHook.h"/>
-    <ClInclude Include="CoreNativeObject\NativeObjectExporterMacros.h"/>
+    <ClInclude Include="CoreNativeObject\CoreNativeObject.h" />
+    <ClInclude Include="CoreNativeObject\NativeObject.h" />
+    <ClInclude Include="CoreNativeObject\NativeObjectRegistry.h" />
+    <ClInclude Include="CoreNativeObject\UnityHook.h" />
+    <ClInclude Include="CoreNativeObject\NativeObjectExporterMacros.h" />
 
     <!-- Engine -->
-    <ClInclude Include="Engine\Async\GameplayCommandBuffer.h"/>
+    <ClInclude Include="Engine\Async\GameplayCommandBuffer.h" />
 
   </ItemGroup>
 
   <ItemGroup>
 
     <!-- Core -->
-    <ClCompile Include="Core\Debug\Debug.cpp"/>
+    <ClCompile Include="Core\Debug\Debug.cpp" />
+    <ClCompile Include="Core\Memory\Memory.cpp" />
+    <ClCompile Include="Core\StringHandling\NativeString.cpp" />
+    <ClCompile Include="Core\StringHandling\ManagedString.cpp" />
+    <ClCompile Include="Core\StringHandling\NativeStringBuilder.cpp" />
+    <ClInclude Include="Core\Math\Math.cpp" />
 
     <!-- Core NativeObject -->
-    <ClCompile Include="CoreNativeObject\NativeObject.cpp"/>
-    <ClCompile Include="CoreNativeObject\NativeObjectRegistry.cpp"/>
-    <ClCompile Include="CoreNativeObject\UnityHook.cpp"/>
+    <ClCompile Include="CoreNativeObject\NativeObject.cpp" />
+    <ClCompile Include="CoreNativeObject\NativeObjectRegistry.cpp" />
+    <ClCompile Include="CoreNativeObject\UnityHook.cpp" />
 
     <!-- Engine -->
-    <ClCompile Include="Engine\Async\GameplayCommandBuffer.cpp"/>
+    <ClCompile Include="Engine\Async\GameplayCommandBuffer.cpp" />
 
     <!-- Console Testing -->
-    <ClCompile Include="Tester\ConsoleTester.cpp"/>
+    <ClCompile Include="Tester\ConsoleTester.cpp" />
 
   </ItemGroup>
 
@@ -73,7 +79,7 @@
     <RootNamespace>HiraEngine_Native</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
@@ -90,18 +96,18 @@
     <PlatformToolset>ClangCL</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='DLL|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='ConsoleTesting|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros"/>
+  <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DLL|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\..\</OutDir>
@@ -176,7 +182,7 @@
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>

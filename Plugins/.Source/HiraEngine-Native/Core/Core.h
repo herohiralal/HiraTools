@@ -2,7 +2,6 @@
 
 // Dependencies
 #include "HelperMacros.h"
-#include "Platform.h"
 
 // API
 #include "Containers/TList.h"
@@ -10,3 +9,7 @@
 #include "Debug/Debug.h"
 #include "Interop/InteropCommonMacros.h"
 #include "Interop/ManagedAPIMacros.h"
+#include "Platform/Platform.h"
+#include "StringHandling/NativeString.h"
+#include "StringHandling/NativeStringBuilder.h"
+#include "Memory/Memory.h"

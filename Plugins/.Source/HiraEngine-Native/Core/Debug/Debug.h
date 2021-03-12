@@ -1,7 +1,9 @@
 ﻿#pragma once
 
 #include "HelperMacros.h"
-#include "Platform.h"
+#include "Platform/Platform.h"
+
+struct SNativeString;
 
 enum class ELogType : int32 { FOR_EACH(WRITE_ENUM_NAME, Error, Assert, Warning, Log, Exception) LogTypeMax };
 
@@ -14,6 +16,8 @@ public:
         explicit Logger(ELogType LogType = ELogType::Log);
     };
 };
+
+Debug::Logger operator<<(Debug::Logger OutLogger, const SNativeString& Other);
 
 // main operators
 
