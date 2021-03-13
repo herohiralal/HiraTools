@@ -13,3 +13,5 @@
 #include "StringHandling/NativeString.h"
 #include "StringHandling/NativeStringBuilder.h"
 #include "Memory/Memory.h"
+#include "Debug/StackWalk/StackWalker.h"
+#include "Debug/StackWalk/StackWalkerWindows.h"

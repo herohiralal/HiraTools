@@ -5,6 +5,7 @@ UnityHook* UnityHook::Instance = nullptr;
 
 EXPORT_CONSTRUCTOR(UnityHook, CreateUnityHook, const SUnityHookInitParams&, InitParams)
 {
+    STACK_WALKER::Initialize();
     UNITY_EDITOR_LOG(Log, L"UnityHook created")
     Instance = this;
 
@@ -22,6 +23,7 @@ EXPORT_FUNCTION(void, UnityHook, Dispose)
     Registry->Dispose();
     delete Registry;
     Registry = nullptr;
+    SStackWalker::Shutdown();
 }
 
 EXPORT_FUNCTION(void, UnityHook, Update, const float, InUnscaledDeltaTime, const float, InDeltaTime)

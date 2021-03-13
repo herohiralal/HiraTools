@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "InteropCommonMacros.h"
-#include "PropertyMacros.h"
 
 /**
  * Expose a constructor to be called by Managed API.
@@ -100,6 +99,19 @@
     returnType typeName::functionName DECLARE_ARGUMENTS(__VA_ARGS__)
 
 /**
+ * Import a function with a specific signature.
+ * @param returnType            The return type of the function.
+ * @param name                  What the function should be called.
+ * @param ...                   The arguments, with types/names separated by commas.
+ */
+#define IMPORT_FUNCTION_WITH_SIGNATURE(returnType, name, ...) \
+    returnType (CALLING_CONVENTION*name) DECLARE_ARGUMENTS(__VA_ARGS__) = nullptr; \
+    DLLEXPORT(void) Init##name(returnType (CALLING_CONVENTION*InDelegate) DECLARE_ARGUMENTS(__VA_ARGS__)) \
+    { \
+        name = InDelegate; \
+    }
+
+/**
  * Allow a function to be overriden by managed code.
  * @param returnType            The return type of the function.
  * @param typeName              The enclosing type.
@@ -107,11 +119,7 @@
  * @param ...                   The arguments, with types/names separated by commas.
  */
 #define IMPORT_FUNCTION(returnType, typeName, functionName, ...) \
-    returnType (CALLING_CONVENTION*typeName##functionName##ManagedOverride) PASS_TYPES(typeName*, Target, __VA_ARGS__) = nullptr; \
-    DLLEXPORT(void) Init##typeName##functionName(returnType(CALLING_CONVENTION*InDelegate) DECLARE_ARGUMENTS(typeName*, Target, __VA_ARGS__)) \
-    { \
-        typeName##functionName##ManagedOverride = InDelegate; \
-    } \
+    IMPORT_FUNCTION_WITH_SIGNATURE(returnType, typeName##functionName##ManagedOverride, typeName*, Target, __VA_ARGS__) \
     returnType typeName::functionName DECLARE_ARGUMENTS(__VA_ARGS__)
 
 
@@ -123,11 +131,7 @@
  * @param ...                   The arguments, with types/names separated by commas.
  */
 #define IMPORT_LIBRARY_FUNCTION(returnType, typeName, functionName, ...) \
-    returnType (CALLING_CONVENTION*typeName##functionName##ManagedOverride) PASS_TYPES(__VA_ARGS__) = nullptr; \
-    DLLEXPORT(void) Init##typeName##functionName(returnType(CALLING_CONVENTION*InDelegate) PASS_TYPES(__VA_ARGS__) ) \
-    { \
-        typeName##functionName##ManagedOverride = InDelegate; \
-    } \
+    IMPORT_FUNCTION_WITH_SIGNATURE(returnType, typeName##functionName##ManagedOverride, __VA_ARGS__) \
     returnType typeName::functionName DECLARE_ARGUMENTS(__VA_ARGS__)
 
 /**
@@ -160,12 +164,7 @@
  * @param ...                   The arguments, with types/names separated by commas.
  */
 #define IMPORT_FUNCTION_AND_CALL(returnType, typeName, functionName, ...) \
-    returnType (CALLING_CONVENTION*typeName##functionName##ManagedOverride) PASS_TYPES(typeName*, Target, __VA_ARGS__) = nullptr; \
-    DLLEXPORT(void) Init##typeName##functionName(returnType(CALLING_CONVENTION*InDelegate) DECLARE_ARGUMENTS(typeName*, Target, __VA_ARGS__)) \
-    { \
-        typeName##functionName##ManagedOverride = InDelegate; \
-    } \
-    returnType typeName::functionName DECLARE_ARGUMENTS(__VA_ARGS__) \
+    IMPORT_FUNCTION(returnType, typeName, functionName, __VA_ARGS__) \
     { \
         if (typeName##functionName##ManagedOverride != nullptr) \
             return typeName##functionName##ManagedOverride PASS_ARGUMENTS(typeName*, this, __VA_ARGS__); \
@@ -180,12 +179,7 @@
  * @param ...                   The arguments, with types/names separated by commas.
  */
 #define IMPORT_LIBRARY_FUNCTION_AND_CALL(returnType, typeName, functionName, ...) \
-    returnType (CALLING_CONVENTION*typeName##functionName##ManagedOverride) PASS_TYPES(__VA_ARGS__) = nullptr; \
-    DLLEXPORT(void) Init##typeName##functionName(returnType(CALLING_CONVENTION*InDelegate) PASS_TYPES(__VA_ARGS__) ) \
-    { \
-        typeName##functionName##ManagedOverride = InDelegate; \
-    } \
-    returnType typeName::functionName DECLARE_ARGUMENTS(__VA_ARGS__) \
+    IMPORT_LIBRARY_FUNCTION(returnType, typeName, functionName, __VA_ARGS__) \
     { \
         if (typeName##functionName##ManagedOverride != nullptr) \
             return typeName##functionName##ManagedOverride PASS_ARGUMENTS(__VA_ARGS__); \

@@ -2,6 +2,7 @@
 
 #include "HelperMacros.h"
 #include "Platform/Platform.h"
+#include "StringHandling/NativeStringBuilder.h"
 
 struct SNativeString;
 
@@ -10,56 +11,45 @@ enum class ELogType : int32 { FOR_EACH(WRITE_ENUM_NAME, Error, Assert, Warning, 
 class Debug
 {
 public:
-    struct Logger
-    {
-        // start logging
-        explicit Logger(ELogType LogType = ELogType::Log);
-    };
+    static void Log(ELogType Type, const SNativeString& ToLog);
 };
-
-Debug::Logger operator<<(Debug::Logger OutLogger, const SNativeString& Other);
-
-// main operators
-
-#define DECLARE_LOGGER_OPERATOR(x) Debug::Logger operator<<(Debug::Logger OutLogger, x Other);
-
-FOR_EACH(DECLARE_LOGGER_OPERATOR,
-         const wchar*,
-         bool8,
-         int8,
-         uint8,
-         int16,
-         uint16,
-         int32,
-         uint32,
-         int64,
-         uint64,
-         float,
-         double)
-
-#undef DECLARE_LOGGER_OPERATOR
-
-// end logging
-
-void operator<<(Debug::Logger OutLogger, const Debug::Logger* OtherLogger);
 
 #if !_CONSOLE   // print to unity logger
 
 #define UNITY_LOG(type, msg) \
-    Debug::Logger(ELogType::type) << \
-    msg << L"\nFrom " << WFUNC << L"() (at " << WFILE << L": " << __LINE__ << L")" \
-    << static_cast<const Debug::Logger*>(nullptr);
+    Debug::Log(ELogType::type, NativeStringBuilder::Create(1000) << msg << \
+    TEXT("\nFrom") << WFUNC << TEXT("() (at ") << WFILE << TEXT(": ") << __LINE__ << TEXT(")") << \
+    NativeStringBuilder::Disposer());
+
+#include "StackWalk/StackWalker.h"
+#define UNITY_LOG_WITH_CALL_STACK(type, msg) \
+    { \
+        NativeStringBuilder* __LogBuilder = &(NativeStringBuilder::Create(1000) << msg); \
+        SStackWalker::AppendCallStack(*__LogBuilder, 0); \
+        Debug::Log(ELogType::type, *__LogBuilder << NativeStringBuilder::Disposer()); \
+    }
 
 #else   // print log to console 
 
 #include<iostream>
-const char* GetLogPrefix(ELogType LogType);
-#define UNITY_LOG(type, msg) std::cout << GetLogPrefix(ELogType::type) << msg << std::endl;
+
+const wchar* GetLogPrefix(ELogType LogType);
+
+#define UNITY_LOG(type, msg) std::wcout << GetLogPrefix(ELogType::type) << msg << std::endl;
+
+#define UNITY_LOG_WITH_CALL_STACK(type, msg) \
+    { \
+        NativeStringBuilder* __LogBuilder = &(NativeStringBuilder::Create(1000) << msg); \
+        SStackWalker::AppendCallStack(*__LogBuilder, 0); \
+        UNITY_LOG(type, (*__LogBuilder << NativeStringBuilder::Disposer()).GetRaw()) \
+    }
 
 #endif
 
 #if UNITY_EDITOR || _CONSOLE   // get all log for console
 #define UNITY_EDITOR_LOG(type, msg) UNITY_LOG(type, msg)
+#define UNITY_EDITOR_LOG_WITH_CALL_STACK(msg) UNITY_LOG_WITH_CALL_STACK(msg)
 #else
 #define UNITY_EDITOR_LOG(type, msg)
+#define UNITY_EDITOR_LOG_WITH_CALL_STACK(msg)
 #endif

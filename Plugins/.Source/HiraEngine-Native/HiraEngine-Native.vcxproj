@@ -28,6 +28,8 @@
     <ClInclude Include="Core\Containers\TList.h" />
     <ClInclude Include="Core\Containers\TListModificationBuffer.h" />
     <ClInclude Include="Core\Debug\Debug.h" />
+    <ClInclude Include="Core\Debug\StackWalk\StackWalker.h" />
+    <ClInclude Include="Core\Debug\StackWalk\StackWalkerWindows.h" />
     <ClInclude Include="Core\Interop\InteropCommonMacros.h" />
     <ClInclude Include="Core\Interop\ManagedAPIMacros.h" />
     <ClInclude Include="Core\Platform\Platform.h" />
@@ -53,11 +55,13 @@
 
     <!-- Core -->
     <ClCompile Include="Core\Debug\Debug.cpp" />
+    <ClCompile Include="Core\Debug\StackWalk\StackWalker.cpp" />
+    <ClCompile Include="Core\Debug\StackWalk\StackWalkerWindows.cpp" />
     <ClCompile Include="Core\Memory\Memory.cpp" />
     <ClCompile Include="Core\StringHandling\NativeString.cpp" />
     <ClCompile Include="Core\StringHandling\ManagedString.cpp" />
     <ClCompile Include="Core\StringHandling\NativeStringBuilder.cpp" />
-    <ClInclude Include="Core\Math\Math.cpp" />
+    <ClCompile Include="Core\Math\Math.cpp" />
 
     <!-- Core NativeObject -->
     <ClCompile Include="CoreNativeObject\NativeObject.cpp" />
