@@ -30,39 +30,3 @@ void SMemory::Copy(T* Destination, const T* Source, const size Count)
 {
     Copy(reinterpret_cast<uint8*>(Destination), reinterpret_cast<const uint8*>(Source), Count * sizeof(T));
 }
-
-namespace MoveUtilityInternals
-{
-    template <typename T>
-    struct RemoveReference
-    {
-        using Type = T;
-        using ConstThroughRefType = const T;
-    };
-
-    template <typename T>
-    struct RemoveReference<T&>
-    {
-        using Type = T;
-        using ConstThroughRefType = const T&;
-    };
-
-    template <typename T>
-    struct RemoveReference<T&&>
-    {
-        using Type = T;
-        using ConstThroughRefType = const T&&;
-    };
-
-    template <typename T>
-    using RemoveReferenceT = typename RemoveReference<T>::Type;
-
-    template <typename T>
-    using ConstThroughRef = typename RemoveReference<T>::ConstThroughRefType;
-}
-
-template <typename T>
-constexpr MoveUtilityInternals::RemoveReferenceT<T>&& Move(T&& Arg) noexcept
-{
-    return static_cast<MoveUtilityInternals::RemoveReferenceT<T>&&>(Arg);
-}

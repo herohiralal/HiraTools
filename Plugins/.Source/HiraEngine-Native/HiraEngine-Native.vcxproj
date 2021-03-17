@@ -37,6 +37,7 @@
     <ClInclude Include="Core\StringHandling\ManagedString.h" />
     <ClInclude Include="Core\StringHandling\NativeStringBuilder.h" />
     <ClInclude Include="Core\Memory\Memory.h" />
+    <ClInclude Include="Core\Memory\MemoryStream.h" />
     <ClInclude Include="Core\Math\Math.h" />
 
     <!-- Core NativeObject -->
@@ -58,6 +59,7 @@
     <ClCompile Include="Core\Debug\StackWalk\StackWalker.cpp" />
     <ClCompile Include="Core\Debug\StackWalk\StackWalkerWindows.cpp" />
     <ClCompile Include="Core\Memory\Memory.cpp" />
+    <ClCompile Include="Core\Memory\MemoryStream.cpp" />
     <ClCompile Include="Core\StringHandling\NativeString.cpp" />
     <ClCompile Include="Core\StringHandling\ManagedString.cpp" />
     <ClCompile Include="Core\StringHandling\NativeStringBuilder.cpp" />

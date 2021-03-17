@@ -36,7 +36,7 @@ void NativeStringBuilder::AdjustBufferForTotalStringLength(const size NewSize)
     if (NewSize > BufferSize)
     {
         wchar* NewBuffer = new wchar[NewSize + 1];
-        SMemory::Copy(NewBuffer, Buffer, NullTerminationCharacterIndex + 1);
+        SMemory::Copy<wchar>(NewBuffer, Buffer, NullTerminationCharacterIndex + 1);
 
         delete[] Buffer;
         Buffer = NewBuffer;
@@ -58,7 +58,7 @@ void NativeStringBuilder::AppendWideString(const wchar* ToAppend, const size Len
 {
     AdjustBufferForAppendingStringOfLength(Length);
 
-    SMemory::Copy(Buffer + NullTerminationCharacterIndex, ToAppend, Length + 1);
+    SMemory::Copy<wchar>(Buffer + NullTerminationCharacterIndex, ToAppend, Length + 1);
     NullTerminationCharacterIndex += Length;
 }
 

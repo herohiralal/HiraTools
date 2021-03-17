@@ -102,7 +102,7 @@ size SNativeString::StringCopyUnsafe(wchar* Destination, const wchar* Source)
 
 void SNativeString::StringCopyUnsafe(wchar* Destination, const wchar* Source, const size SourceLength)
 {
-    SMemory::Copy(Destination, Source, SourceLength + 1);
+    SMemory::Copy<wchar>(Destination, Source, SourceLength + 1);
 }
 
 bool8 SNativeString::StringCopy(wchar* Destination, const size BufferSize, const wchar* Source)
@@ -144,8 +144,8 @@ SNativeString SNativeString::FromDecimal(const double Input, const uint8 MaxDigi
 SNativeString SNativeString::operator+(const SNativeString& Other) const
 {
     wchar* Buffer = new wchar[Length + Other.Length + 1];
-    SMemory::Copy(Buffer, Data, Length);
-    SMemory::Copy(Buffer + Length, Other.Data, Other.Length + 1);
+    SMemory::Copy<wchar>(Buffer, Data, Length);
+    SMemory::Copy<wchar>(Buffer + Length, Other.Data, Other.Length + 1);
     return SNativeString(Buffer, Length + Other.Length);
 }
 
