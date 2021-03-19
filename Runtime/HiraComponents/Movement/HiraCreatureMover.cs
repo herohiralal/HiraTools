@@ -1,30 +1,30 @@
 ﻿using System;
-using HiraEngine.Components.Movement;
+using HiraEngine.Components.Movement.Internal;
 using UnityEngine.AI;
 
 namespace UnityEngine
 {
-    public class HiraCreatureMover : HiraCreatureComponent, IHiraCreatureMover
+    public class HiraCreatureMover : MonoBehaviour, IMovementComponent
     {
-        [Space] [Header("Required Components")] [SerializeField]
-        private Transform targetTransform = null;
+        [Space] [Header("Required Components")]
+        [SerializeField] private Transform targetTransform = null;
         [SerializeField] private Rigidbody targetRigidbody = null;
         [SerializeField] private NavMeshAgent targetNavMeshAgent = null;
 
-        [Space] [Header("Movement Properties")] [SerializeField]
-        private HiraCreatureMovementMode movementMode = HiraCreatureMovementMode.None;
+        [Space] [Header("Movement Properties")]
+        [SerializeField] private HiraCreatureMovementMode movementMode = HiraCreatureMovementMode.None;
         [SerializeField] private float directionalMovementSpeed = 4;
         [SerializeField] private float directionalMovementAngularSpeed = 360;
         [SerializeField] private float gravity = 9.8f;
         [SerializeField] private float fallMultiplier = 0.1f;
 
-        [Space] [Header("Floor Detection")] [SerializeField]
-        private float raycastSpaceRadius = 0.25f;
+        [Space] [Header("Floor Detection")]
+        [SerializeField] private float raycastSpaceRadius = 0.25f;
         [SerializeField] private float raycastStartHeight = 1f;
         [SerializeField] private float raycastLength = 1.5f;
         [SerializeField] private LayerMaskReference floorMask = null;
 
-        private IDirectionalMovementAssistant _directionalMovementAssistant = null;
+        private DirectionalMovementAssistant _directionalMovementAssistant = null;
 
         private void OnValidate()
         {
@@ -71,7 +71,7 @@ namespace UnityEngine
                         targetNavMeshAgent.isStopped = false;
                         break;
                     case HiraCreatureMovementMode.Directional:
-                        _directionalMovementAssistant = MovementTypes.GetDirectionalMovementAssistant();
+                        _directionalMovementAssistant = new DirectionalMovementAssistant();
                         targetRigidbody.isKinematic = false;
                         UpdateDirectionalMovementAssistant();
                         break;

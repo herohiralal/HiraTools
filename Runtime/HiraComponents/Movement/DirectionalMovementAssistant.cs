@@ -2,7 +2,7 @@
 
 namespace HiraEngine.Components.Movement.Internal
 {
-    public class DirectionalMovementAssistant : IDirectionalMovementAssistant
+    public class DirectionalMovementAssistant
     {
         public Rigidbody Rigidbody { private get; set; } = null;
         public Transform Transform { private get; set; } = null;

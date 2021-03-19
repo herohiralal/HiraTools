@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine
 {
-    public interface IHiraCreatureMover : IHiraCreatureComponent
+    public interface IMovementComponent
     {
         Vector3 Position { get; }
         HiraCreatureMovementMode MovementMode { get; set; }
