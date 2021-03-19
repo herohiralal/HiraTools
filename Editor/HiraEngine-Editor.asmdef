@@ -1,5 +1,6 @@
 {
     "name": "HiraEngine-Editor",
+    "rootNamespace": "",
     "references": [
         "GUID:89c4159a3b65bec4ea921302c61d32db"
     ],
@@ -7,7 +8,7 @@
         "Editor"
     ],
     "excludePlatforms": [],
-    "allowUnsafeCode": false,
+    "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
