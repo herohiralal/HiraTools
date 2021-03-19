@@ -7,7 +7,7 @@ namespace HiraEditor
 	{
 		private static readonly Dictionary<string, GUIContent> gui_content_cache = new Dictionary<string, GUIContent>();
 
-		internal static GUIContent GetGUIContent(this string textAndTooltip)
+		public static GUIContent GetGUIContent(this string textAndTooltip)
 		{
 			if (string.IsNullOrEmpty(textAndTooltip))
 				return GUIContent.none;
