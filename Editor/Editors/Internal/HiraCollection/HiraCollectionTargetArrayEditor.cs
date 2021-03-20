@@ -88,6 +88,7 @@ namespace HiraEditor.Internal
                 _editors.Add(editor);
             else
                 _editors[index] = editor;
+            editor.BaseProperty.isExpanded = true;
         }
 
         public void Refresh()
