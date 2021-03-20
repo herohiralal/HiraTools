@@ -1,9 +1,11 @@
 ﻿using System;
+using Unity.Collections;
 
 namespace UnityEngine
 {
     public interface IBlackboardComponent
     {
+        NativeArray<byte> Data { get; }
         event Action OnKeyEssentialToDecisionMakingUpdate;
         T GetValue<T>(string keyName) where T : unmanaged;
         T GetValue<T>(ushort keyIndex) where T : unmanaged;

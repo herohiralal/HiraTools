@@ -15,7 +15,7 @@ namespace UnityEngine
         EssentialToDecisionMaking = 1 << 1
     }
 
-    [CreateAssetMenu]
+    [CreateAssetMenu(menuName = "Hiralal/AI/Blackboard Template", fileName = "New Blackboard Template")]
     public class HiraBlackboardTemplate : HiraCollection<HiraBlackboardKey>, IInitializable
     {
         [NonSerialized] private ushort _cachedTotalSize = 0;

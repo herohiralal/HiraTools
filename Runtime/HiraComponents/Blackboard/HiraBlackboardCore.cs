@@ -4,31 +4,34 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UnityEngine
 {
-    public class HiraBlackboard : MonoBehaviour, IInitializable, IBlackboardComponent
+    [Serializable]
+    public class HiraBlackboardCore : IInitializable, IBlackboardComponent
     {
         [SerializeField] public HiraBlackboardTemplate template = null;
-        [NonSerialized] public NativeArray<byte> Data = default;
+        [NonSerialized] private NativeArray<byte> _data = default;
         [SerializeField] public bool broadcastKeyUpdateEvents = true;
+
+        public NativeArray<byte> Data => _data;
 
         public event Action OnKeyEssentialToDecisionMakingUpdate = delegate { };
 
         public unsafe void Initialize<T>(ref T initParams)
         {
-            Data = template.GetNewBlackboard();
+            _data = template.GetNewBlackboard();
             template.OnInstanceSyncKeyUpdate += OnInstanceSyncedValueUpdate;
         }
 
         public unsafe void Shutdown()
         {
             template.OnInstanceSyncKeyUpdate -= OnInstanceSyncedValueUpdate;
-            Data.Dispose();
+            _data.Dispose();
         }
 
         public T GetValue<T>(string keyName) where T : unmanaged =>
             GetValue<T>(template[keyName]);
 
         public unsafe T GetValue<T>(ushort keyIndex) where T : unmanaged =>
-            *(T*) ((byte*) Data.GetUnsafeReadOnlyPtr() + keyIndex);
+            *(T*) ((byte*) _data.GetUnsafeReadOnlyPtr() + keyIndex);
 
         public void SetValue<T>(string keyName, T value) where T : unmanaged =>
             SetValue<T>(template[keyName], value);
@@ -42,7 +45,7 @@ namespace UnityEngine
             }
             else
             {
-                *(T*) ((byte*) Data.GetUnsafePtr() + keyIndex) = value;
+                *(T*) ((byte*) _data.GetUnsafePtr() + keyIndex) = value;
 
                 if (broadcastKeyUpdateEvents && traits.HasFlag(BlackboardKeyTraits.EssentialToDecisionMaking))
                     OnKeyEssentialToDecisionMakingUpdate.Invoke();
@@ -51,7 +54,7 @@ namespace UnityEngine
 
         private unsafe void OnInstanceSyncedValueUpdate(ushort keyIndex, bool isEssentialToDecisionMaking, byte* value, byte size)
         {
-            var key = (byte*) Data.GetUnsafePtr() + keyIndex;
+            var key = (byte*) _data.GetUnsafePtr() + keyIndex;
             for (byte i = 0; i < size; i++) key[i] = value[i];
 
             if (broadcastKeyUpdateEvents && isEssentialToDecisionMaking)
