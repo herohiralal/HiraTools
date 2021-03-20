@@ -59,15 +59,7 @@ namespace LGOAPDemo
                     var data = (byte*) Target.Data.GetUnsafeReadOnlyPtr();
 
                     foreach (var key in template.Collection1)
-                    {
-                        var value = key.GetValue(data + key.Index);
-                        using (new EditorGUILayout.HorizontalScope())
-                        {
-                            var controlRect = EditorGUILayout.GetControlRect();
-                            controlRect = EditorGUI.PrefixLabel(controlRect, $"{key.name}".GetGUIContent(), EditorStyles.boldLabel);
-                            EditorGUI.TextField(controlRect, value);
-                        }
-                    }
+                        key.DrawEditor(data + key.Index, Target);
                 }
             }
         }

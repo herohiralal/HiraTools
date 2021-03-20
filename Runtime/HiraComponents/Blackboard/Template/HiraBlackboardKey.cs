@@ -22,7 +22,9 @@ namespace UnityEngine
 
         public abstract byte SizeInBytes { get; }
         public abstract unsafe void SetDefault(void* value);
-        public abstract unsafe string GetValue(void* data);
+#if UNITY_EDITOR
+        public abstract unsafe void DrawEditor(void* data, IBlackboardComponent blackboard);
+#endif
     }
 }
 
@@ -34,7 +36,6 @@ namespace HiraEngine.Components.Blackboard.Internal
 
         public sealed override unsafe byte SizeInBytes => (byte) sizeof(T);
         public sealed override unsafe void SetDefault(void* value) => *(T*) value = defaultValue;
-        public sealed override unsafe string GetValue(void* data) => (*(T*) data).ToString();
     }
 
     public interface INumericalBlackboardKey
