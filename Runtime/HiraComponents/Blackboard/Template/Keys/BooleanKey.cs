@@ -1,4 +1,6 @@
-﻿namespace HiraEngine.Components.Blackboard.Internal
+﻿using HiraEngine.Components.Blackboard.Internal;
+
+namespace HiraEngine.Components.Blackboard
 {
 	public class BooleanKey : BlackboardKey<bool>
 	{
