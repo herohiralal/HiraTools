@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HiraEngine.Components.Blackboard.Internal
 {
-	[Serializable, BurstCompile]
+	[Serializable, BurstCompile, HiraBlackboardEffector]
 	public unsafe class IntegerAddEffector : ScriptableObject, IBlackboardEffector
 	{
 		private static FunctionPointer<EffectorDelegate> _effectorFunction;
