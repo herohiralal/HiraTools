@@ -63,6 +63,8 @@ namespace UnityEngine
 			Long
 		}
 
+		public bool IsValid => DynamicallyAccessibleEnumAttribute.DATABASE.ContainsKey(type);
+
 		public System.Type EnumType => DynamicallyAccessibleEnumAttribute.DATABASE[type];
 
 		public Type EnumUnderlyingType
@@ -100,6 +102,54 @@ namespace UnityEngine
 			}
 		}
 
+		public byte MemorySize =>
+			EnumUnderlyingType switch
+			{
+				Type.Byte => sizeof(byte),
+				Type.SignedByte => sizeof(sbyte),
+				Type.UnsignedShort => sizeof(ushort),
+				Type.Short => sizeof(short),
+				Type.UnsignedInt => sizeof(uint),
+				Type.Int => sizeof(int),
+				Type.UnsignedLong => sizeof(ulong),
+				Type.Long => sizeof(long),
+				Type.Invalid => throw new ArgumentOutOfRangeException(),
+				_ => throw new ArgumentOutOfRangeException()
+			};
+
+		public unsafe void CopyValueTo(void* destinationAddress)
+		{
+			switch (EnumUnderlyingType)
+			{
+				case Type.Byte:
+					*(byte*) destinationAddress = byteValue;
+					break;
+				case Type.SignedByte:
+					*(sbyte*) destinationAddress = sByteValue;
+					break;
+				case Type.UnsignedShort:
+					*(ushort*) destinationAddress = uShortValue;
+					break;
+				case Type.Short:
+					*(short*) destinationAddress = shortValue;
+					break;
+				case Type.UnsignedInt:
+					*(uint*) destinationAddress = uIntValue;
+					break;
+				case Type.Int:
+					*(int*) destinationAddress = intValue;
+					break;
+				case Type.UnsignedLong:
+					*(ulong*) destinationAddress = uLongValue;
+					break;
+				case Type.Long:
+					*(long*) destinationAddress = longValue;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+
 #if UNITY_EDITOR
 		public static Enum RuntimeCastToEnum<T>(T value, System.Type enumType)
 		{
@@ -118,6 +168,21 @@ namespace UnityEngine
 			var ret = (T) run.DynamicInvoke(input);
 			return ret;
 		}
+
+		public override string ToString() =>
+			EnumUnderlyingType switch
+			{
+				Type.Byte => RuntimeCastToEnum(byteValue, EnumType).ToString(),
+				Type.SignedByte => RuntimeCastToEnum(sByteValue, EnumType).ToString(),
+				Type.UnsignedShort => RuntimeCastToEnum(uShortValue, EnumType).ToString(),
+				Type.Short => RuntimeCastToEnum(shortValue, EnumType).ToString(),
+				Type.UnsignedInt => RuntimeCastToEnum(uIntValue, EnumType).ToString(),
+				Type.Int => RuntimeCastToEnum(intValue, EnumType).ToString(),
+				Type.UnsignedLong => RuntimeCastToEnum(uLongValue, EnumType).ToString(),
+				Type.Long => RuntimeCastToEnum(longValue, EnumType).ToString(),
+				Type.Invalid => throw new ArgumentOutOfRangeException(),
+				_ => throw new ArgumentOutOfRangeException()
+			};
 #endif
 	}
 }
