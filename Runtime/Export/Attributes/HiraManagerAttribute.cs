@@ -70,7 +70,7 @@ namespace UnityEngine
 
                 var addedComponent = new GameObject($"[{t.Name}]").AddComponent(t);
                 Add(t, addedComponent);
-#if UNITY_EDITOR
+#if LOG_HIRA_MANAGERS
                 Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, null, 
                     $"<color=green>Created HiraManager: </color>{addedComponent.gameObject.name}");
 #endif
@@ -90,7 +90,7 @@ namespace UnityEngine
 
                 if (component == null) continue;
                 
-#if UNITY_EDITOR
+#if LOG_HIRA_MANAGERS
                 Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, null, 
                     $"<color=green>Destroying stale HiraManager: </color>{component.gameObject.name}");
 #endif

@@ -30,12 +30,16 @@ void GameplayCommandBuffer::OnAwake()
     ActiveTimers.SetElementCount(ActiveTimersBufferSize);
     Hash.SetElementCount(TotalBufferSize);
 
+#if LOG_HIRA_MANAGERS
     UNITY_EDITOR_LOG(Log, L"Gameplay command buffer has awoken.!")
+#endif
 }
 
 void GameplayCommandBuffer::OnDestroy()
 {
+#if LOG_HIRA_MANAGERS
     UNITY_EDITOR_LOG(Log, L"Gameplay command buffer is dying...")
+#endif
 
     CurrentHash = 0;
 
