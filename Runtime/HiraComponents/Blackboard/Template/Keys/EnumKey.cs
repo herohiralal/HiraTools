@@ -10,7 +10,7 @@ using static UnityEngine.DynamicEnumValue;
 
 namespace HiraEngine.Components.Blackboard
 {
-	public class StaticEnumKey : HiraBlackboardKey
+	public class EnumKey : HiraBlackboardKey
 	{
 		[SerializeField] public DynamicEnumValue defaultValue = null;
 
