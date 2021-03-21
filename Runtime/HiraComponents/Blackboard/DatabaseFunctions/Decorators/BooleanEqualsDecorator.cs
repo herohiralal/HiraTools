@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace HiraEngine.Components.Blackboard.Internal
 {
-	[Serializable, BurstCompile]
-	public unsafe class BooleanEqualsDecorator : IBlackboardDecorator
+	[Serializable, BurstCompile, HiraBlackboardDecorator]
+	public unsafe class BooleanEqualsDecorator : ScriptableObject, IBlackboardDecorator
 	{
 		private static FunctionPointer<DecoratorDelegate> _equalsTrueDecoratorFunction;
 		private static FunctionPointer<DecoratorDelegate> _equalsFalseDecoratorFunction;
@@ -36,5 +36,6 @@ namespace HiraEngine.Components.Blackboard.Internal
 				: _equalsFalseDecoratorFunction;
 
 		public override string ToString() => key == null ? "INVALID CONDITION" : $"{key.name} equals {value}";
+		private void OnValidate() => name = ToString();
 	}
 }
