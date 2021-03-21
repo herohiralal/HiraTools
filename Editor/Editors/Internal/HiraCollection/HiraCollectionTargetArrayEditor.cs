@@ -29,12 +29,14 @@ namespace HiraEditor.Internal
         private Dictionary<Type, Type> _editorTypes;
         private List<HiraCollectionTargetBaseEditor> _editors;
         private readonly string _title;
+        private readonly Type[] _requiredAttributes;
 
-        public HiraCollectionTargetArrayEditor(Editor editor, string title)
+        public HiraCollectionTargetArrayEditor(Editor editor, string title, Type[] requiredAttributes)
         {
             Assert.IsNotNull(editor);
             _baseEditor = editor;
             _title = title;
+            _requiredAttributes = requiredAttributes;
         }
 
         public void Init(Object asset, SerializedObject serializedObject, string objectsPropertyName)
@@ -185,6 +187,12 @@ namespace HiraEditor.Internal
 
                     var types = TypeCache.GetTypesDerivedFrom<T>()
                         .Where(t => !t.IsAbstract && !t.IsInterface && typeof(ScriptableObject).IsAssignableFrom(t));
+
+                    types =
+	                    _requiredAttributes != null
+		                    ? types.Where(t => _requiredAttributes.All(a => t.GetCustomAttribute(a) != null))
+		                    : types;
+
                     foreach (var type in types)
                     {
                         menu.AddItem(type.Name.GetGUIContent(), false, () => AddNewObject(type));

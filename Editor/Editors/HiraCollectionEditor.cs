@@ -30,8 +30,9 @@ namespace HiraEditor
             {
                 var collectionProperty = $"collection{i + 1}";
                 if (!objectType.GetData($"collection{i+1}_name", out string title)) title = "Contents";
+                if (!objectType.GetData($"collection{i + 1}_required_attributes", out Type[] requiredAttributes)) requiredAttributes = null;
                 var editor = (IHiraCollectionTargetArrayEditor) Activator.CreateInstance(
-                    typeof(HiraCollectionTargetArrayEditor<>).MakeGenericType(targetTypes[i]), this, title);
+                    typeof(HiraCollectionTargetArrayEditor<>).MakeGenericType(targetTypes[i]), this, title, requiredAttributes);
                 editor.Init(target, serializedObject, collectionProperty);
                 
                 _targetArrays[i] = editor;
