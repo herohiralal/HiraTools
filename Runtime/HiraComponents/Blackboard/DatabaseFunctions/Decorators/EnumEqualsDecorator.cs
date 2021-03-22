@@ -42,9 +42,9 @@ namespace HiraEngine.Components.Blackboard.Internal
 			name = ToString();
 		}
 
-		public byte MemorySize => (byte) (sizeof(ushort) + value.MemorySize);
+		public virtual byte MemorySize => (byte) (sizeof(ushort) + value.MemorySize);
 
-		public void AppendMemory(byte* stream)
+		public virtual void AppendMemory(byte* stream)
 		{
 			*(ushort*) stream = key.Index;
 			value.CopyValueTo(stream + sizeof(ushort));

@@ -21,8 +21,8 @@ namespace HiraEngine.Components.Blackboard.Internal
 		[SerializeField] private HiraBlackboardKey key = null;
 		[SerializeField] private bool value = true;
 
-		public byte MemorySize => sizeof(ushort);
-		public void AppendMemory(byte* stream) => *(ushort*) stream = key.Index;
+		public virtual byte MemorySize => sizeof(ushort);
+		public virtual void AppendMemory(byte* stream) => *(ushort*) stream = key.Index;
 
 		[BurstCompile, AOT.MonoPInvokeCallback(typeof(DecoratorDelegate))]
 		private static bool EqualsTrueDecorator(byte* blackboard, byte* memory) => blackboard[*(ushort*) memory] != 0;
