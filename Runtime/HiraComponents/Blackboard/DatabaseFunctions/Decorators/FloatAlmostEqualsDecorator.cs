@@ -53,7 +53,7 @@ namespace HiraEngine.Components.Blackboard.Internal
 				? _notEqualsDecoratorFunction
 				: _equalsDecoratorFunction;
 
-		public override string ToString() => key == null ? "INVALID CONDITION" : $"{key.name} {(invert ? "not" : "")} equals {value} (plus/minus) {tolerance}";
+		public override string ToString() => key == null ? "INVALID CONDITION" : $"{key.name} is {(invert ? "not" : "")} between {value - tolerance} and {value + tolerance}";
 		private void OnValidate() => name = ToString();
 	}
 }
