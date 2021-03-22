@@ -16,6 +16,7 @@ namespace UnityEngine
     }
 
     [CreateAssetMenu(menuName = "Hiralal/AI/Blackboard Template", fileName = "New Blackboard Template")]
+    [HiraCollectionCustomizer(1, Title = "Keys")]
     public class HiraBlackboardTemplate : HiraCollection<HiraBlackboardKey>, IInitializable
     {
         [NonSerialized] private ushort _cachedTotalSize = 0;

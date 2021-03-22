@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using HiraEditor.Internal;
 using UnityEngine;
 using UnityEditor;
@@ -26,17 +27,22 @@ namespace HiraEditor
             _targetArrays = new IHiraCollectionTargetArrayEditor[length];
             _collectionProperties = new string[length];
             
+            var customizers = objectType.GetCustomAttributes<HiraCollectionCustomizerAttribute>(true);
+            var sortedCustomizers = new HiraCollectionCustomizerAttribute[length];
+            foreach (var customizer in customizers)
+            {
+                sortedCustomizers[customizer.CollectionID - 1] = customizer;
+            }
+            
             for (var i = 0; i < length; i++)
             {
                 var collectionProperty = $"collection{i + 1}";
-                if (!objectType.GetData($"collection{i+1}_name", out string title)) title = "Contents";
-                if (!objectType.GetData($"collection{i + 1}_required_attributes", out Type[] requiredAttributes)) requiredAttributes = null;
-                if (!objectType.GetData($"collection{i + 1}_max_objects", out int maxObjects)) maxObjects = int.MaxValue;
-
-                var creationParams = new HiraCollectionTargetArrayEditorCreationParams(this, title, requiredAttributes, maxObjects);
+                // if (!objectType.GetData($"collection{i+1}_name", out string title)) title = "Contents";
+                // if (!objectType.GetData($"collection{i + 1}_required_attributes", out Type[] requiredAttributes)) requiredAttributes = null;
+                // if (!objectType.GetData($"collection{i + 1}_max_objects", out int maxObjects)) maxObjects = int.MaxValue;
                 
                 var editor = (IHiraCollectionTargetArrayEditor) Activator.CreateInstance(
-                    typeof(HiraCollectionTargetArrayEditor<>).MakeGenericType(targetTypes[i]), creationParams);
+                    typeof(HiraCollectionTargetArrayEditor<>).MakeGenericType(targetTypes[i]), this, sortedCustomizers[i]);
                 editor.Init(target, serializedObject, collectionProperty);
                 
                 _targetArrays[i] = editor;

@@ -17,27 +17,12 @@ namespace HiraEditor.Internal
         void Refresh();
     }
 
-    internal readonly struct HiraCollectionTargetArrayEditorCreationParams
-    {
-	    public HiraCollectionTargetArrayEditorCreationParams(Editor editor, string title, Type[] requiredAttributes, int maxObjectCount)
-	    {
-		    Editor = editor;
-		    Title = title;
-		    RequiredAttributes = requiredAttributes;
-		    MaxObjectCount = maxObjectCount;
-	    }
-	    
-	    public readonly Editor Editor;
-	    public readonly string Title;
-	    public readonly Type[] RequiredAttributes;
-	    public readonly int MaxObjectCount;
-    }
-
     internal sealed class HiraCollectionTargetArrayEditor<T> : IHiraCollectionTargetArrayEditor
     {
         private ScriptableObject _asset;
 
-        private readonly HiraCollectionTargetArrayEditorCreationParams _creationParams;
+        private readonly Editor _editor;
+        private readonly HiraCollectionCustomizerAttribute _customizer;
 
         private SerializedObject _serializedObject;
         private SerializedProperty _objectsProperty;
@@ -45,10 +30,11 @@ namespace HiraEditor.Internal
         private Dictionary<Type, Type> _editorTypes;
         private List<HiraCollectionTargetBaseEditor> _editors;
 
-        public HiraCollectionTargetArrayEditor(HiraCollectionTargetArrayEditorCreationParams creationParams)
+        public HiraCollectionTargetArrayEditor(Editor editor, HiraCollectionCustomizerAttribute customizer)
         {
-            Assert.IsNotNull(creationParams.Editor);
-            _creationParams = creationParams;
+            Assert.IsNotNull(editor);
+            _editor = editor;
+            _customizer = customizer ?? HiraCollectionCustomizerAttribute.DEFAULT;
         }
 
         public void Init(Object asset, SerializedObject serializedObject, string objectsPropertyName)
@@ -94,7 +80,7 @@ namespace HiraEditor.Internal
                 editorType = typeof(HiraCollectionTargetDefaultEditor);
 
             var editor = (HiraCollectionTargetBaseEditor) Activator.CreateInstance(editorType);
-            editor.Init(targetObject, _creationParams.Editor);
+            editor.Init(targetObject, _editor);
             editor.OnEnable();
             editor.BaseProperty = property.Copy();
 
@@ -136,7 +122,7 @@ namespace HiraEditor.Internal
             {
                 EditorGUILayout.Space();
                 HiraCollectionEditorHelperLibrary.DrawSplitter(4f);
-                EditorGUILayout.LabelField(_creationParams.Title.GetGUIContent(), EditorStyles.boldLabel);
+                EditorGUILayout.LabelField(_customizer.Title.GetGUIContent(), EditorStyles.boldLabel);
 
                 bool showAll, hideAll;
                 using (new EditorGUILayout.HorizontalScope())
@@ -188,7 +174,7 @@ namespace HiraEditor.Internal
                 }
 
                 var guiEnabled = GUI.enabled;
-                GUI.enabled = editorsCount < _creationParams.MaxObjectCount;
+                GUI.enabled = editorsCount < _customizer.MaxObjectCount;
                 var addButtonPressed = GUILayout.Button("Add", EditorStyles.miniButton);
                 GUI.enabled = guiEnabled;
 
@@ -203,12 +189,8 @@ namespace HiraEditor.Internal
                     }
 
                     var types = TypeCache.GetTypesDerivedFrom<T>()
-                        .Where(t => !t.IsAbstract && !t.IsInterface && typeof(ScriptableObject).IsAssignableFrom(t));
-
-                    types =
-	                    _creationParams.RequiredAttributes != null
-		                    ? types.Where(t => _creationParams.RequiredAttributes.All(a => t.GetCustomAttribute(a) != null))
-		                    : types;
+                        .Where(t => !t.IsAbstract && !t.IsInterface && typeof(ScriptableObject).IsAssignableFrom(t))
+                        .Where(t => _customizer.RequiredAttributes.All(a => t.GetCustomAttribute(a) != null));
 
                     foreach (var type in types)
                     {
