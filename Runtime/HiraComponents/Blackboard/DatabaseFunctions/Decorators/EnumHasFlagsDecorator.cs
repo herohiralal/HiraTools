@@ -113,6 +113,6 @@ namespace HiraEngine.Components.Blackboard.Internal
 				}
 			};
 
-		public override string ToString() => key == null || !value.IsValid ? "INVALID EFFECT" : $"{key.name} {(invert ? "lacks" : "has")} ({value}) flags";
+		public override string ToString() => key == null || !value.IsValid ? "INVALID CONDITION" : $"{key.name} {(invert ? "lacks" : "has")} ({value}) flags";
 	}
 }
