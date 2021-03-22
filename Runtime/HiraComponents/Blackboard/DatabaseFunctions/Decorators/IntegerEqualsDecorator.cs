@@ -22,8 +22,8 @@ namespace HiraEngine.Components.Blackboard.Internal
 		[SerializeField] private int value = 0;
 		[SerializeField] private bool invert = false;
 
-		public byte MemorySize => sizeof(ushort) + sizeof(int);
-		public void AppendMemory(byte* stream) => (*(ushort*) stream, *(int*) (stream + sizeof(ushort))) = (key.Index, value);
+		public virtual byte MemorySize => sizeof(ushort) + sizeof(int);
+		public virtual void AppendMemory(byte* stream) => (*(ushort*) stream, *(int*) (stream + sizeof(ushort))) = (key.Index, value);
 
 		[BurstCompile, AOT.MonoPInvokeCallback(typeof(DecoratorDelegate))]
 		private static bool EqualsDecorator(byte* blackboard, byte* memory) => *(int*)(blackboard + *(ushort*) memory) == *(int*) memory;

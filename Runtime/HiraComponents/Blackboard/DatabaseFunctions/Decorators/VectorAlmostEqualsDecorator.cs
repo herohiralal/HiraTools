@@ -24,9 +24,9 @@ namespace HiraEngine.Components.Blackboard.Internal
 		[SerializeField] private Vector3 tolerance = Vector3.zero;
 		[SerializeField] private bool invert = false;
 
-		public byte MemorySize => sizeof(ushort) + (6 * sizeof(float));
+		public virtual byte MemorySize => sizeof(ushort) + (6 * sizeof(float));
 
-		public void AppendMemory(byte* stream)
+		public virtual void AppendMemory(byte* stream)
 		{
 			*(ushort*) stream = key.Index;
 			var valueAddress = (float*) (stream + sizeof(ushort));
