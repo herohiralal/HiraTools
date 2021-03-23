@@ -112,7 +112,7 @@ namespace HiraEngine.Components.Blackboard
         public static float ExecuteScoreCalculatorBlock(byte* blackboard, byte* address)
         {
             address += sizeof(byte); // ignore the size header
-            var scoreAddress = (float*) address + sizeof(FunctionPointer<DecoratorDelegate>);
+            var scoreAddress = (float*) (address + sizeof(FunctionPointer<DecoratorDelegate>));
             var memory = (byte*) (scoreAddress + 1);
             return (*(FunctionPointer<DecoratorDelegate>*) address)
                 .Invoke(blackboard, memory)
