@@ -25,7 +25,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
             byte* stream)
         {
             ushort size = 0;
-            
+
             var targetsBlockAllocatedSize = targets.AppendGoalTargetsBlock(stream);
             targets.AssertSizeEquality(targetsBlockAllocatedSize);
             stream += targetsBlockAllocatedSize;
@@ -43,5 +43,19 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
             IEnumerable<IBlackboardDecorator[]> targets,
             IEnumerable<(IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])> actions,
             ushort compareTo) => Assert.AreEqual(GetLayerMemorySize(targets, actions), compareTo);
+
+        [BurstCompile]
+        public static byte* GetLayerFromDomainData(byte* address, byte index)
+        {
+            address += *(ushort*) address; // skip over the insistence calculators for a goal
+
+            for (var i = 0; i < index; i++)
+            {
+                address += *(ushort*) address;
+                address += *(ushort*) address;
+            }
+
+            return address;
+        }
     }
 }

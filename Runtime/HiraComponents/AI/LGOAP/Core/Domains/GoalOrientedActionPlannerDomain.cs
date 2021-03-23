@@ -46,16 +46,12 @@ namespace HiraEngine.Components.AI.LGOAP
             _domainData.Dispose();
         }
 
-        public JobHandle ScheduleGoalCalculatorJob(HiraBlackboardComponent blackboard, byte previousResult, PlannerResult result)
+        public byte LayerCount => 1;
+        public byte* InsistenceCalculatorsBlock => (byte*) _domainData.GetUnsafeReadOnlyPtr();
+        public byte* GetLayer(byte index)
         {
-	        var job = new GoalCalculatorJob(blackboard.Data, (byte*) _domainData.GetUnsafeReadOnlyPtr(), previousResult, result);
-	        return job.Schedule();
-        }
-        
-        public void RunGoalCalculatorJob(HiraBlackboardComponent blackboard, byte previousResult, PlannerResult result)
-        {
-            var job = new GoalCalculatorJob(blackboard.Data, (byte*) _domainData.GetUnsafeReadOnlyPtr(), previousResult, result);
-            job.Run();
+            Assert.IsTrue(index < LayerCount);
+            return LayerMemoryBatchHelpers.GetLayerFromDomainData((byte*) _domainData.GetUnsafeReadOnlyPtr(), index);
         }
     }
 }
