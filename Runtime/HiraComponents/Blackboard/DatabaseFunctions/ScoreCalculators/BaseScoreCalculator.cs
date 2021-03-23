@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HiraEngine.Components.Blackboard.Internal
 {
-    [Serializable, BurstCompile, HiraBlackboardDecorator]
+    [Serializable, BurstCompile, HiraBlackboardScoreCalculator]
     public class BaseScoreCalculator : AlwaysSucceedDecorator, IBlackboardScoreCalculator
     {
         [SerializeField] private float score = 0f;
