@@ -3,6 +3,7 @@ using System.Linq;
 using HiraEngine.Components.AI.LGOAP.Internal;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -43,6 +44,12 @@ namespace HiraEngine.Components.AI.LGOAP
         public void Shutdown()
         {
             _domainData.Dispose();
+        }
+
+        public JobHandle ScheduleGoalCalculatorJob(HiraBlackboardComponent blackboard, byte previousResult, PlannerResult result)
+        {
+	        var job = new GoalCalculatorJob(blackboard.Data, (byte*) _domainData.GetUnsafeReadOnlyPtr(), previousResult, result);
+	        return job.Schedule();
         }
     }
 }
