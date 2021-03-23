@@ -175,7 +175,10 @@ namespace HiraEditor.Internal
 
                 var guiEnabled = GUI.enabled;
                 GUI.enabled = editorsCount < _customizer.MaxObjectCount;
-                var addButtonPressed = GUILayout.Button("Add", EditorStyles.miniButton);
+                var addRect = EditorGUILayout.GetControlRect();
+                addRect.x += (addRect.width * 0.5f) - 10;
+                addRect.width = 20;
+                var addButtonPressed = GUI.Button(addRect, "+", EditorStyles.miniButton);
                 GUI.enabled = guiEnabled;
 
                 if (addButtonPressed)
@@ -256,6 +259,8 @@ namespace HiraEditor.Internal
                 _editors[id].BaseProperty.isExpanded = nextFoldoutState;
 
             _serializedObject.ApplyModifiedProperties();
+
+            AssetDatabase.RemoveObjectFromAsset(effect);
 
             Undo.DestroyObjectImmediate(effect);
 

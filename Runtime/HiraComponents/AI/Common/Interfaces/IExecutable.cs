@@ -9,7 +9,8 @@
     {
         void OnExecutionStart();
         ExecutionStatus Execute();
-        void OnExecutionFinish();
+        void OnExecutionSuccess();
+        void OnExecutionFailure();
         void OnExecutionAbort();
     }
 }
