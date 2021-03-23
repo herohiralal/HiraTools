@@ -26,10 +26,10 @@ namespace HiraEngine.Components.Blackboard.Internal
 		public virtual void AppendMemory(byte* stream) => (*(ushort*) stream, *(int*) (stream + sizeof(ushort))) = (key.Index, value);
 
 		[BurstCompile, AOT.MonoPInvokeCallback(typeof(DecoratorDelegate))]
-		private static bool EqualsDecorator(byte* blackboard, byte* memory) => *(int*)(blackboard + *(ushort*) memory) == *(int*) memory;
+		private static bool EqualsDecorator(byte* blackboard, byte* memory) => *(int*)(blackboard + *(ushort*) memory) == *(int*) (memory + sizeof(ushort));
 
 		[BurstCompile, AOT.MonoPInvokeCallback(typeof(DecoratorDelegate))]
-		private static bool NotEqualsDecorator(byte* blackboard, byte* memory) => *(int*)(blackboard + *(ushort*) memory) != *(int*) memory;
+		private static bool NotEqualsDecorator(byte* blackboard, byte* memory) => *(int*)(blackboard + *(ushort*) memory) != *(int*) (memory + sizeof(ushort));
 
 		public FunctionPointer<DecoratorDelegate> Function =>
 			invert
