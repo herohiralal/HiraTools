@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using HiraEngine.Components.Blackboard.Internal;
 using Unity.Burst;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine.Assertions;
 
 namespace HiraEngine.Components.Blackboard
@@ -80,7 +81,7 @@ namespace HiraEngine.Components.Blackboard
 
             return size;
         }
-        
+
         [Conditional("UNITY_ASSERTIONS")]
         public static void AssertSizeEquality<T>(this IEnumerable<IBlackboardDatabaseFunction<T>> databaseFunctions, ushort compareTo) where T : Delegate =>
             Assert.AreEqual(databaseFunctions.GetBlockSize(), compareTo);
@@ -89,7 +90,8 @@ namespace HiraEngine.Components.Blackboard
         public static bool ExecuteDecoratorBlock(byte* blackboard, byte* address)
         {
             address += sizeof(byte); // ignore the size header
-            return (*(FunctionPointer<DecoratorDelegate>*) address)
+
+            return UnsafeUtility.As<IntPtr, FunctionPointer<DecoratorDelegate>>(ref *(IntPtr*) address)
                 .Invoke(blackboard, address + sizeof(FunctionPointer<DecoratorDelegate>));
         }
 
@@ -114,10 +116,11 @@ namespace HiraEngine.Components.Blackboard
             address += sizeof(byte); // ignore the size header
             var scoreAddress = (float*) (address + sizeof(FunctionPointer<DecoratorDelegate>));
             var memory = (byte*) (scoreAddress + 1);
-            return (*(FunctionPointer<DecoratorDelegate>*) address)
-                .Invoke(blackboard, memory)
-                    ? *scoreAddress
-                    : 0;
+
+            var result = UnsafeUtility.As<IntPtr, FunctionPointer<DecoratorDelegate>>(ref *(IntPtr*) address)
+                .Invoke(blackboard, memory);
+
+            return result ? *scoreAddress : 0;
         }
 
         [BurstCompile, MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -141,7 +144,8 @@ namespace HiraEngine.Components.Blackboard
         public static void ExecuteEffectorBlock(byte* blackboard, byte* address)
         {
             address += sizeof(byte); // ignore the size header
-            (*(FunctionPointer<EffectorDelegate>*) address)
+
+            UnsafeUtility.As<IntPtr, FunctionPointer<EffectorDelegate>>(ref *(IntPtr*) address)
                 .Invoke(blackboard, address + sizeof(FunctionPointer<DecoratorDelegate>));
         }
 
