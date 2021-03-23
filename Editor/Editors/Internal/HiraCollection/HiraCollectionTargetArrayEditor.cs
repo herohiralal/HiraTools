@@ -260,6 +260,8 @@ namespace HiraEditor.Internal
 
             _serializedObject.ApplyModifiedProperties();
 
+            AssetDatabase.RemoveObjectFromAsset(effect);
+
             Undo.DestroyObjectImmediate(effect);
 
             EditorUtility.SetDirty(_asset);
