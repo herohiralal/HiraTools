@@ -51,5 +51,11 @@ namespace HiraEngine.Components.AI.LGOAP
 	        var job = new GoalCalculatorJob(blackboard.Data, (byte*) _domainData.GetUnsafeReadOnlyPtr(), previousResult, result);
 	        return job.Schedule();
         }
+        
+        public void RunGoalCalculatorJob(HiraBlackboardComponent blackboard, byte previousResult, PlannerResult result)
+        {
+            var job = new GoalCalculatorJob(blackboard.Data, (byte*) _domainData.GetUnsafeReadOnlyPtr(), previousResult, result);
+            job.Run();
+        }
     }
 }
