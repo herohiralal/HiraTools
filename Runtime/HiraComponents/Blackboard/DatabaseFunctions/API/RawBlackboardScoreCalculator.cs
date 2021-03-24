@@ -21,6 +21,6 @@ namespace HiraEngine.Components.Blackboard
 			new RawBlackboardScoreCalculator(RawBlackboardDatabaseFunction<DecoratorDelegate>.Create(from, address));
 
 		public static byte GetSize(IBlackboardScoreCalculator calculator) =>
-			RawBlackboardDatabaseFunction<DecoratorDelegate>.GetSizeForDatabaseFunction(calculator);
+			RawBlackboardDatabaseFunction<DecoratorDelegate>.GetSize(calculator);
 	}
 }

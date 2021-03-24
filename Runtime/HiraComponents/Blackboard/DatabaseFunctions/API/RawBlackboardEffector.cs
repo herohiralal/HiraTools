@@ -21,6 +21,6 @@ namespace HiraEngine.Components.Blackboard
 			new RawBlackboardEffector(RawBlackboardDatabaseFunction<EffectorDelegate>.Create(from, address));
 
 		public static byte GetSize(IBlackboardEffector effector) =>
-			RawBlackboardDatabaseFunction<EffectorDelegate>.GetSizeForDatabaseFunction(effector);
+			RawBlackboardDatabaseFunction<EffectorDelegate>.GetSize(effector);
 	}
 }
