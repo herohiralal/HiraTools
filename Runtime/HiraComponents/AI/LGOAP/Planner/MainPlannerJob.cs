@@ -1,4 +1,5 @@
-﻿using HiraEngine.Components.Blackboard;
+﻿using HiraEngine.Components.AI.LGOAP.Raw;
+using HiraEngine.Components.Blackboard.Raw;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -10,10 +11,10 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
     [BurstCompile]
     public unsafe struct MainPlannerJob : IJob
     {
-        public MainPlannerJob(byte* layerData, PlannerResult previousLayerResult, byte previousLayerResultIndex, byte* datasets, PlannerResult output)
+        public MainPlannerJob(RawLayer layer, PlannerResult previousLayerResult, byte previousLayerResultIndex, byte* datasets, PlannerResult output)
         {
-            _layerData = layerData;
-            _target = null;
+            layer.Break(out _targets, out _actions);
+            _target = default;
             _previousLayerResult = previousLayerResult;
             _previousLayerResultIndex = previousLayerResultIndex;
             _datasets = datasets;
@@ -21,8 +22,9 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
         }
         
         // domain
-        [NativeDisableUnsafePtrRestriction] [ReadOnly] private readonly byte* _layerData;
-        [NativeDisableUnsafePtrRestriction] private byte* _target;
+        [NativeDisableUnsafePtrRestriction] [ReadOnly] private readonly RawTargetsArray _targets;
+        [NativeDisableUnsafePtrRestriction] [ReadOnly] private readonly RawActionsArray _actions;
+        [NativeDisableUnsafePtrRestriction] private RawBlackboardDecoratorsArray _target;
         
         // layering
         [ReadOnly] private readonly PlannerResult _previousLayerResult;
@@ -62,38 +64,12 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
                 return;
             }
 
-            if (!SelectTarget())
-            {
-                _output.ResultType = PlannerResultType.Failure;
-                _output.Count = 0;
-                return;
-            }
+            _target = _targets[_previousLayerResult[_previousLayerResultIndex]];
             
             _output.ResultType = PlannerResultType.Success;
             _output.Count = 1;
 
-            _output[0] = MemoryBatchHelpers.ExecuteDecoratorsBlock(_datasets, _target) ? (byte) 1 : (byte) 0;
-        }
-
-        private bool SelectTarget()
-        {
-            var targetsBlockAddress = _layerData + sizeof(ushort); // size header of this block
-
-            var count = *(targetsBlockAddress++); // number of targets
-            var indexOfTarget = _previousLayerResult[_previousLayerResultIndex];
-            if (indexOfTarget >= count)
-            {
-                Debug.LogError($"Previous layer spat out an invalid index. Count: {count}, Index: {indexOfTarget}.");
-                return false;
-            }
-            
-            for (var i = 0; i < indexOfTarget; i++)
-            {
-                targetsBlockAddress += *targetsBlockAddress;
-            }
-
-            _target = targetsBlockAddress;
-            return true;
+            _output[0] = _target.Execute(_datasets) ? (byte) 1 : (byte) 0;
         }
     }
 }

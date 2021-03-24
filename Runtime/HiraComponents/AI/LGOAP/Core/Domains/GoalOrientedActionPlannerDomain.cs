@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using HiraEngine.Components.AI.LGOAP.Internal;
+using HiraEngine.Components.AI.LGOAP.Raw;
+using HiraEngine.Components.Blackboard.Internal;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace HiraEngine.Components.AI.LGOAP
 {
@@ -14,43 +14,27 @@ namespace HiraEngine.Components.AI.LGOAP
     public unsafe class GoalOrientedActionPlannerDomain : HiraCollection<Goal, Action>, IInitializable
     {
         [NonSerialized] private NativeArray<byte> _domainData = default;
+        [NonSerialized] private RawDomainData _rawDomainData = default;
+        public RawDomainData DomainData => _rawDomainData;
 
         public void Initialize<T>(ref T initParams)
         {
-            ushort size = 0;
-            
-            var insistenceCalculators = Collection1.Select(g=>g.Collection1).ToArray();
-            var targets = Collection1.Select(g => g.Collection2).ToArray();
-            var actions = Collection2.Select(a => (a.Collection1, a.Collection2, a.Collection3)).ToArray();
+            var insistenceCalculators = Collection1.Select(g => g.Collection1).ToArray();
+            var layer1Targets = Collection1.Select(g => g.Collection2).ToArray();
+            var layer1Actions =
+                Collection2.Select<Action, (IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>(a=>
+                    (a.Collection1, a.Collection2, a.Collection3)).ToArray();
 
-            var insistenceCalculatorsBlockSize = insistenceCalculators.GetInsistenceCalculatorsBlockSize();
-            size += insistenceCalculatorsBlockSize;
-            
-            var layerBlockSize = LayerMemoryBatchHelpers.GetLayerMemorySize(targets, actions);
-            size += layerBlockSize;
+            var size = RawDomainData.GetSize(insistenceCalculators, (layer1Targets, layer1Actions));
 
             _domainData = new NativeArray<byte>(size, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-            var stream = (byte*) _domainData.GetUnsafePtr();
-
-            var insistenceCalculatorsAllocatedBlockSize = insistenceCalculators.AppendInsistenceCalculatorsBlock(stream);
-            Assert.AreEqual(insistenceCalculatorsBlockSize, insistenceCalculatorsAllocatedBlockSize);
-            stream += insistenceCalculatorsAllocatedBlockSize;
-
-            var layerAllocatedBlockSize = LayerMemoryBatchHelpers.AppendEntireLayerBlock(targets, actions, stream);
-            Assert.AreEqual(layerBlockSize, layerAllocatedBlockSize);
+            _rawDomainData = RawDomainData.Create(insistenceCalculators, (byte*) _domainData.GetUnsafePtr(), (layer1Targets, layer1Actions));
         }
 
         public void Shutdown()
         {
             _domainData.Dispose();
-        }
-
-        public byte LayerCount => 1;
-        public byte* InsistenceCalculatorsBlock => (byte*) _domainData.GetUnsafeReadOnlyPtr();
-        public byte* GetLayer(byte index)
-        {
-            Assert.IsTrue(index < LayerCount);
-            return LayerMemoryBatchHelpers.GetLayerFromDomainData((byte*) _domainData.GetUnsafeReadOnlyPtr(), index);
+            _rawDomainData = new RawDomainData();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using HiraEngine.Components.Blackboard;
+﻿using HiraEngine.Components.AI.LGOAP.Raw;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -9,17 +9,17 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 	[BurstCompile]
 	public unsafe struct GoalCalculatorJob : IJob
 	{
-		public GoalCalculatorJob(NativeArray<byte> blackboard, byte* insistenceCalculators, byte currentGoal, PlannerResult result)
-		{
-			_blackboard = blackboard;
-			_insistenceCalculators = insistenceCalculators;
-			_currentGoal = currentGoal;
-			_result = result;
-		}
-		
-		[ReadOnly] private readonly NativeArray<byte> _blackboard; // persistent
-		[ReadOnly] [NativeDisableUnsafePtrRestriction] private readonly byte* _insistenceCalculators; // persistent
-		[ReadOnly] private readonly byte _currentGoal; // managed
+        public GoalCalculatorJob(NativeArray<byte> blackboard, RawDomainData domainData, byte currentGoal, PlannerResult result)
+        {
+            _blackboard = blackboard;
+            _insistenceCalculators = domainData.InsistenceCalculators;
+            _currentGoal = currentGoal;
+            _result = result;
+        }
+        
+        [ReadOnly] private readonly NativeArray<byte> _blackboard; // persistent
+        [NativeDisableUnsafePtrRestriction] [ReadOnly] private readonly RawInsistenceCalculatorsArray _insistenceCalculators;
+		[ReadOnly] private readonly byte _currentGoal; // unmanaged
 		[WriteOnly] private PlannerResult _result; // reused
 	
 		public void Execute()
@@ -29,17 +29,18 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			var goal = byte.MaxValue;
 			var cachedInsistence = -1f;
 
-			var count = *(_insistenceCalculators + sizeof(ushort));
-			var stream = _insistenceCalculators + sizeof(ushort) + sizeof(byte);
-			for (byte i = 0; i < count; i++, stream += *(ushort*) stream)
-			{
-				var currentInsistence = MemoryBatchHelpers.ExecuteScoreCalculatorsBlock(blackboard, stream);
+            var iterator = new RawInsistenceCalculatorsArrayIterator(_insistenceCalculators);
+            while (iterator.MoveNext)
+            {
+                iterator.Get(out var insistenceCalculator, out var index);
 
-				var foundBetterGoal = currentInsistence > cachedInsistence;
+                var currentInsistence = insistenceCalculator.Execute(blackboard);
 
-				goal = foundBetterGoal ? i : goal;
-				cachedInsistence = foundBetterGoal ? currentInsistence : cachedInsistence;
-			}
+                var foundBetterGoal = currentInsistence > cachedInsistence;
+
+                goal = foundBetterGoal ? index : goal;
+                cachedInsistence = foundBetterGoal ? currentInsistence : cachedInsistence;
+            }
 
 			if (goal == byte.MaxValue)
 			{
