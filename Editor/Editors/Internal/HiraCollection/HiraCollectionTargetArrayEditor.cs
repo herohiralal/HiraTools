@@ -260,12 +260,30 @@ namespace HiraEditor.Internal
 
             _serializedObject.ApplyModifiedProperties();
 
-            AssetDatabase.RemoveObjectFromAsset(effect);
+            Undo.SetCurrentGroupName("Destroy object");
+            var group = Undo.GetCurrentGroup();
 
-            Undo.DestroyObjectImmediate(effect);
+            DisposeObject(effect);
+
+            Undo.CollapseUndoOperations(group);
 
             EditorUtility.SetDirty(_asset);
             AssetDatabase.SaveAssets();
+        }
+
+        private void DisposeObject(Object target)
+        {
+            // delete the parent object first because Unity will perform undo operations as a stack, so if the parent object is destroyed the last,
+            // it'll be recreated the first, having its references null, causing assert failures
+            AssetDatabase.RemoveObjectFromAsset(target);
+            Undo.DestroyObjectImmediate(target);
+
+            if (target is IHiraCollectionEditorInterface subCollection)
+            {
+                foreach (var collection in subCollection.CollectionInternal)
+                foreach (var o in collection)
+                    DisposeObject(o);
+            }
         }
 
         private void ResetObject(Type type, int id)
