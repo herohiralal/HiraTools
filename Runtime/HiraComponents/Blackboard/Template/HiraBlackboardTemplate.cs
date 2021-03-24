@@ -41,6 +41,16 @@ namespace UnityEngine
             }
         }
 
+        public ushort BlackboardSize
+        {
+            get
+            {
+                if (_cachedTotalSize == 0)
+                    throw new InvalidOperationException("Either the Blackboard template is uninitialized, or it has no keys.");
+                return _cachedTotalSize;
+            }
+        }
+
         public unsafe void Initialize<T>(ref T _)
         {
             _keyIndices = new Dictionary<string, ushort>();
