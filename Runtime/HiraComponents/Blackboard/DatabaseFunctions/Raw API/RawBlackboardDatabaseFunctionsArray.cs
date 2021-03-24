@@ -1,7 +1,8 @@
 ﻿using System;
+using HiraEngine.Components.Blackboard.Internal;
 using System.Collections.Generic;
 
-namespace HiraEngine.Components.Blackboard.Internal
+namespace HiraEngine.Components.Blackboard.Raw.Internal
 {
     public readonly unsafe struct RawBlackboardDatabaseFunctionsArray<T> where T : Delegate
     {

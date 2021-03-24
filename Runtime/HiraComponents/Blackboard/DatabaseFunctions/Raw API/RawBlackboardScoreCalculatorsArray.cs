@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using HiraEngine.Components.Blackboard.Internal;
+using HiraEngine.Components.Blackboard.Raw.Internal;
 
-namespace HiraEngine.Components.Blackboard
+namespace HiraEngine.Components.Blackboard.Raw
 {
     public readonly unsafe struct RawBlackboardScoreCalculatorsArray
     {

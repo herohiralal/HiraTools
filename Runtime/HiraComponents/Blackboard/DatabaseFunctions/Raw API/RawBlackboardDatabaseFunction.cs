@@ -1,8 +1,9 @@
 ﻿using System;
+using HiraEngine.Components.Blackboard.Internal;
 using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
 
-namespace HiraEngine.Components.Blackboard.Internal
+namespace HiraEngine.Components.Blackboard.Raw.Internal
 {
     public readonly unsafe struct RawBlackboardDatabaseFunction<T> where T : Delegate
     {
