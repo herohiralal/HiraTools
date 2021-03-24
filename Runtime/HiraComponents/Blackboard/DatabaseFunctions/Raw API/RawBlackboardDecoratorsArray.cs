@@ -25,8 +25,24 @@ namespace HiraEngine.Components.Blackboard.Raw
             {
                 var currentElement = new RawBlackboardDecorator(current);
                 current += currentElement.Size;
-                
+
                 result = result && currentElement.Execute(blackboard);
+            }
+
+            return result;
+        }
+
+        public byte CalculateHeuristic(byte* blackboard)
+        {
+            var count = _internal.Count;
+            var current = _internal.First;
+            byte result = 0;
+            for (var i = 0; i < count; i++)
+            {
+                var currentElement = new RawBlackboardDecorator(current);
+                current += currentElement.Size;
+
+                result += (byte) (currentElement.Execute(blackboard) ? 0 : 1);
             }
 
             return result;

@@ -19,5 +19,6 @@ namespace HiraEngine.Components.Blackboard.Raw
         public ushort BlackboardSize => _size;
         public ushort Count => _count;
         public byte* this[byte index] => index >= _count ? throw new IndexOutOfRangeException() : _address + (_size * index);
+        public byte* this[int index] => this[(byte) index];
     }
 }
