@@ -3,7 +3,6 @@ using System.Linq;
 using HiraEngine.Components.AI.LGOAP.Internal;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
-using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Assertions;
 
