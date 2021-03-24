@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using HiraEngine.Components.AI.LGOAP.Raw.Internal;
 using HiraEngine.Components.Blackboard.Internal;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace HiraEngine.Components.AI.LGOAP.Raw
 {
     public readonly unsafe struct RawActionsArray
     {
-        private readonly byte* _address;
+        [NativeDisableUnsafePtrRestriction] private readonly byte* _address;
 
         public RawActionsArray(byte* address) => _address = address;
 

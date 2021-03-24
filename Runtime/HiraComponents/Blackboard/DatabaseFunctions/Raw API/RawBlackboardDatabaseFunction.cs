@@ -7,7 +7,7 @@ namespace HiraEngine.Components.Blackboard.Raw.Internal
 {
     public readonly unsafe struct RawBlackboardDatabaseFunction<T> where T : Delegate
     {
-        private readonly byte* _address;
+        [NativeDisableUnsafePtrRestriction] private readonly byte* _address;
 
         public RawBlackboardDatabaseFunction(byte* address) => _address = address;
 

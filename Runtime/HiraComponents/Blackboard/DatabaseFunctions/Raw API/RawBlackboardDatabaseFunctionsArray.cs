@@ -1,12 +1,13 @@
 ﻿using System;
 using HiraEngine.Components.Blackboard.Internal;
 using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace HiraEngine.Components.Blackboard.Raw.Internal
 {
     public readonly unsafe struct RawBlackboardDatabaseFunctionsArray<T> where T : Delegate
     {
-        private readonly byte* _address;
+        [NativeDisableUnsafePtrRestriction] private readonly byte* _address;
 
         public RawBlackboardDatabaseFunctionsArray(byte* address) => _address = address;
 
