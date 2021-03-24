@@ -24,12 +24,11 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
             get
             {
                 var countAddress = _address + new RawInsistenceCalculatorsArray(_address).Size;
-                var count = *countAddress;
-                if (index >= count) throw new IndexOutOfRangeException();
+                if (index >= *countAddress) throw new IndexOutOfRangeException();
 
                 var current = countAddress + sizeof(byte);
 
-                for (byte i = 0; i < count; i++) current += new RawLayer(current).Size;
+                for (byte i = 0; i < index; i++) current += new RawLayer(current).Size;
 
                 return new RawLayer(current);
             }

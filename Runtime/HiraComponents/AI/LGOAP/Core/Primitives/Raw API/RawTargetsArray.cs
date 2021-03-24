@@ -28,12 +28,11 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
         {
             get
             {
-                var count = Count;
-                if (index >= count) throw new IndexOutOfRangeException();
+                if (index >= Count) throw new IndexOutOfRangeException();
 
                 var current = _address + sizeof(ushort) + sizeof(byte);
                 
-                for (byte i = 0; i < count; i++) current += new RawBlackboardDecoratorsArray(current).Size;
+                for (byte i = 0; i < index; i++) current += new RawBlackboardDecoratorsArray(current).Size;
 
                 return new RawBlackboardDecoratorsArray(current);
             }
