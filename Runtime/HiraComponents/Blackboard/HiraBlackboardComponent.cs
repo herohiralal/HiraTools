@@ -6,6 +6,7 @@ namespace UnityEngine
     public class HiraBlackboardComponent : MonoBehaviour, IInitializable, IBlackboardComponent
     {
         [SerializeField] private HiraBlackboardCore core = null;
+        public HiraBlackboardTemplate Template => core.template;
         public void Initialize<T>(ref T initParams) => core.Initialize(ref initParams);
         public void Shutdown() => core.Shutdown();
         public NativeArray<byte> Data => core.Data;

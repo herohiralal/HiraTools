@@ -6,6 +6,7 @@ namespace UnityEngine
     public class HiraSharedBlackboardComponent : MonoBehaviour, IBlackboardComponent
     {
         [SerializeField] private HiraSharedBlackboard sharedBlackboard = null;
+        public HiraBlackboardTemplate Template => core.template;
         [SerializeField] private HiraBlackboardCore core = null;
         private void Awake() => core = sharedBlackboard.core;
         private void OnDestroy() => core = null;

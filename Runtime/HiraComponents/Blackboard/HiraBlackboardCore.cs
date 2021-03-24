@@ -11,6 +11,8 @@ namespace UnityEngine
         [NonSerialized] private NativeArray<byte> _data = default;
         [SerializeField] public bool broadcastKeyUpdateEvents = true;
 
+        public HiraBlackboardTemplate Template => template;
+
         public NativeArray<byte> Data => _data;
 
         public event Action OnKeyEssentialToDecisionMakingUpdate = delegate { };

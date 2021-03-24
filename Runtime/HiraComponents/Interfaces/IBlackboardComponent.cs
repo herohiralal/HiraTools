@@ -5,6 +5,7 @@ namespace UnityEngine
 {
     public interface IBlackboardComponent
     {
+        HiraBlackboardTemplate Template { get; }
         NativeArray<byte> Data { get; }
         event Action OnKeyEssentialToDecisionMakingUpdate;
         T GetValue<T>(string keyName) where T : unmanaged;

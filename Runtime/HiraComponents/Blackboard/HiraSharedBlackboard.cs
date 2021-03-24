@@ -7,6 +7,7 @@ namespace UnityEngine
     public class HiraSharedBlackboard : ScriptableObject, IInitializable, IBlackboardComponent
     {
         [SerializeField] public HiraBlackboardCore core = null;
+        public HiraBlackboardTemplate Template => core.template;
         public void Initialize<T>(ref T initParams) => core.Initialize(ref initParams);
         public void Shutdown() => core.Shutdown();
         public NativeArray<byte> Data => core.Data;
