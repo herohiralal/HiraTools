@@ -5,7 +5,6 @@
  */
 
 using System;
-using HiraEngine.PoolTool;
 
 namespace UnityEngine
 {
@@ -64,6 +63,6 @@ namespace UnityEngine
 
         public abstract void UnloadResource();
         
-        protected IPool GetPool(Component target) => new Pool(this, target);
+        protected IPool GetPool(Component target) => new HiraEngine.PoolTool.Pool(this, target);
     }
 }
