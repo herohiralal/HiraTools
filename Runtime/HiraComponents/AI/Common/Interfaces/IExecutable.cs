@@ -1,4 +1,6 @@
-﻿namespace HiraEngine.Components.AI
+﻿using UnityEngine;
+
+namespace HiraEngine.Components.AI
 {
     public enum ExecutionStatus
     {
@@ -8,7 +10,7 @@
     public interface IExecutable
     {
         void OnExecutionStart();
-        ExecutionStatus Execute();
+        ExecutionStatus Execute(float deltaTime);
         void OnExecutionSuccess();
         void OnExecutionFailure();
         void OnExecutionAbort();
