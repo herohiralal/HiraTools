@@ -11,6 +11,12 @@ namespace UnityEngine
         public void Shutdown() => core.Shutdown();
         public NativeArray<byte> Data => core.Data;
 
+        public bool BroadcastKeyUpdateEvents
+        {
+            get => core.BroadcastKeyUpdateEvents;
+            set => core.BroadcastKeyUpdateEvents = value;
+        }
+
         public event Action OnKeyEssentialToDecisionMakingUpdate
         {
             add => core.OnKeyEssentialToDecisionMakingUpdate += value;

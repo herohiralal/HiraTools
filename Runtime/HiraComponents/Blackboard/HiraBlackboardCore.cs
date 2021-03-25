@@ -15,6 +15,12 @@ namespace UnityEngine
 
         public NativeArray<byte> Data => _data;
 
+        public bool BroadcastKeyUpdateEvents
+        {
+            get => broadcastKeyUpdateEvents;
+            set => broadcastKeyUpdateEvents = value;
+        }
+
         public event Action OnKeyEssentialToDecisionMakingUpdate = delegate { };
 
         public unsafe void Initialize<T>(ref T initParams)
