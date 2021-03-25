@@ -10,6 +10,7 @@ namespace UnityEngine
         public string Title { get; set; } = "Contents";
         public Type[] RequiredAttributes { get; set; } = { };
         public int MaxObjectCount { get; set; } = int.MaxValue;
+        public int MinObjectCount { get; set; } = 0;
         public static readonly HiraCollectionCustomizerAttribute DEFAULT = new HiraCollectionCustomizerAttribute(255);
     }
 }

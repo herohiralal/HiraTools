@@ -192,6 +192,11 @@ namespace HiraEditor.Internal
                 {
                     EditorGUILayout.HelpBox("No objects in this collection.", MessageType.Info);
                 }
+                
+                if (editorsCount < _customizer.MinObjectCount)
+                {
+                    EditorGUILayout.HelpBox("Not enough objects in this collection.", MessageType.Error);
+                }
 
                 var guiEnabled = GUI.enabled;
                 GUI.enabled = editorsCount < _customizer.MaxObjectCount;
