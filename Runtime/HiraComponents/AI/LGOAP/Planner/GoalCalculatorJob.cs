@@ -9,17 +9,15 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 	[BurstCompile]
 	public unsafe struct GoalCalculatorJob : IJob
 	{
-        public GoalCalculatorJob(NativeArray<byte> blackboard, RawDomainData domainData, byte currentGoal, PlannerResult result)
+        public GoalCalculatorJob(NativeArray<byte> blackboard, RawDomainData domainData, PlannerResult result)
         {
             _blackboard = blackboard;
             _insistenceCalculators = domainData.InsistenceCalculators;
-            _currentGoal = currentGoal;
             _result = result;
         }
         
         [ReadOnly] private readonly NativeArray<byte> _blackboard; // persistent
         [NativeDisableUnsafePtrRestriction] [ReadOnly] private readonly RawInsistenceCalculatorsArray _insistenceCalculators;
-		[ReadOnly] private readonly byte _currentGoal; // unmanaged
 		[WriteOnly] private PlannerResult _result; // reused
 	
 		public void Execute()
@@ -47,7 +45,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 				_result.ResultType = PlannerResultType.Failure;
 				_result.Count = 0;
 			}
-			else if (_currentGoal == goal)
+			else if (_result.CurrentIndex == goal)
 			{
 				_result.ResultType = PlannerResultType.Unchanged;
 				_result.Count = 1;
