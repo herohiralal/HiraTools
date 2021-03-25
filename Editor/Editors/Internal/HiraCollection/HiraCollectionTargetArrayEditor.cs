@@ -73,6 +73,24 @@ namespace HiraEditor.Internal
             }
         }
 
+        private void AddObjectToFileIfNotPresent(Object target, Object main)
+        {
+            if (target is IHiraCollectionEditorInterface hiraCollection)
+            {
+                var collection = hiraCollection.CollectionInternal;
+                foreach (var objects in collection)
+                {
+                    foreach (var o in objects)
+                    {
+                        AddObjectToFileIfNotPresent(o, main);
+                    }
+                }
+            }
+            
+            if (!AssetDatabase.Contains(target))
+                AssetDatabase.AddObjectToAsset(target, main);
+        }
+
         private void CreateEditor(ScriptableObject targetObject, SerializedProperty property, int index = -1)
         {
             var targetObjectType = targetObject.GetType();
@@ -99,6 +117,8 @@ namespace HiraEditor.Internal
             _editors.Clear();
 
             CreateAllEditors();
+            AddObjectToFileIfNotPresent(_asset, _asset);
+            AssetDatabase.SetMainObject(_asset, AssetDatabase.GetAssetPath(_asset));
         }
 
         public void Clear()
