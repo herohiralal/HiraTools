@@ -109,6 +109,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
             {
                 _output.ResultType = PlannerResultType.Success;
                 _output.Count = (byte) (index - 1);
+                return -1;
             }
 
             if (index == _datasets.Count) return float.MaxValue;
