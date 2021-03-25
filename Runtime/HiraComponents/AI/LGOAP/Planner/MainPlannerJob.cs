@@ -14,7 +14,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
     {
         public MainPlannerJob(
             RawLayer layer,
-            PlannerResult previousLayerResult, byte previousLayerResultIndex,
+            PlannerResult previousLayerResult,
             // PlannerResult currentPlan, byte currentPlanIndex,
             float maxFScore,
             RawBlackboardArrayWrapper datasets, IBlackboardComponent blackboard,
@@ -26,7 +26,6 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 
             // layering
             _previousLayerResult = previousLayerResult;
-            _previousLayerResultIndex = previousLayerResultIndex;
 
             // previous run
             // _currentPlan = currentPlan;
@@ -50,7 +49,6 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 
         // layering
         [ReadOnly] private readonly PlannerResult _previousLayerResult;
-        [ReadOnly] private readonly byte _previousLayerResultIndex;
 
         // previous run
         // [ReadOnly] private readonly PlannerResult _currentPlan;
@@ -84,7 +82,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
                 return;
             }
 
-            _goal = _targets[_previousLayerResult[_previousLayerResultIndex]];
+            _goal = _targets[_previousLayerResult[_previousLayerResult.CurrentIndex]];
 
             if (_previousLayerResult.ResultType == PlannerResultType.Unchanged)
             {
@@ -109,6 +107,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
             {
                 _output.ResultType = PlannerResultType.Success;
                 _output.Count = (byte) (index - 1);
+                _output.CurrentIndex = 0;
                 return -1;
             }
 

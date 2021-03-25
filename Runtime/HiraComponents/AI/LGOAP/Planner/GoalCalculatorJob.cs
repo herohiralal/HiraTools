@@ -48,12 +48,14 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			else if (_result.CurrentIndex == goal)
 			{
 				_result.ResultType = PlannerResultType.Unchanged;
+                _result.CurrentIndex = 0;
 				_result.Count = 1;
 				_result[0] = goal;
 			}
 			else
 			{
 				_result.ResultType = PlannerResultType.Success;
+                _result.CurrentIndex = 0;
 				_result.Count = 1;
 				_result[0] = goal;
 			}

@@ -51,6 +51,10 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			set => _container[index + 3] = value;
 		}
 
+        public bool CanPop => CurrentIndex < Count;
+
+        public byte Pop() => this[CurrentIndex++];
+
 		public byte* GetUnsafePtr() => 3 + (byte*) _container.GetUnsafePtr();
 
 		public byte* GetUnsafeReadOnlyPtr() => 3 + (byte*) _container.GetUnsafeReadOnlyPtr();
