@@ -9,105 +9,152 @@ using UnityEngine;
 
 namespace HiraEngine.Components.AI.LGOAP
 {
-    [RequireComponent(typeof(HiraBlackboardComponent))]
-    public class GoalOrientedActionPlanner : MonoBehaviour
-    {
-        public GoalOrientedActionPlanner() => _planRunner = new PlanRunner(OnPlanRunnerFinished);
+	[RequireComponent(typeof(HiraBlackboardComponent))]
+	public class GoalOrientedActionPlanner : MonoBehaviour
+	{
+		[Serializable]
+		private enum PlannerState
+		{
+			Idle,
+			PlannerScheduled,
+			PlannerRunning
+		}
 
-        [SerializeField] private GameObject targetGameObject = null;
-        [SerializeField] private HiraBlackboardComponent blackboard = null;
-        [SerializeField] private GoalOrientedActionPlannerDomain domain = null;
-        [SerializeField] private byte maxPlanLength = 5;
-        [SerializeField] private byte maxFScore = 100;
+		public GoalOrientedActionPlanner() => _planRunner = new PlanRunner(OnPlanRunnerFinished);
 
-        // goal result
-        [NonSerialized] private FlipFlopPool<PlannerResult> _goalResult = default;
+		[SerializeField] private GameObject targetGameObject = null;
+		[SerializeField] private HiraBlackboardComponent blackboard = null;
+		[SerializeField] private GoalOrientedActionPlannerDomain domain = null;
+		[SerializeField] private byte maxPlanLength = 5;
+		[SerializeField] private byte maxFScore = 100;
+		[SerializeField] private PlannerState currentState = PlannerState.Idle;
 
-        // actions
-        [NonSerialized] private RawBlackboardArrayWrapper _plannerDatasets = default;
-        [NonSerialized] private FlipFlopPool<PlannerResult> _plannerResult = default;
+		// goal result
+		[NonSerialized] private FlipFlopPool<PlannerResult> _goalResult = default;
 
-        private PlanRunner _planRunner;
+		// actions
+		[NonSerialized] private RawBlackboardArrayWrapper _plannerDatasets = default;
+		[NonSerialized] private FlipFlopPool<PlannerResult> _plannerResult = default;
 
-        private void Reset()
-        {
-            targetGameObject = gameObject;
-            blackboard = GetComponent<HiraBlackboardComponent>();
-        }
+		private PlanRunner _planRunner;
 
-        private void Awake()
-        {
-            _goalResult.First = new PlannerResult(1, Allocator.Persistent) {Count = 1, [0] = byte.MaxValue};
-            _goalResult.Second = new PlannerResult(1, Allocator.Persistent) {Count = 1, [0] = byte.MaxValue};
+		private void Reset()
+		{
+			targetGameObject = gameObject;
+			blackboard = GetComponent<HiraBlackboardComponent>();
+		}
 
-            _plannerDatasets = new RawBlackboardArrayWrapper((byte) (maxPlanLength + 1), blackboard.Template);
+		private void Awake()
+		{
+			_goalResult.First = new PlannerResult(1, Allocator.Persistent) {Count = 1, [0] = byte.MaxValue};
+			_goalResult.Second = new PlannerResult(1, Allocator.Persistent) {Count = 1, [0] = byte.MaxValue};
 
-            _plannerResult.First = new PlannerResult(maxPlanLength, Allocator.Persistent) {Count = 0};
-            _plannerResult.Second = new PlannerResult(maxPlanLength, Allocator.Persistent) {Count = 0};
-        }
+			_plannerDatasets = new RawBlackboardArrayWrapper((byte) (maxPlanLength + 1), blackboard.Template);
 
-        private void OnDestroy()
-        {
-            _goalResult.First.Dispose();
-            _goalResult.Second.Dispose();
+			_plannerResult.First = new PlannerResult(maxPlanLength, Allocator.Persistent) {Count = 0};
+			_plannerResult.Second = new PlannerResult(maxPlanLength, Allocator.Persistent) {Count = 0};
+		}
 
-            _plannerDatasets.Dispose();
+		private void OnDestroy()
+		{
+			_goalResult.First.Dispose();
+			_goalResult.Second.Dispose();
 
-            _plannerResult.First.Dispose();
-            _plannerResult.Second.Dispose();
-        }
+			_plannerDatasets.Dispose();
 
-        public void OnPlanRunnerFinished(bool success)
-        {
-            if (success && _plannerResult.First.CanPop) // action was successful
-            {
-                var nextActionIndex = _plannerResult.First.Pop();
-                var nextAction = domain.Collection2[nextActionIndex];
-                var task = nextAction.Collection4[0].GetExecutable(targetGameObject, blackboard);
-                var services = nextAction.Collection5.Select(sp => sp.GetService(targetGameObject, blackboard)).ToArray();
-                _planRunner.UpdateTask(task, services);
-            }
-            else
-            {
-                // todo: schedule the planner
-            }
-        }
+			_plannerResult.First.Dispose();
+			_plannerResult.Second.Dispose();
+		}
 
-        private IEnumerator SchedulePlanner()
-        {
-            yield return new WaitForEndOfFrame();
-            
-            // goal
+		private void Update() => _planRunner.Update(Time.deltaTime);
 
-            var goalResult = _goalResult.Second;
-            goalResult.CurrentIndex = _goalResult.First[0];
+		private void OnPlanRunnerFinished(bool success)
+		{
+			if (success && _plannerResult.First.CanPop) UpdatePlanRunner();
+			else StartCoroutine(RunPlanner(true));
+		}
 
-            var goalCalculator = new GoalCalculatorJob(blackboard.Data, domain.DomainData, goalResult)
-                .Schedule();
+		private void UpdatePlanRunner()
+		{
+			var nextActionIndex = _plannerResult.First.Pop();
+			var nextAction = domain.Collection2[nextActionIndex];
+			var task = nextAction.Collection4[0].GetExecutable(targetGameObject, blackboard);
+			var services = nextAction.Collection5.Select(sp => sp.GetService(targetGameObject, blackboard)).ToArray();
+			_planRunner.UpdateTask(task, services);
+		}
 
-            _goalResult.Flip();
-            
-            // main planner
+		private IEnumerator RunPlanner(bool invalidateCurrentPlan)
+		{
+			if (invalidateCurrentPlan)
+			{
+				var plannerResultFirst = _plannerResult.First;
+				plannerResultFirst.CurrentIndex = byte.MaxValue;
+			}
 
-            var mainPlanner = new MainPlannerJob(
-                    domain.DomainData[0],
-                    _goalResult.First,
-                    maxFScore,
-                    _plannerDatasets, blackboard,
-                    _plannerResult.Second)
-                .Schedule(goalCalculator);
+			// exit if a planner is scheduled, will automatically pick up latest data when it runs
+			if (currentState == PlannerState.PlannerScheduled) yield break;
 
-            _plannerResult.Flip();
+			// wait for it to finish its run before it can be run again
+			while (currentState == PlannerState.PlannerRunning) yield return null;
 
-            yield return null;
-            
-            goalCalculator.Complete();
-            
-            // todo: process goal calculator output
-            
-            mainPlanner.Complete();
-            
-            // todo: process main planner output
-        }
-    }
+			currentState = PlannerState.PlannerScheduled;
+
+			// wait for end of frame to run it
+			yield return new WaitForEndOfFrame();
+
+			// update state
+
+			currentState = PlannerState.PlannerRunning;
+
+			// goal
+
+			var goalResult = _goalResult.Second;
+			goalResult.CurrentIndex = _goalResult.First[0];
+
+			var goalCalculator = new GoalCalculatorJob(blackboard.Data, domain.DomainData, goalResult)
+				.Schedule();
+
+			_goalResult.Flip();
+
+			// main planner
+
+			var mainPlanner = new MainPlannerJob(
+					domain.DomainData[0],
+					_goalResult.First,
+					_plannerResult.First,
+					maxFScore,
+					_plannerDatasets, blackboard,
+					_plannerResult.Second)
+				.Schedule(goalCalculator);
+
+			_plannerResult.Flip();
+
+			// finish running it before the start of the next frame
+			yield return null;
+
+			goalCalculator.Complete();
+			mainPlanner.Complete();
+
+			currentState = PlannerState.Idle;
+
+			var currentResult = _plannerResult.First;
+			switch (currentResult.ResultType)
+			{
+				case PlannerResultType.Uninitialized:
+					throw new Exception("Planner provided uninitialized output.");
+				case PlannerResultType.Failure:
+					throw new Exception("Planner failed, possible reason: Max F-Score not high enough, or a parent planner failed.");
+				case PlannerResultType.Unchanged:
+					break;
+				case PlannerResultType.Success:
+				{
+					if (currentResult.CanPop) UpdatePlanRunner();
+					else throw new Exception("Unable to pop the plan stack.");
+					break;
+				}
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+	}
 }

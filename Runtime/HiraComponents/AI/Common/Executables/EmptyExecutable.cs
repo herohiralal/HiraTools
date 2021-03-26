@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace HiraEngine.Components.AI
+﻿namespace HiraEngine.Components.AI
 {
     public class EmptyExecutable : IExecutable
     {

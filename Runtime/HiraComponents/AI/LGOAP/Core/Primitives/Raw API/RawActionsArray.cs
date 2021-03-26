@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HiraEngine.Components.AI.LGOAP.Raw.Internal;
 using HiraEngine.Components.Blackboard.Internal;
 using Unity.Collections.LowLevel.Unsafe;
@@ -24,6 +25,18 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
         }
 
         public byte* First => _address + sizeof(ushort) + sizeof(byte);
+
+        public RawAction this[byte index]
+        {
+	        get
+	        {
+		        if (index >= Count) throw new IndexOutOfRangeException();
+
+		        var current = First;
+		        for (byte i = 0; i < index; i++) current += new RawAction(current).Size;
+		        return new RawAction(current);
+	        }
+        }
 
         public static RawActionsArray Create(
             IEnumerable<(IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])> actions,

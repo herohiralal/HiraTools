@@ -59,6 +59,6 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 
 		public byte* GetUnsafeReadOnlyPtr() => 3 + (byte*) _container.GetUnsafeReadOnlyPtr();
 
-		public void CopyTo(PlannerResult other) => _container.CopyTo(other._container);
+		public void CopyFrom(PlannerResult other) => other._container.CopyFrom(_container);
 	}
 }
