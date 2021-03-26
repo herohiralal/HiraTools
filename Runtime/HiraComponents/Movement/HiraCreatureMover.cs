@@ -40,7 +40,15 @@ namespace UnityEngine
             if (direction != Vector3.zero) _directionalMovementAssistant.RotateTo(in direction);
         }
 
-        public void MoveTo(Vector3 position) => targetNavMeshAgent.SetDestination(position);
+        public void MoveTo(Vector3 position, float stoppingDistance)
+        {
+            targetNavMeshAgent.stoppingDistance = stoppingDistance;
+            targetNavMeshAgent.SetDestination(position);
+        }
+
+        public float RemainingDistance => targetNavMeshAgent.remainingDistance;
+
+        public void StopMovingToDestination() => targetNavMeshAgent.isStopped = true;
 
         public HiraCreatureMovementMode MovementMode
         {
