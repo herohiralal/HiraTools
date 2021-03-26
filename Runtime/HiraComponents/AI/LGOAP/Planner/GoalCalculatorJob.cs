@@ -6,7 +6,7 @@ using Unity.Jobs;
 
 namespace HiraEngine.Components.AI.LGOAP.Internal
 {
-	[BurstCompile]
+	[BurstCompile(FloatPrecision.Low, FloatMode.Fast, DisableSafetyChecks = true)]
 	public unsafe struct GoalCalculatorJob : IJob
 	{
         public GoalCalculatorJob(NativeArray<byte> blackboard, RawDomainData domainData, PlannerResult result)

@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace HiraEngine.Components.AI.LGOAP.Internal
 {
-	[BurstCompile]
+    [BurstCompile(FloatPrecision.Low, FloatMode.Fast, DisableSafetyChecks = true)]
 	public unsafe struct MainPlannerJob : IJob
 	{
 		public MainPlannerJob(

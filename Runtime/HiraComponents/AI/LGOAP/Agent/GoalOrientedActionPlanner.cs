@@ -9,8 +9,8 @@ using UnityEngine;
 
 namespace HiraEngine.Components.AI.LGOAP
 {
-	[RequireComponent(typeof(HiraBlackboardComponent))]
-	public class GoalOrientedActionPlanner : MonoBehaviour
+	[RequireComponent(typeof(HiraBlackboard))]
+	public class GoalOrientedActionPlanner : MonoBehaviour, IInitializable
 	{
 		[Serializable]
 		private enum PlannerState
@@ -37,6 +37,7 @@ namespace HiraEngine.Components.AI.LGOAP
 		[NonSerialized] private FlipFlopPool<PlannerResult> _plannerResult = default;
 
 		private PlanRunner _planRunner;
+        private bool _currentPlanInvalidated = false;
 
 		private void Reset()
 		{
@@ -44,7 +45,7 @@ namespace HiraEngine.Components.AI.LGOAP
 			blackboard = GetComponent<HiraBlackboardComponent>();
 		}
 
-		private void Awake()
+		public void Initialize<T>(ref T initParams)
 		{
 			_goalResult.First = new PlannerResult(1, Allocator.Persistent) {Count = 1, [0] = byte.MaxValue};
 			_goalResult.Second = new PlannerResult(1, Allocator.Persistent) {Count = 1, [0] = byte.MaxValue};
@@ -53,9 +54,11 @@ namespace HiraEngine.Components.AI.LGOAP
 
 			_plannerResult.First = new PlannerResult(maxPlanLength, Allocator.Persistent) {Count = 0};
 			_plannerResult.Second = new PlannerResult(maxPlanLength, Allocator.Persistent) {Count = 0};
+            
+            blackboard.OnKeyEssentialToDecisionMakingUpdate += SchedulePlanner;
 		}
 
-		private void OnDestroy()
+        public void Shutdown()
 		{
 			_goalResult.First.Dispose();
 			_goalResult.Second.Dispose();
@@ -64,15 +67,23 @@ namespace HiraEngine.Components.AI.LGOAP
 
 			_plannerResult.First.Dispose();
 			_plannerResult.Second.Dispose();
-		}
+
+            blackboard.OnKeyEssentialToDecisionMakingUpdate -= SchedulePlanner;
+        }
 
 		private void Update() => _planRunner.Update(Time.deltaTime);
 
 		private void OnPlanRunnerFinished(bool success)
 		{
 			if (success && _plannerResult.First.CanPop) UpdatePlanRunner();
-			else StartCoroutine(RunPlanner(true));
+            else
+            {
+                _currentPlanInvalidated = true;
+                SchedulePlanner();
+            }
 		}
+
+        private void SchedulePlanner() => StartCoroutine(RunPlanner());
 
 		private void UpdatePlanRunner()
 		{
@@ -83,15 +94,9 @@ namespace HiraEngine.Components.AI.LGOAP
 			_planRunner.UpdateTask(task, services);
 		}
 
-		private IEnumerator RunPlanner(bool invalidateCurrentPlan)
+		private IEnumerator RunPlanner()
 		{
-			if (invalidateCurrentPlan)
-			{
-				var plannerResultFirst = _plannerResult.First;
-				plannerResultFirst.CurrentIndex = byte.MaxValue;
-			}
-
-			// exit if a planner is scheduled, will automatically pick up latest data when it runs
+            // exit if a planner is scheduled, will automatically pick up latest data when it runs
 			if (currentState == PlannerState.PlannerScheduled) yield break;
 
 			// wait for it to finish its run before it can be run again
@@ -105,6 +110,14 @@ namespace HiraEngine.Components.AI.LGOAP
 			// update state
 
 			currentState = PlannerState.PlannerRunning;
+            
+            // invalidate current plan if required
+            if (_currentPlanInvalidated)
+            {
+                var plannerResultFirst = _plannerResult.First;
+                plannerResultFirst.CurrentIndex = byte.MaxValue;
+                _currentPlanInvalidated = false;
+            }
 
 			// goal
 
@@ -145,6 +158,14 @@ namespace HiraEngine.Components.AI.LGOAP
 				case PlannerResultType.Failure:
 					throw new Exception("Planner failed, possible reason: Max F-Score not high enough, or a parent planner failed.");
 				case PlannerResultType.Unchanged:
+                    // if the planner was scheduled because of a blackboard update, it means there's
+                    // already an active plan and nothing needs to change
+                    
+                    // if the planner was scheduled because the plan-runner consumed it whole,
+                    // the current plan would be invalidated, and so it could never be unchanged
+                    
+                    // if the planner was scheduled because the plan failed, then it makes no sense that
+                    // the plan would remain unchanged
 					break;
 				case PlannerResultType.Success:
 				{
