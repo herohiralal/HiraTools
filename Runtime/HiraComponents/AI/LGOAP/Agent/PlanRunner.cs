@@ -1,4 +1,5 @@
 ﻿using System;
+using HiraEngine.Components.AI.Internal;
 
 namespace HiraEngine.Components.AI.LGOAP.Internal
 {
@@ -6,7 +7,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 
 	public struct PlanRunner
 	{
-		private static readonly IService[] no_services = new IService[0];
+		private static readonly Service[] no_services = new Service[0];
 
 		public PlanRunner(OnPlanRunnerFinished onPlanRunnerFinished)
 		{
@@ -15,11 +16,11 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			_onPlanRunnerFinished = onPlanRunnerFinished;
 		}
 
-		private IExecutable _currentExecutable;
-		private IService[] _services;
+		private Executable _currentExecutable;
+		private Service[] _services;
 		private readonly OnPlanRunnerFinished _onPlanRunnerFinished;
 
-		public void UpdateTask(IExecutable newExecutable, IService[] services = null)
+		public void UpdateTask(Executable newExecutable, Service[] services = null)
 		{
 			services ??= no_services;
 

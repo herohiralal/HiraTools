@@ -1,25 +1,9 @@
-﻿namespace HiraEngine.Components.AI
+﻿namespace HiraEngine.Components.AI.Internal
 {
-    public class EmptyExecutable : IExecutable
+    public class EmptyExecutable : Executable
     {
         public static readonly EmptyExecutable INSTANCE = new EmptyExecutable();
 
-        public void OnExecutionStart()
-        {
-        }
-
-        public ExecutionStatus Execute(float deltaTime) => ExecutionStatus.InProgress;
-
-        public void OnExecutionSuccess()
-        {
-        }
-
-        public void OnExecutionFailure()
-        {
-        }
-
-        public void OnExecutionAbort()
-        {
-        }
+        public override ExecutionStatus Execute(float deltaTime) => ExecutionStatus.InProgress;
     }
 }
