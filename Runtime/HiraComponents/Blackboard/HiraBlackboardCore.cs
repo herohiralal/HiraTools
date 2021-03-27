@@ -23,7 +23,7 @@ namespace UnityEngine
 
         public event Action OnKeyEssentialToDecisionMakingUpdate = delegate { };
 
-        public unsafe void Initialize<T>(ref T initParams)
+        public unsafe void Initialize()
         {
             _data = template.GetNewBlackboard();
             template.OnInstanceSyncKeyUpdate += OnInstanceSyncedValueUpdate;

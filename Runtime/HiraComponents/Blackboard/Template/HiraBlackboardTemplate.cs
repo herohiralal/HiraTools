@@ -51,7 +51,7 @@ namespace UnityEngine
             }
         }
 
-        public unsafe void Initialize<T>(ref T _)
+        public unsafe void Initialize()
         {
             _keyIndices = new Dictionary<string, ushort>();
             _keyTraits = new Dictionary<ushort, BlackboardKeyTraits>();

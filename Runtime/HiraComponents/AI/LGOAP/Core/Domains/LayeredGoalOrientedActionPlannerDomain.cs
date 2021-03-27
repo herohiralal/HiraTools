@@ -8,7 +8,7 @@ namespace HiraEngine.Components.AI.LGOAP
     [HiraCollectionCustomizer(3, MaxObjectCount = byte.MaxValue, Title = "Actions")]
     public class LayeredGoalOrientedActionPlannerDomain : HiraCollection<Goal, IntermediateGoal, Action>, IInitializable
     {
-        public void Initialize<T>(ref T initParams)
+        public void Initialize()
         {
             
         }

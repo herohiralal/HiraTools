@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
 using HiraEngine.Components.AI.LGOAP.Internal;
 using HiraEngine.Components.Blackboard.Raw;
 using Unity.Collections;
@@ -47,7 +46,7 @@ namespace HiraEngine.Components.AI.LGOAP
 			blackboard = GetComponent<HiraBlackboardComponent>();
 		}
 
-		public void Initialize<T>(ref T initParams)
+		public void Initialize()
 		{
 			_goalResult.First = new PlannerResult(1, Allocator.Persistent) {Count = 1, [0] = byte.MaxValue};
 			_goalResult.Second = new PlannerResult(1, Allocator.Persistent) {Count = 1, [0] = byte.MaxValue};

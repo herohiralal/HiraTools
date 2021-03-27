@@ -22,7 +22,7 @@ namespace HiraEngine.Components.AI.LGOAP
         public Action[] Actions => Collection2;
         public IBlackboardEffector[] Restarters => Collection3;
 
-        public void Initialize<T>(ref T initParams)
+        public void Initialize()
         {
             var insistenceCalculators = Goals.Select(g => g.InsistenceCalculators).ToArray();
             var layer1Targets = Goals.Select(g => g.Targets).ToArray();

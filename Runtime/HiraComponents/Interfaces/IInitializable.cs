@@ -2,7 +2,7 @@
 {
     public interface IInitializable
     {
-        void Initialize<T>(ref T initParams);
+        void Initialize();
         void Shutdown();
     }
 }
