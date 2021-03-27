@@ -9,5 +9,7 @@ namespace HiraEngine.Components.AI.LGOAP
     [HiraCollectionCustomizer(2, Title = "Targets", MaxObjectCount = byte.MaxValue, RequiredAttributes = new[] {typeof(HiraBlackboardDecoratorAttribute)})]
     public sealed class Goal : HiraCollection<IBlackboardScoreCalculator, IBlackboardDecorator>
     {
+        public IBlackboardScoreCalculator[] InsistenceCalculators => Collection1;
+        public IBlackboardDecorator[] Targets => Collection2;
     }
 }

@@ -120,8 +120,8 @@ namespace HiraEngine.Components.AI.LGOAP
 		{
 			_actionIndex = _plannerResult.First.Pop();
 			var nextAction = domain.Actions[_actionIndex];
-			var task = nextAction.Collection4[0].GetExecutable(targetGameObject, blackboard);
-			var services = nextAction.Collection5.Select(sp => sp.GetService(targetGameObject, blackboard)).ToArray();
+			var task = nextAction.GetTask(targetGameObject, blackboard);
+			var services = nextAction.GetServices(targetGameObject, blackboard);
 			_planRunner.UpdateTask(task, services);
 		}
 

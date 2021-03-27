@@ -24,11 +24,11 @@ namespace HiraEngine.Components.AI.LGOAP
 
         public void Initialize<T>(ref T initParams)
         {
-            var insistenceCalculators = Goals.Select(g => g.Collection1).ToArray();
-            var layer1Targets = Goals.Select(g => g.Collection2).ToArray();
+            var insistenceCalculators = Goals.Select(g => g.InsistenceCalculators).ToArray();
+            var layer1Targets = Goals.Select(g => g.Targets).ToArray();
             var layer1Actions =
                 Actions.Select<Action, (IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>(a=>
-                    (a.Collection1, a.Collection2, a.Collection3)).ToArray();
+                    (a.Precondition, a.CostCalculator, a.Effect)).ToArray();
 
             var size = RawDomainData.GetSize(insistenceCalculators, Restarters, (layer1Targets, layer1Actions));
 
