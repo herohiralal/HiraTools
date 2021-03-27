@@ -58,6 +58,8 @@ namespace HiraEngine.Components.AI.LGOAP
 			_plannerResult.Second = new PlannerResult(maxPlanLength, Allocator.Persistent) {Count = 0};
             
             blackboard.OnKeyEssentialToDecisionMakingUpdate += SchedulePlanner;
+            
+            SchedulePlanner();
 		}
 
         public void Shutdown()
@@ -79,17 +81,17 @@ namespace HiraEngine.Components.AI.LGOAP
 		{
 			if (success)
 			{
+				domain.DomainData[0].Break(out _, out var actions);
+				actions[_actionIndex].Break(out _, out _, out var effect);
+				unsafe
+				{
+					// this will directly modify the blackboard, and not broadcast any events
+					// but that is exactly what we want, because the modification is intended
+					effect.Execute((byte*) blackboard.Data.GetUnsafePtr());
+				}
+
 				if (_plannerResult.First.CanPop)
 				{
-					domain.DomainData[0].Break(out _, out var actions);
-					actions[_actionIndex].Break(out _, out _, out var effect);
-					unsafe
-					{
-						// this will directly modify the blackboard, and not broadcast any events
-						// but that is exactly what we want, because the modification is intended
-						effect.Execute((byte*) blackboard.Data.GetUnsafePtr());
-					}
-
 					UpdatePlanRunner();
 				}
 				else
@@ -204,6 +206,19 @@ namespace HiraEngine.Components.AI.LGOAP
 				}
 				default:
 					throw new ArgumentOutOfRangeException();
+			}
+		}
+
+		private void OnGUI()
+		{
+			var actions = domain.Actions;
+			var current = _plannerResult.First.CurrentIndex - 1;
+
+			for (byte i = 0; i < _plannerResult.First.Count; i++)
+			{
+				var index = _plannerResult.First[i];
+				var actionName = index < actions.Length ? actions[index].name : "INVALID";
+				GUILayout.Label($"{i + 1}. {actionName} {(i == current ? "<--" : "")}\n");
 			}
 		}
 	}
