@@ -27,5 +27,11 @@ namespace HiraEngine.Components.AI.Internal
             _time -= deltaTime;
             return _time <= 0f ? ExecutionStatus.Succeeded : ExecutionStatus.InProgress;
         }
+
+        public override void OnExecutionAbort() => GenericPool<WaitExecutable>.Return(this);
+
+        public override void OnExecutionFailure() => GenericPool<WaitExecutable>.Return(this);
+
+        public override void OnExecutionSuccess() => GenericPool<WaitExecutable>.Return(this);
     }
 }

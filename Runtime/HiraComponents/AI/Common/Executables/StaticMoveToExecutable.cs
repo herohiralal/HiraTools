@@ -45,7 +45,15 @@ namespace HiraEngine.Components.AI.Internal
                     ? ExecutionStatus.Succeeded
                     : ExecutionStatus.InProgress;
 
-        public override void OnExecutionAbort() => _mover.StopMovingToDestination();
+        public override void OnExecutionAbort()
+        {
+	        _mover.StopMovingToDestination();
+	        GenericPool<StaticMoveToExecutable>.Return(this);
+        }
+
+        public override void OnExecutionFailure() => GenericPool<StaticMoveToExecutable>.Return(this);
+
+        public override void OnExecutionSuccess() => GenericPool<StaticMoveToExecutable>.Return(this);
 
         public void OnRetrieve()
         {
