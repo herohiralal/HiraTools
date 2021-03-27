@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using HiraEngine.Components.Blackboard.Internal;
+using HiraEngine.Components.Blackboard.Raw;
 using Unity.Collections.LowLevel.Unsafe;
 
 namespace HiraEngine.Components.AI.LGOAP.Raw
@@ -11,19 +12,21 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
 
         public RawDomainData(byte* address) => _address = address;
 
+        public RawInsistenceCalculatorsArray InsistenceCalculators => new RawInsistenceCalculatorsArray(_address);
+
+        public RawBlackboardEffectorsArray Restarters => new RawBlackboardEffectorsArray(_address + InsistenceCalculators.Size);
+
         public byte LayerCount
         {
-            get => *(_address + new RawInsistenceCalculatorsArray(_address).Size);
-            private set => *(_address + new RawInsistenceCalculatorsArray(_address).Size) = value;
+	        get => *(_address + InsistenceCalculators.Size + Restarters.Size);
+	        private set => *(_address + InsistenceCalculators.Size + Restarters.Size) = value;
         }
-
-        public RawInsistenceCalculatorsArray InsistenceCalculators => new RawInsistenceCalculatorsArray(_address);
 
         public RawLayer this[byte index]
         {
             get
             {
-                var countAddress = _address + new RawInsistenceCalculatorsArray(_address).Size;
+                var countAddress = _address + InsistenceCalculators.Size + Restarters.Size;
                 if (index >= *countAddress) throw new IndexOutOfRangeException();
 
                 var current = countAddress + sizeof(byte);
@@ -36,12 +39,17 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
 
         public static RawDomainData Create(
             IEnumerable<IEnumerable<IBlackboardScoreCalculator>> insistenceCalculators,
+            IEnumerable<IBlackboardEffector> restarters,
             byte* address,
             params (IEnumerable<IEnumerable<IBlackboardDecorator>>,
                 IEnumerable<(IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>)[] layers)
         {
             var createdInsistenceCalculators = RawInsistenceCalculatorsArray.Create(insistenceCalculators, address);
             var size = createdInsistenceCalculators.Size;
+
+            var createdRestarters = RawBlackboardEffectorsArray.Create(restarters, address + size);
+            size += createdRestarters.Size;
+            
             size += sizeof(byte); // skip layer count
 
             byte count = 0;
@@ -56,12 +64,15 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
 
         public static ushort GetSize(
             IEnumerable<IEnumerable<IBlackboardScoreCalculator>> insistenceCalculators,
+            IEnumerable<IBlackboardEffector> restarters,
             params (IEnumerable<IEnumerable<IBlackboardDecorator>>,
                 IEnumerable<(IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>)[] layers)
         {
             ushort size = 0;
 
             size += RawInsistenceCalculatorsArray.GetSize(insistenceCalculators);
+
+            size += RawBlackboardEffectorsArray.GetSize(restarters);
 
             size += sizeof(byte); // layer count
 

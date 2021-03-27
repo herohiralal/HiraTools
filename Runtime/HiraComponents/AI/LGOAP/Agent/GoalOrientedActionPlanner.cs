@@ -4,6 +4,7 @@ using System.Linq;
 using HiraEngine.Components.AI.LGOAP.Internal;
 using HiraEngine.Components.Blackboard.Raw;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using UnityEngine;
 
@@ -38,8 +39,9 @@ namespace HiraEngine.Components.AI.LGOAP
 
 		private PlanRunner _planRunner;
         private bool _currentPlanInvalidated = false;
+        private byte _actionIndex = byte.MaxValue;
 
-		private void Reset()
+        private void Reset()
 		{
 			targetGameObject = gameObject;
 			blackboard = GetComponent<HiraBlackboardComponent>();
@@ -75,8 +77,35 @@ namespace HiraEngine.Components.AI.LGOAP
 
 		private void OnPlanRunnerFinished(bool success)
 		{
-			if (success && _plannerResult.First.CanPop) UpdatePlanRunner();
-            else
+			if (success)
+			{
+				if (_plannerResult.First.CanPop)
+				{
+					domain.DomainData[0].Break(out _, out var actions);
+					actions[_actionIndex].Break(out _, out _, out var effect);
+					unsafe
+					{
+						// this will directly modify the blackboard, and not broadcast any events
+						// but that is exactly what we want, because the modification is intended
+						effect.Execute((byte*) blackboard.Data.GetUnsafePtr());
+					}
+
+					UpdatePlanRunner();
+				}
+				else
+				{
+					_currentPlanInvalidated = true;
+					unsafe
+					{
+						// this will directly modify the blackboard, and not broadcast any events
+						// but that is exactly what we want, because the modification is intended
+						domain.DomainData.Restarters.Execute((byte*) blackboard.Data.GetUnsafePtr());
+					}
+
+					SchedulePlanner();
+				}
+			}
+			else
             {
                 _currentPlanInvalidated = true;
                 SchedulePlanner();
@@ -87,8 +116,8 @@ namespace HiraEngine.Components.AI.LGOAP
 
 		private void UpdatePlanRunner()
 		{
-			var nextActionIndex = _plannerResult.First.Pop();
-			var nextAction = domain.Collection2[nextActionIndex];
+			_actionIndex = _plannerResult.First.Pop();
+			var nextAction = domain.Actions[_actionIndex];
 			var task = nextAction.Collection4[0].GetExecutable(targetGameObject, blackboard);
 			var services = nextAction.Collection5.Select(sp => sp.GetService(targetGameObject, blackboard)).ToArray();
 			_planRunner.UpdateTask(task, services);
