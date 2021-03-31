@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HiraEngine.Components.AI.Internal
 {
-    public class SequenceExecutable : Executable, IPoolable
+    public class SequenceExecutable : Executable, IPoolReturnCallbackReceiver
     {
         public SequenceExecutable Init(IEnumerable<IExecutableProvider> executableProviders, HiraComponentContainer target, IBlackboardComponent blackboard)
         {
@@ -50,10 +50,6 @@ namespace HiraEngine.Components.AI.Internal
         }
 
         public override void Dispose() => GenericPool<SequenceExecutable>.Return(this);
-
-        public void OnRetrieve()
-        {
-        }
 
         public void OnReturn() => _children.Clear();
     }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HiraEngine.Components.AI.Internal
 {
-    public class WaitExecutable : Executable, IPoolable
+    public class WaitExecutable : Executable
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public WaitExecutable Init(float time)
@@ -13,14 +13,6 @@ namespace HiraEngine.Components.AI.Internal
         }
 
         private float _time;
-        
-        public void OnRetrieve()
-        {
-        }
-
-        public void OnReturn()
-        {
-        }
 
         public override ExecutionStatus Execute(float deltaTime)
         {

@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 namespace HiraEngine.Components.AI.Internal
 {
-    public class StaticMoveToExecutable : Executable, IPoolable
+    public class StaticMoveToExecutable : Executable, IPoolReturnCallbackReceiver
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public StaticMoveToExecutable Init(NavMeshAgent navMeshAgent, IBlackboardComponent blackboard, HiraBlackboardKey targetPositionKey, float tolerance)
@@ -49,10 +49,6 @@ namespace HiraEngine.Components.AI.Internal
         public override void OnExecutionAbort() => _navMeshAgent.isStopped = true;
 
         public override void Dispose() => GenericPool<StaticMoveToExecutable>.Return(this);
-
-        public void OnRetrieve()
-        {
-        }
 
         public void OnReturn()
         {
