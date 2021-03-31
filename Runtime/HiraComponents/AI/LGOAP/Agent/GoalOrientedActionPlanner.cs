@@ -38,6 +38,7 @@ namespace HiraEngine.Components.AI.LGOAP
 
 		private PlanRunner _planRunner;
         private bool _currentPlanInvalidated = false;
+        private bool _updateTaskOnUnchangedResult = false;
         private byte _actionIndex = byte.MaxValue;
 
         private void Reset()
@@ -88,13 +89,19 @@ namespace HiraEngine.Components.AI.LGOAP
 					effect.Execute((byte*) blackboard.Data.GetUnsafePtr());
 				}
 
-				if (_plannerResult.First.CanPop)
+				if (_plannerResult.First.CanMoveNext)
 				{
+                    _plannerResult.First.MoveNext();
 					UpdatePlanRunner();
 				}
 				else
 				{
-					_currentPlanInvalidated = true;
+                    // pretend like the planner is executing the first action,
+                    // so that MainPlannerJob can check if it can be reused.
+                    _plannerResult.First.RestartPlan();
+
+                    _updateTaskOnUnchangedResult = true;
+
                     if (_goalResult.First[0] == 0) unsafe // if it's the fallback goal
 					{
 						// this will directly modify the blackboard, and not broadcast any events
@@ -116,7 +123,7 @@ namespace HiraEngine.Components.AI.LGOAP
 
 		private void UpdatePlanRunner()
 		{
-			_actionIndex = _plannerResult.First.Pop();
+			_actionIndex = _plannerResult.First.CurrentElement;
 			var nextAction = domain.Actions[_actionIndex];
 			var task = nextAction.GetTask(targetGameObject, blackboard);
 			var services = nextAction.GetServices(targetGameObject, blackboard);
@@ -143,8 +150,7 @@ namespace HiraEngine.Components.AI.LGOAP
             // invalidate current plan if required
             if (_currentPlanInvalidated)
             {
-                var plannerResultFirst = _plannerResult.First;
-                plannerResultFirst.CurrentIndex = byte.MaxValue;
+                _plannerResult.First.InvalidatePlan();
                 _currentPlanInvalidated = false;
             }
 
@@ -191,14 +197,20 @@ namespace HiraEngine.Components.AI.LGOAP
                     // already an active plan and nothing needs to change
                     
                     // if the planner was scheduled because the plan-runner consumed it whole,
-                    // the current plan would be invalidated, and so it could never be unchanged
+                    // the current plan could be reused, and _updateTaskOnUnchangedResult must be used
                     
                     // if the planner was scheduled because the plan failed, then it makes no sense that
                     // the plan would remain unchanged
-					break;
+
+                    if (_updateTaskOnUnchangedResult)
+                    {
+                        _updateTaskOnUnchangedResult = false;
+                        UpdatePlanRunner();
+                    }
+                    break;
 				case PlannerResultType.Success:
 				{
-					if (currentResult.CanPop) UpdatePlanRunner();
+					if (currentResult.CanMoveNext) UpdatePlanRunner();
 					else throw new Exception("Unable to pop the plan stack.");
 					break;
 				}

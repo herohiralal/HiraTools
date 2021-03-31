@@ -115,7 +115,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			UnsafeUtility.MemCpy(_datasets[1], _datasets[0], _datasets.BlackboardSize);
 
 			var count = _currentPlan.Count;
-			for (var i = (byte) (_currentPlan.CurrentIndex - 1); i < count; i++)
+			for (var i = _currentPlan.CurrentIndex; i < count; i++)
 			{
 				_actions[i].Break(out var precondition, out _, out var effect);
 

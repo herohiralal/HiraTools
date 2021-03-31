@@ -50,8 +50,10 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			set => Container[index + 3] = value;
 		}
 
-        public bool CanPop => CurrentIndex < Count;
-
-        public byte Pop() => this[CurrentIndex++];
+        public void InvalidatePlan() => CurrentIndex = byte.MaxValue;
+        public void RestartPlan() => CurrentIndex = 0;
+        public bool CanMoveNext => CurrentIndex < Count;
+        public void MoveNext() => CurrentIndex++;
+        public byte CurrentElement => this[CurrentIndex];
 	}
 }
