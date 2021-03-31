@@ -26,7 +26,8 @@ namespace HiraEngine.Components.AI.Internal
                 case ExecutionStatus.InProgress:
                     return ExecutionStatus.InProgress;
                 case ExecutionStatus.Succeeded:
-                    _children.Dequeue().OnExecutionSuccess();
+                    _children.Peek().OnExecutionSuccess();
+                    _children.Dequeue().Dispose();
                     if (_children.Count == 0) return ExecutionStatus.Succeeded;
                     else
                     {
@@ -34,30 +35,26 @@ namespace HiraEngine.Components.AI.Internal
                         return ExecutionStatus.InProgress;
                     }
                 case ExecutionStatus.Failed:
-                    _children.Dequeue().OnExecutionFailure();
+                    _children.Peek().OnExecutionFailure();
+                    _children.Dequeue().Dispose();
                     return ExecutionStatus.Failed;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        public override void OnExecutionSuccess() => GenericPool<SequenceExecutable>.Return(this);
-
-        public override void OnExecutionFailure() => GenericPool<SequenceExecutable>.Return(this);
-
         public override void OnExecutionAbort()
         {
-            _children.Dequeue().OnExecutionAbort();
-            GenericPool<SequenceExecutable>.Return(this);
+            _children.Peek().OnExecutionAbort();
+            _children.Dequeue().Dispose();
         }
+
+        public override void Dispose() => GenericPool<SequenceExecutable>.Return(this);
 
         public void OnRetrieve()
         {
         }
 
-        public void OnReturn()
-        {
-            _children.Clear();
-        }
+        public void OnReturn() => _children.Clear();
     }
 }

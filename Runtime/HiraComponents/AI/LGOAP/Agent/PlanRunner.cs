@@ -28,6 +28,11 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 				service.OnServiceStop();
 
 			_currentExecutable.OnExecutionAbort();
+                    
+            foreach (var service in _services)
+                service.Dispose();
+                    
+            _currentExecutable.Dispose();
 
 			_currentExecutable = newExecutable;
 			_services = services;
@@ -52,6 +57,11 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 						service.OnServiceStop();
 
 					_currentExecutable.OnExecutionSuccess();
+                    
+                    foreach (var service in _services)
+                        service.Dispose();
+                    
+                    _currentExecutable.Dispose();
 
 					_currentExecutable = EmptyExecutable.INSTANCE;
 					_services = no_services;
@@ -66,6 +76,11 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 						service.OnServiceStop();
 
 					_currentExecutable.OnExecutionFailure();
+                    
+                    foreach (var service in _services)
+                        service.Dispose();
+                    
+                    _currentExecutable.Dispose();
 
 					_currentExecutable = EmptyExecutable.INSTANCE;
 					_services = no_services;

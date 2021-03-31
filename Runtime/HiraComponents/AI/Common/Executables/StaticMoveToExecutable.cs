@@ -46,15 +46,9 @@ namespace HiraEngine.Components.AI.Internal
                     ? ExecutionStatus.Succeeded
                     : ExecutionStatus.InProgress;
 
-        public override void OnExecutionAbort()
-        {
-	        _navMeshAgent.isStopped = true;
-	        GenericPool<StaticMoveToExecutable>.Return(this);
-        }
+        public override void OnExecutionAbort() => _navMeshAgent.isStopped = true;
 
-        public override void OnExecutionFailure() => GenericPool<StaticMoveToExecutable>.Return(this);
-
-        public override void OnExecutionSuccess() => GenericPool<StaticMoveToExecutable>.Return(this);
+        public override void Dispose() => GenericPool<StaticMoveToExecutable>.Return(this);
 
         public void OnRetrieve()
         {

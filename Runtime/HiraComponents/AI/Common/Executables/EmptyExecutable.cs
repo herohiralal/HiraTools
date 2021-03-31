@@ -2,8 +2,11 @@
 {
     public class EmptyExecutable : Executable
     {
-        public static readonly EmptyExecutable INSTANCE = new EmptyExecutable();
+        private EmptyExecutable()
+        {
+        }
 
+        public static readonly EmptyExecutable INSTANCE = new EmptyExecutable();
         public override ExecutionStatus Execute(float deltaTime) => ExecutionStatus.InProgress;
     }
 }

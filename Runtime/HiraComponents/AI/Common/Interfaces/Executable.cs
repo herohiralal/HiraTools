@@ -7,13 +7,13 @@
         Failed
     }
 
-    public abstract class Executable
+    public abstract class Executable : System.IDisposable
     {
         public virtual void OnExecutionStart()
         {
         }
 
-        public virtual ExecutionStatus Execute(float deltaTime) => ExecutionStatus.Succeeded;
+        public abstract ExecutionStatus Execute(float deltaTime);
 
         public virtual void OnExecutionSuccess()
         {
@@ -24,6 +24,10 @@
         }
 
         public virtual void OnExecutionAbort()
+        {
+        }
+
+        public virtual void Dispose()
         {
         }
     }
