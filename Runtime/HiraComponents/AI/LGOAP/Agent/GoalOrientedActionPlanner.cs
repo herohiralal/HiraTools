@@ -95,7 +95,7 @@ namespace HiraEngine.Components.AI.LGOAP
 				else
 				{
 					_currentPlanInvalidated = true;
-					unsafe
+                    if (_goalResult.First[0] == 0) unsafe // if it's the fallback goal
 					{
 						// this will directly modify the blackboard, and not broadcast any events
 						// but that is exactly what we want, because the modification is intended
