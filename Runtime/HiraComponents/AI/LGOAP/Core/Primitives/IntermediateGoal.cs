@@ -11,7 +11,7 @@ namespace HiraEngine.Components.AI.LGOAP
     {
         public IBlackboardDecorator[] Precondition => Collection1;
         public IBlackboardScoreCalculator[] CostCalculator => Collection2;
-        public IBlackboardEffector[] Effector => Collection3;
+        public IBlackboardEffector[] Effect => Collection3;
         public IBlackboardDecorator[] Targets => Collection4;
     }
 }

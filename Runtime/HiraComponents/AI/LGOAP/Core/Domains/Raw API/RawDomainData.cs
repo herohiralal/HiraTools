@@ -1,16 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using HiraEngine.Components.Blackboard.Internal;
 using HiraEngine.Components.Blackboard.Raw;
+using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
 namespace HiraEngine.Components.AI.LGOAP.Raw
 {
-    public readonly unsafe struct RawDomainData
+    public unsafe struct RawDomainData : IDisposable
     {
+        private NativeArray<byte> _data;
         [NativeDisableUnsafePtrRestriction] private readonly byte* _address;
 
-        public RawDomainData(byte* address) => _address = address;
+        private RawDomainData(NativeArray<byte> data)
+        {
+            _data = data;
+            _address = (byte*) data.GetUnsafePtr();
+        }
+
+        public void Dispose() => _data.Dispose();
 
         public RawInsistenceCalculatorsArray InsistenceCalculators => new RawInsistenceCalculatorsArray(_address);
 
@@ -37,12 +46,12 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
             }
         }
 
-        public static RawDomainData Create(
+        private static void Compile(
+            byte* address,
             IEnumerable<IEnumerable<IBlackboardScoreCalculator>> insistenceCalculators,
             IEnumerable<IBlackboardEffector> restarters,
-            byte* address,
-            params (IEnumerable<IEnumerable<IBlackboardDecorator>>,
-                IEnumerable<(IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>)[] layers)
+            IEnumerable<(IEnumerable<IEnumerable<IBlackboardDecorator>>,
+                IEnumerable<(IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>)> layers)
         {
             var createdInsistenceCalculators = RawInsistenceCalculatorsArray.Create(insistenceCalculators, address);
             var size = createdInsistenceCalculators.Size;
@@ -52,21 +61,17 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
             
             size += sizeof(byte); // skip layer count
 
-            byte count = 0;
             foreach (var (targets, actions) in layers)
             {
                 size += RawLayer.Create(targets, actions, address + size).Size;
-                count++;
             }
-
-            return new RawDomainData(address) {LayerCount = count};
         }
 
-        public static ushort GetSize(
+        private static ushort GetSize(
             IEnumerable<IEnumerable<IBlackboardScoreCalculator>> insistenceCalculators,
             IEnumerable<IBlackboardEffector> restarters,
-            params (IEnumerable<IEnumerable<IBlackboardDecorator>>,
-                IEnumerable<(IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>)[] layers)
+            IEnumerable<(IEnumerable<IEnumerable<IBlackboardDecorator>>,
+                IEnumerable<(IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>)> layers)
         {
             ushort size = 0;
 
@@ -82,6 +87,38 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
             }
 
             return size;
+        }
+
+        public static RawDomainData Create(Goal[] goals, IBlackboardEffector[] restarters, Action[] actions, params IntermediateGoal[][] layers)
+        {
+            // arrange data for compiler
+            var layerData = new (IEnumerable<IEnumerable<IBlackboardDecorator>>, IEnumerable<(IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>)[layers.Length + 1];
+
+            var insistenceCalculators = goals.Select(g => g.InsistenceCalculators).ToArray();
+            layerData[0].Item1 = goals.Select(g => g.Targets).ToArray();
+
+            for (var i = 0; i < layers.Length; i++)
+            {
+                layerData[i].Item2 = layers[i].Select<IntermediateGoal, (IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>(ig =>
+                    (ig.Precondition, ig.CostCalculator, ig.Effect)).ToArray();
+
+                layerData[i + 1].Item1 = layers[i].Select(ig => ig.Targets).ToArray();
+            }
+
+            layerData[layers.Length].Item2 = actions.Select<Action, (IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>(a =>
+                (a.Precondition, a.CostCalculator, a.Effect)).ToArray();
+
+            // determine required size
+            var size = GetSize(insistenceCalculators, restarters, layerData);
+            
+            // allocate
+            var rawData = new NativeArray<byte>(size, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
+            
+            // compile
+            Compile((byte*) rawData.GetUnsafePtr(), insistenceCalculators, restarters, layerData);
+
+            // finalize
+            return new RawDomainData(rawData) {LayerCount = (byte) (layers.Length + 1)};
         }
     }
 }
