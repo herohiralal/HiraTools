@@ -1,5 +1,4 @@
 ﻿using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 
 namespace HiraEngine.Components.AI.LGOAP.Internal
 {
@@ -11,54 +10,48 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		Success = 3
 	}
 
-	public unsafe struct PlannerResult
+	public struct PlannerResult
 	{
 		public PlannerResult(byte bufferSize, Allocator allocator) =>
-			_container = new NativeArray<byte>(bufferSize + 3, allocator, NativeArrayOptions.UninitializedMemory)
+			Container = new NativeArray<byte>(bufferSize + 3, allocator, NativeArrayOptions.UninitializedMemory)
 			{
 				[0] = 0,
 				[1] = (byte) PlannerResultType.Uninitialized,
                 [2] = 0
 			};
 
-		public void Dispose() => _container.Dispose();
+		public void Dispose() => Container.Dispose();
 
-		private NativeArray<byte> _container;
+		public NativeArray<byte> Container;
 
 		public byte Count
 		{
-			get => _container[0];
-			set => _container[0] = value;
+			get => Container[0];
+			set => Container[0] = value;
 		}
 
 		public PlannerResultType ResultType
 		{
-			get => (PlannerResultType) _container[1];
-			set => _container[1] = (byte) value;
+			get => (PlannerResultType) Container[1];
+			set => Container[1] = (byte) value;
 		}
 
-		public byte BufferSize => (byte) (_container.Length - 3);
+		public byte BufferSize => (byte) (Container.Length - 3);
 
         public byte CurrentIndex
         {
-            get => _container[2];
-            set => _container[2] = value;
+            get => Container[2];
+            set => Container[2] = value;
         }
 
 		public byte this[byte index]
 		{
-			get => _container[index + 3];
-			set => _container[index + 3] = value;
+			get => Container[index + 3];
+			set => Container[index + 3] = value;
 		}
 
         public bool CanPop => CurrentIndex < Count;
 
         public byte Pop() => this[CurrentIndex++];
-
-		public byte* GetUnsafePtr() => 3 + (byte*) _container.GetUnsafePtr();
-
-		public byte* GetUnsafeReadOnlyPtr() => 3 + (byte*) _container.GetUnsafeReadOnlyPtr();
-
-		public void CopyFrom(PlannerResult other) => other._container.CopyFrom(_container);
 	}
 }

@@ -87,7 +87,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 
 			if (previousLayerResult == PlannerResultType.Unchanged && CurrentPlanIsStillValid())
 			{
-				_output.CopyFrom(_currentPlan);
+				_output.Container.CopyFrom(_currentPlan.Container);
 				_output.ResultType = PlannerResultType.Unchanged;
 				return;
 			}
@@ -109,7 +109,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		{
 			var currentPlanResult = _currentPlan.ResultType;
 
-			if (currentPlanResult != PlannerResultType.Success || currentPlanResult != PlannerResultType.Unchanged)
+			if (currentPlanResult != PlannerResultType.Success && currentPlanResult != PlannerResultType.Unchanged)
 				return false;
 
 			UnsafeUtility.MemCpy(_datasets[1], _datasets[0], _datasets.BlackboardSize);

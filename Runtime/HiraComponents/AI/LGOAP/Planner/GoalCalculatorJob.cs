@@ -18,7 +18,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
         
         [ReadOnly] private readonly NativeArray<byte> _blackboard; // persistent
         [NativeDisableUnsafePtrRestriction] [ReadOnly] private readonly RawInsistenceCalculatorsArray _insistenceCalculators;
-		[WriteOnly] private PlannerResult _result; // reused
+		private PlannerResult _result; // reused
 	
 		public void Execute()
 		{
