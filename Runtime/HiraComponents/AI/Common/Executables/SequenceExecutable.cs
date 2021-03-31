@@ -6,7 +6,7 @@ namespace HiraEngine.Components.AI.Internal
 {
     public class SequenceExecutable : Executable, IPoolable
     {
-        public SequenceExecutable Init(IEnumerable<IExecutableProvider> executableProviders, GameObject target, IBlackboardComponent blackboard)
+        public SequenceExecutable Init(IEnumerable<IExecutableProvider> executableProviders, HiraComponentContainer target, IBlackboardComponent blackboard)
         {
             foreach (var executableProvider in executableProviders)
                 _children.Enqueue(executableProvider.GetExecutable(target, blackboard));

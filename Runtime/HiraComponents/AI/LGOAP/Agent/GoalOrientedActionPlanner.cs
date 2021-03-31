@@ -22,7 +22,7 @@ namespace HiraEngine.Components.AI.LGOAP
 
 		public GoalOrientedActionPlanner() => _planRunner = new PlanRunner(OnPlanRunnerFinished);
 
-		[SerializeField] private GameObject targetGameObject = null;
+		[SerializeField] private HiraComponentContainer targetGameObject = null;
 		[SerializeField] private HiraBlackboardComponent blackboard = null;
 		[SerializeField] private GoalOrientedActionPlannerDomain domain = null;
 		[SerializeField] private byte maxPlanLength = 5;
@@ -42,7 +42,6 @@ namespace HiraEngine.Components.AI.LGOAP
 
         private void Reset()
 		{
-			targetGameObject = gameObject;
 			blackboard = GetComponent<HiraBlackboardComponent>();
 		}
 

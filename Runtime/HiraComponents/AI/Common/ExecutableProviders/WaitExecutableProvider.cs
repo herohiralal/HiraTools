@@ -6,7 +6,7 @@ namespace HiraEngine.Components.AI.Internal
     {
         [SerializeField] private float time = 1f;
 
-        public Executable GetExecutable(GameObject target, IBlackboardComponent blackboard) =>
+        public Executable GetExecutable(HiraComponentContainer target, IBlackboardComponent blackboard) =>
             GenericPool<WaitExecutable>.Retrieve().Init(time);
     }
 }

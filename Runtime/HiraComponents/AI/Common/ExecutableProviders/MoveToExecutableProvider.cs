@@ -1,5 +1,6 @@
 ﻿using HiraEngine.Components.Blackboard;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace HiraEngine.Components.AI.Internal
 {
@@ -10,12 +11,14 @@ namespace HiraEngine.Components.AI.Internal
 
         [SerializeField] private float tolerance = 0.1f;
 
-        public Executable GetExecutable(GameObject target, IBlackboardComponent blackboard)
+        public Executable GetExecutable(HiraComponentContainer target, IBlackboardComponent blackboard)
         {
-            var movementComponent = target.GetComponentInChildren<IMovementComponent>();
-            return movementComponent != null
-                ? GenericPool<StaticMoveToExecutable>.Retrieve().Init(movementComponent, blackboard, targetPosition, tolerance)
-                : (Executable) AutoFailExecutable.INSTANCE;
+	        if (target is IContainsComponent<NavMeshAgent> navigableTarget && navigableTarget.Component != null)
+	        {
+		        return GenericPool<StaticMoveToExecutable>.Retrieve().Init(navigableTarget.Component, blackboard, targetPosition, tolerance);
+	        }
+	        
+	        return AutoFailExecutable.INSTANCE;
         }
     }
 }

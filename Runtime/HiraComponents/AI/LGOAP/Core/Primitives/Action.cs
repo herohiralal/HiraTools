@@ -16,7 +16,7 @@ namespace HiraEngine.Components.AI.LGOAP
         public IBlackboardScoreCalculator[] CostCalculator => Collection2;
         public IBlackboardEffector[] Effect => Collection3;
 
-        public Executable GetTask(GameObject target, IBlackboardComponent blackboard) =>
+        public Executable GetTask(HiraComponentContainer target, IBlackboardComponent blackboard) =>
             Collection4.Length switch
             {
                 0 => AutoFailExecutable.INSTANCE,
@@ -24,7 +24,7 @@ namespace HiraEngine.Components.AI.LGOAP
                 _ => GenericPool<SequenceExecutable>.Retrieve().Init(Collection4, target, blackboard)
             };
 
-        public Service[] GetServices(GameObject target, IBlackboardComponent blackboard) =>
+        public Service[] GetServices(HiraComponentContainer target, IBlackboardComponent blackboard) =>
             Collection5.Select(sp => sp.GetService(target, blackboard)).ToArray();
     }
 }
