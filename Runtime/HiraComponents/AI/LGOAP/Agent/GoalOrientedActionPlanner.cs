@@ -210,8 +210,7 @@ namespace HiraEngine.Components.AI.LGOAP
                     break;
 				case PlannerResultType.Success:
 				{
-					if (currentResult.CanMoveNext) UpdatePlanRunner();
-					else throw new Exception("Unable to pop the plan stack.");
+					UpdatePlanRunner();
 					break;
 				}
 				default:

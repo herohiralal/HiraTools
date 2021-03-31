@@ -52,7 +52,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 
         public void InvalidatePlan() => CurrentIndex = byte.MaxValue;
         public void RestartPlan() => CurrentIndex = 0;
-        public bool CanMoveNext => CurrentIndex < Count;
+        public bool CanMoveNext => CurrentIndex < Count - 1;
         public void MoveNext() => CurrentIndex++;
         public byte CurrentElement => this[CurrentIndex];
 	}
