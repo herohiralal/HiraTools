@@ -1,21 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using UnityEngine.Internal;
 
-public static class MainThreadDispatcherHelper
-{
-    public static void ScheduleSynchronouslyOnMainThread(this Action action) => MainThreadDispatcher.ScheduleSync(action);
-    public static void ScheduleSynchronouslyOnMainThread_NoThreadCheck(this Action action) => MainThreadDispatcher.ScheduleSync_NoThreadCheck(action);
-    public static void ScheduleOnMainThread(this Action action) => MainThreadDispatcher.Schedule(action);
-}
-
-namespace UnityEngine.Internal
+namespace UnityEngine
 {
     [HiraManager]
     [AddComponentMenu("")]
     internal class MainThreadDispatcher : MonoBehaviour
     {
+        private class ScheduleSyncHelper
+        {
+            public Action Action;
+            public bool IsDone;
+
+            public void Invoke()
+            {
+                Action.Invoke();
+                IsDone = true;
+            }
+        }
+        
         [RuntimeInitializeOnLoadMethod]
         private static void ResetExecutionQueue()
         {
@@ -46,14 +50,13 @@ namespace UnityEngine.Internal
 
         public static void ScheduleSync_NoThreadCheck(Action action)
         {
-            var hasRun = false;
-            Schedule(() =>
-            {
-                action.Invoke();
-                hasRun = true;
-            });
+            var helper = GenericPool<ScheduleSyncHelper>.Retrieve();
+            helper.Action = action;
+            helper.IsDone = false;
+            Schedule(helper.Invoke);
 
-            while (!hasRun) Thread.Sleep(10);
+            while (!helper.IsDone) Thread.Sleep(10);
+            GenericPool<ScheduleSyncHelper>.Return(helper);
         }
 
         public static void Schedule(Action action)
