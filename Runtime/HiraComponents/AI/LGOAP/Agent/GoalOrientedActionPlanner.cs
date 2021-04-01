@@ -20,8 +20,6 @@ namespace HiraEngine.Components.AI.LGOAP
 			PlannerRunning
 		}
 
-		public GoalOrientedActionPlanner() => _planRunner = new PlanRunner(OnPlanRunnerFinished);
-
 		[SerializeField] private HiraComponentContainer targetGameObject = null;
 		[SerializeField] private HiraBlackboardComponent blackboard = null;
 		[SerializeField] private GoalOrientedActionPlannerDomain domain = null;
@@ -59,6 +57,8 @@ namespace HiraEngine.Components.AI.LGOAP
             blackboard.OnKeyEssentialToDecisionMakingUpdate += SchedulePlanner;
             
             SchedulePlanner();
+
+            _planRunner = new PlanRunner(targetGameObject, blackboard, domain, OnPlanRunnerFinished);
 		}
 
         public void Shutdown()
@@ -72,6 +72,8 @@ namespace HiraEngine.Components.AI.LGOAP
 			_plannerResult.Second.Dispose();
 
             blackboard.OnKeyEssentialToDecisionMakingUpdate -= SchedulePlanner;
+
+            _planRunner = default;
         }
 
 		private void Update() => _planRunner.Update(Time.deltaTime);
@@ -121,14 +123,8 @@ namespace HiraEngine.Components.AI.LGOAP
 
         private void SchedulePlanner() => StartCoroutine(RunPlanner());
 
-		private void UpdatePlanRunner()
-		{
-			_actionIndex = _plannerResult.First.CurrentElement;
-			var nextAction = domain.Actions[_actionIndex];
-			var task = nextAction.GetTask(targetGameObject, blackboard);
-			var services = nextAction.GetServices(targetGameObject, blackboard);
-			_planRunner.UpdateTask(task, services);
-		}
+        private void UpdatePlanRunner() =>
+            _planRunner.UpdateTask(_actionIndex = _plannerResult.First.CurrentElement);
 
 		private IEnumerator RunPlanner()
 		{

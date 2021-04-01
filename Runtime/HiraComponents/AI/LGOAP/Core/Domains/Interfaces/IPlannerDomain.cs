@@ -4,6 +4,9 @@ namespace HiraEngine.Components.AI.LGOAP
 {
     public interface IPlannerDomain
     {
+	    Goal[] Goals { get; }
+	    Action[] Actions { get; }
+		bool IsInitialized { get; }
         RawDomainData DomainData { get; }
     }
 }

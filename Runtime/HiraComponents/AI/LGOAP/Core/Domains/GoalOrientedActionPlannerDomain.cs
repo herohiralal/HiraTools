@@ -17,7 +17,18 @@ namespace HiraEngine.Components.AI.LGOAP
         public Goal[] Goals => Collection1;
         public Action[] Actions => Collection2;
         public IBlackboardEffector[] Restarters => Collection3;
-        public void Initialize() => _rawDomainData = RawDomainData.Create(Goals, Restarters, Actions);
-        public void Shutdown() => _rawDomainData.Dispose();
+        public bool IsInitialized { get; private set; }
+
+        public void Initialize()
+        {
+            _rawDomainData = RawDomainData.Create(Goals, Restarters, Actions);
+            IsInitialized = true;
+        }
+
+        public void Shutdown()
+        {
+            _rawDomainData.Dispose();
+            IsInitialized = false;
+        }
     }
 }
