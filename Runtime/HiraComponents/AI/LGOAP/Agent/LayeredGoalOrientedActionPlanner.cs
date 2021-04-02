@@ -23,8 +23,6 @@ namespace HiraEngine.Components.AI.LGOAP
 
         private RawBlackboardArrayWrapper _plannerDatasets;
 
-		private bool _isInitialized = false;
-
 		private void OnValidate()
 		{
             maxPlanLength = (byte) Mathf.Max(maxPlanLength, 2);
@@ -45,9 +43,11 @@ namespace HiraEngine.Components.AI.LGOAP
 			}
 		}
 
+        public InitializationState InitializationStatus { get; private set; } = InitializationState.Inactive;
+
 		public void Initialize()
 		{
-			Assert.IsFalse(_isInitialized);
+			Assert.AreEqual(InitializationStatus, InitializationState.Inactive);
 			Assert.IsTrue(target != null);
 			Assert.IsTrue(blackboard != null);
 			Assert.IsTrue(domain != null && domain is IPlannerDomain);
@@ -102,7 +102,7 @@ namespace HiraEngine.Components.AI.LGOAP
 				validDomain,
 				_bottomLayerRunner.OnPlanRunnerFinished);
 
-			_isInitialized = true;
+            InitializationStatus = InitializationState.Active;
 
             blackboard.OnKeyEssentialToDecisionMakingUpdate += _topLayerRunner.SchedulePlanner;
 		}
@@ -111,6 +111,8 @@ namespace HiraEngine.Components.AI.LGOAP
 
 		private IEnumerator ShutdownCoroutine()
 		{
+            Assert.AreEqual(InitializationStatus, InitializationState.Active);
+            InitializationStatus = InitializationState.ShuttingDown;
             blackboard.OnKeyEssentialToDecisionMakingUpdate -= _topLayerRunner.SchedulePlanner;
             
             if (_topLayerRunner.SelfOrAnyChildRunning)
@@ -134,7 +136,7 @@ namespace HiraEngine.Components.AI.LGOAP
 			_intermediateLayerRunners = null;
 			_bottomLayerRunner = null;
 
-			_isInitialized = false;
+            InitializationStatus = InitializationState.Inactive;
 		}
 	}
 }

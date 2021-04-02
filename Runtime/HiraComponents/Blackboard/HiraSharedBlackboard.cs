@@ -8,6 +8,7 @@ namespace UnityEngine
     {
         [SerializeField] public HiraBlackboardCore core = null;
         public HiraBlackboardTemplate Template => core.template;
+        public InitializationState InitializationStatus => core.InitializationStatus;
         public void Initialize() => core.Initialize();
         public void Shutdown() => core.Shutdown();
         public NativeArray<byte> Data => core.Data;

@@ -18,18 +18,21 @@ namespace HiraEngine.Components.AI.LGOAP
         public byte IntermediateLayerCount => 1;
         public Action[] Actions => Collection3;
         public IBlackboardEffector[] Restarters => Collection4;
-        public bool IsInitialized { get; private set; }
+        public bool IsInitialized => InitializationStatus == InitializationState.Active;
+        public InitializationState InitializationStatus { get; private set; } = InitializationState.Inactive;
 
         public void Initialize()
         {
             _rawDomainData = RawDomainData.Create(Goals, Restarters, Actions, IntermediateGoals);
-            IsInitialized = true;
+
+            InitializationStatus = InitializationState.Active;
         }
 
         public void Shutdown()
         {
             _rawDomainData.Dispose();
-            IsInitialized = false;
+
+            InitializationStatus = InitializationState.Inactive;
         }
     }
 }

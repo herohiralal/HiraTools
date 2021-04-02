@@ -51,6 +51,8 @@ namespace UnityEngine
             }
         }
 
+        public InitializationState InitializationStatus { get; private set; } = InitializationState.Inactive;
+
         public unsafe void Initialize()
         {
             _keyIndices = new Dictionary<string, ushort>();
@@ -89,6 +91,8 @@ namespace UnityEngine
             }
 
             Assert.AreEqual(_cachedTotalSize, index);
+
+            InitializationStatus = InitializationState.Active;
         }
 
         public void Shutdown()
@@ -97,6 +101,8 @@ namespace UnityEngine
 
             _keyTraits = null;
             _keyIndices = null;
+
+            InitializationStatus = InitializationState.Inactive;
         }
 
         public NativeArray<byte> GetNewBlackboard()

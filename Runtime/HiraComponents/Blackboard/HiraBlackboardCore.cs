@@ -11,6 +11,8 @@ namespace UnityEngine
         [NonSerialized] private NativeArray<byte> _data = default;
         [SerializeField] public bool broadcastKeyUpdateEvents = true;
 
+        public InitializationState InitializationStatus { get; private set; } = InitializationState.Inactive;
+
         public HiraBlackboardTemplate Template => template;
 
         public NativeArray<byte> Data => _data;
@@ -27,12 +29,16 @@ namespace UnityEngine
         {
             _data = template.GetNewBlackboard();
             template.OnInstanceSyncKeyUpdate += OnInstanceSyncedValueUpdate;
+
+            InitializationStatus = InitializationState.Active;
         }
 
         public unsafe void Shutdown()
         {
             template.OnInstanceSyncKeyUpdate -= OnInstanceSyncedValueUpdate;
             _data.Dispose();
+
+            InitializationStatus = InitializationState.Inactive;
         }
 
         public T GetValue<T>(string keyName) where T : unmanaged =>

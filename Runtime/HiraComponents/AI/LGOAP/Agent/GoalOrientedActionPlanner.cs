@@ -39,6 +39,8 @@ namespace HiraEngine.Components.AI.LGOAP
         private bool _updateTaskOnUnchangedResult = false;
         private byte _actionIndex = byte.MaxValue;
 
+        public InitializationState InitializationStatus { get; private set; } = InitializationState.Inactive;
+
         private void Reset()
 		{
 			blackboard = GetComponent<HiraBlackboardComponent>();
@@ -59,6 +61,8 @@ namespace HiraEngine.Components.AI.LGOAP
             SchedulePlanner();
 
             _planRunner = new TaskRunner(targetGameObject, blackboard, domain, OnPlanRunnerFinished);
+
+            InitializationStatus = InitializationState.Active;
 		}
 
         public void Shutdown()
@@ -74,6 +78,8 @@ namespace HiraEngine.Components.AI.LGOAP
             blackboard.OnKeyEssentialToDecisionMakingUpdate -= SchedulePlanner;
 
             _planRunner = default;
+
+            InitializationStatus = InitializationState.Inactive;
         }
 
 		private void Update() => _planRunner.Update(Time.deltaTime);
