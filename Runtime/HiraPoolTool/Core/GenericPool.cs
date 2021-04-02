@@ -36,5 +36,7 @@ namespace UnityEngine
 
             pool.Add(target);
         }
+
+        public static void Empty() => pool.Clear();
     }
 }

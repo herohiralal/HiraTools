@@ -3,16 +3,17 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
+using UnityEngine;
 
 namespace HiraEngine.Components.AI.LGOAP.Internal
 {
 	[BurstCompile(FloatPrecision.Low, FloatMode.Fast, DisableSafetyChecks = true)]
 	public unsafe struct GoalCalculatorJob : IJob
 	{
-        public GoalCalculatorJob(NativeArray<byte> blackboard, RawDomainData domainData, PlannerResult result)
+        public GoalCalculatorJob(IBlackboardComponent blackboard, RawInsistenceCalculatorsArray domainData, PlannerResult result)
         {
-            _blackboard = blackboard;
-            _insistenceCalculators = domainData.InsistenceCalculators;
+            _blackboard = blackboard.Data;
+            _insistenceCalculators = domainData;
             _result = result;
         }
         

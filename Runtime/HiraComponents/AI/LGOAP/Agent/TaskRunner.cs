@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace HiraEngine.Components.AI.LGOAP.Internal
 {
-	public struct PlanRunner
+	public class TaskRunner
 	{
 		private static readonly Service[] no_services = new Service[0];
 
-		public PlanRunner(HiraComponentContainer target, IBlackboardComponent blackboard, IPlannerDomain domain, RunnerFinishedDelegate onPlanRunnerFinished)
+		public TaskRunner(HiraComponentContainer target, IBlackboardComponent blackboard, IPlannerDomain domain, Action<bool> onPlanRunnerFinished)
 		{
 			_domain = domain;
 			_target = target;
@@ -23,7 +23,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		private readonly HiraComponentContainer _target;
 		private readonly IBlackboardComponent _blackboard;
 		private readonly IPlannerDomain _domain;
-		private readonly RunnerFinishedDelegate _onPlanRunnerFinished;
+		private readonly Action<bool> _onPlanRunnerFinished;
 
 		public void UpdateTask(byte index)
 		{

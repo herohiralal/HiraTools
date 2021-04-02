@@ -34,7 +34,7 @@ namespace HiraEngine.Components.AI.LGOAP
 		[NonSerialized] private RawBlackboardArrayWrapper _plannerDatasets = default;
 		[NonSerialized] private FlipFlopPool<PlannerResult> _plannerResult = default;
 
-		private PlanRunner _planRunner;
+		private TaskRunner _planRunner;
         private bool _currentPlanInvalidated = false;
         private bool _updateTaskOnUnchangedResult = false;
         private byte _actionIndex = byte.MaxValue;
@@ -58,7 +58,7 @@ namespace HiraEngine.Components.AI.LGOAP
             
             SchedulePlanner();
 
-            _planRunner = new PlanRunner(targetGameObject, blackboard, domain, OnPlanRunnerFinished);
+            _planRunner = new TaskRunner(targetGameObject, blackboard, domain, OnPlanRunnerFinished);
 		}
 
         public void Shutdown()
@@ -155,7 +155,7 @@ namespace HiraEngine.Components.AI.LGOAP
 			var goalResult = _goalResult.Second;
 			goalResult.CurrentIndex = _goalResult.First[0];
 
-			var goalCalculator = new GoalCalculatorJob(blackboard.Data, domain.DomainData, goalResult)
+			var goalCalculator = new GoalCalculatorJob(blackboard, domain.DomainData.InsistenceCalculators, goalResult)
 				.Schedule();
 
 			_goalResult.Flip();

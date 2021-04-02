@@ -15,6 +15,7 @@ namespace HiraEngine.Components.AI.LGOAP
         [NonSerialized] private RawDomainData _rawDomainData = default;
         public RawDomainData DomainData => _rawDomainData;
         public Goal[] Goals => Collection1;
+        public byte IntermediateLayerCount => 0;
         public Action[] Actions => Collection2;
         public IBlackboardEffector[] Restarters => Collection3;
         public bool IsInitialized { get; private set; }
