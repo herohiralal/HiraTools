@@ -8,6 +8,7 @@
 		bool SelfAndAllChildrenIdle { get; }
 		bool SelfOrAnyChildScheduled { get; }
 		bool SelfOrAnyChildRunning { get; }
-		void IgnoreResultOnce();
+        void IgnoreScheduledPlannerRunForSelfAndChild();
+        void IgnorePlannerResultForSelfAndChild();
 	}
 }

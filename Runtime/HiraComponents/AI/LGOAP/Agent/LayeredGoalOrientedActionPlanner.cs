@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using HiraEngine.Components.AI.LGOAP.Internal;
+using HiraEngine.Components.Blackboard.Raw;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -12,7 +13,7 @@ namespace HiraEngine.Components.AI.LGOAP
 		[SerializeField] private HiraComponentContainer target = null;
 		[SerializeField] private HiraBlackboard blackboard = null;
 		[SerializeField] private ScriptableObject domain = null;
-		[SerializeField] private byte[] maxPlanLengths = { };
+		[SerializeField] private byte maxPlanLength = 4;
 		[SerializeField] private float[] maxFScores = { };
 
 		private TopLayerRunner _topLayerRunner = null;
@@ -20,22 +21,19 @@ namespace HiraEngine.Components.AI.LGOAP
 		private BottomLayerRunner _bottomLayerRunner = null;
 		private TaskRunner _taskRunner = null;
 
+        private RawBlackboardArrayWrapper _plannerDatasets;
+
 		private bool _isInitialized = false;
 
 		private void OnValidate()
 		{
+            maxPlanLength = (byte) Mathf.Max(maxPlanLength, 2);
 			blackboard = GetComponent<HiraBlackboard>();
 			if (domain != null)
 			{
 				if (domain is IPlannerDomain validPlannerDomain)
 				{
 					var totalLayerCount = validPlannerDomain.IntermediateLayerCount + 1;
-
-					Array.Resize(ref maxPlanLengths, totalLayerCount);
-					for (var i = 0; i < maxPlanLengths.Length; i++)
-					{
-						maxPlanLengths[i] = (byte) Mathf.Max(maxPlanLengths[i], 2);
-					}
 
 					Array.Resize(ref maxFScores, totalLayerCount);
 				}
@@ -56,7 +54,9 @@ namespace HiraEngine.Components.AI.LGOAP
 			var validDomain = (IPlannerDomain) domain;
 			Assert.IsTrue(validDomain.IsInitialized);
 			Assert.AreEqual(validDomain.IntermediateLayerCount + 1, maxFScores.Length);
-			Assert.AreEqual(validDomain.IntermediateLayerCount + 1, maxPlanLengths.Length);
+            Assert.IsTrue(maxPlanLength >= 2);
+
+            _plannerDatasets = new RawBlackboardArrayWrapper((byte) (maxPlanLength + 1), blackboard.Template);
 
 			// top layer
 			_topLayerRunner = new TopLayerRunner(this, blackboard, validDomain);
@@ -76,7 +76,9 @@ namespace HiraEngine.Components.AI.LGOAP
 					blackboard,
 					validDomain,
 					i,
-					maxFScores[i]);
+					maxFScores[i],
+                    _plannerDatasets,
+                    maxPlanLength);
 
 				currentLink.Child = currentIntermediateLayer;
 				currentLink = currentIntermediateLayer;
@@ -89,7 +91,9 @@ namespace HiraEngine.Components.AI.LGOAP
 				blackboard,
 				validDomain,
 				i,
-				maxFScores[i]);
+				maxFScores[i],
+                _plannerDatasets,
+                maxPlanLength);
 
 			// task runner
 			_bottomLayerRunner.Runner = _taskRunner = new TaskRunner(
@@ -99,13 +103,32 @@ namespace HiraEngine.Components.AI.LGOAP
 				_bottomLayerRunner.OnPlanRunnerFinished);
 
 			_isInitialized = true;
+
+            blackboard.OnKeyEssentialToDecisionMakingUpdate += _topLayerRunner.SchedulePlanner;
 		}
 
 		public void Shutdown() => StartCoroutine(ShutdownCoroutine());
 
 		private IEnumerator ShutdownCoroutine()
 		{
-			while (_topLayerRunner.SelfOrAnyChildRunning) yield return null;
+            blackboard.OnKeyEssentialToDecisionMakingUpdate -= _topLayerRunner.SchedulePlanner;
+            
+            if (_topLayerRunner.SelfOrAnyChildRunning)
+            {
+                _topLayerRunner.IgnorePlannerResultForSelfAndChild();
+                while (_topLayerRunner.SelfOrAnyChildRunning) yield return null;
+            }
+
+            if (_topLayerRunner.SelfOrAnyChildScheduled)
+                _topLayerRunner.IgnorePlannerResultForSelfAndChild();
+            
+            _taskRunner.ForceClearTask();
+            
+            _bottomLayerRunner.Dispose();
+            foreach (var runner in _intermediateLayerRunners) runner.Dispose();
+            _topLayerRunner.Dispose();
+            
+            _plannerDatasets.Dispose();
 
 			_topLayerRunner = null;
 			_intermediateLayerRunners = null;

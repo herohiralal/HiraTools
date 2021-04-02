@@ -17,7 +17,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			PlannerResult previousLayerResult,
 			PlannerResult currentPlan,
 			float maxFScore,
-			RawBlackboardArrayWrapper datasets, IBlackboardComponent blackboard,
+			RawBlackboardArray datasets,
 			PlannerResult output)
 		{
 			// domain
@@ -34,8 +34,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			_maxFScore = maxFScore;
 
 			// runtime data
-			_datasets = datasets.Unwrap();
-			UnsafeUtility.MemCpy(_datasets[0], blackboard.Data.GetUnsafeReadOnlyPtr(), _datasets.BlackboardSize);
+			_datasets = datasets;
 
 			// output
 			_output = output;

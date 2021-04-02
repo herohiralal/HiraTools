@@ -2,13 +2,14 @@
 using System.Collections;
 using HiraEngine.Components.AI.LGOAP.Raw;
 using HiraEngine.Components.Blackboard.Raw;
+using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using UnityEngine;
 
 namespace HiraEngine.Components.AI.LGOAP.Internal
 {
-	public class BottomLayerRunner : IChildLayerRunner
+	public class BottomLayerRunner : IChildLayerRunner, IDisposable
 	{
 		public BottomLayerRunner(
 			IParentLayerRunner parent,
@@ -16,7 +17,9 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			 IBlackboardComponent blackboard,
 			IPlannerDomain domain,
 			byte layerIndex,
-			float maxFScore)
+			float maxFScore,
+            RawBlackboardArrayWrapper plannerDatasets,
+            byte maxPlanLength)
 		{
 			Parent = parent;
 			_coroutineRunner = coroutineRunner;
@@ -24,7 +27,17 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			_domain = domain.DomainData;
 			_layerIndex = layerIndex;
 			_maxFScore = maxFScore;
+
+            PlannerDatasets = plannerDatasets;
+            _result.First = new PlannerResult(maxPlanLength, Allocator.Persistent) {Count = 0};
+            _result.Second = new PlannerResult(maxPlanLength, Allocator.Persistent) {Count = 0};
 		}
+
+        public void Dispose()
+        {
+            _result.First.Dispose();
+            _result.Second.Dispose();
+        }
 		
 		public readonly IParentLayerRunner Parent;
 		public TaskRunner Runner { private get; set; }
@@ -46,24 +59,21 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		public bool SelfOrAnyChildScheduled => _currentState == LayerState.PlannerScheduled;
 		public bool SelfOrAnyChildRunning => _currentState == LayerState.PlannerRunning;
 
-		private bool _taskNeedsUpdate = true;
-		private bool _ignoreResultOnce = false;
-		public void IgnoreResultOnce()
-		{
-			switch (_currentState)
-			{
-				case LayerState.Idle:
-					break;
-				case LayerState.PlannerScheduled:
-					_ignoreResultOnce = true;
-					break;
-				case LayerState.PlannerRunning:
-					_ignoreResultOnce = true;
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-		}
+        private bool _ignoreScheduledPlannerRun = false;
+        private bool _ignorePlannerResult = false;
+        private bool _taskNeedsUpdate = true;
+
+        public void IgnoreScheduledPlannerRunForSelfAndChild()
+        {
+            if (_currentState == LayerState.PlannerScheduled) _ignoreScheduledPlannerRun = true;
+            else throw new Exception($"{nameof(IgnoreScheduledPlannerRunForSelfAndChild)} was called even though the planner was not scheduled.");
+        }
+
+        public void IgnorePlannerResultForSelfAndChild()
+        {
+            if (_currentState == LayerState.PlannerRunning) _ignorePlannerResult = true;
+            else throw new Exception($"{nameof(IgnorePlannerResultForSelfAndChild)} was called even though the planner was not running.");
+        }
 
 		public void OnPlanRunnerFinished(bool success)
 		{
@@ -109,8 +119,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 				Parent.Result.First,
 				_result.First,
 				_maxFScore,
-				PlannerDatasets,
-				_blackboard,
+				PlannerDatasets.Unwrap(),
 				_result.Second);
 			_result.Flip();
 			return output;
@@ -120,13 +129,15 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		{
 			_currentState = LayerState.PlannerScheduled;
 			yield return new WaitForEndOfFrame();
-            if (_ignoreResultOnce)
+            if (_ignoreScheduledPlannerRun)
             {
-	            _ignoreResultOnce = false;
+                _ignoreScheduledPlannerRun = false;
 	            _currentState = LayerState.Idle;
 	            yield break;
             }
 			_currentState = LayerState.PlannerRunning;
+
+            PlannerDatasets.CopyFirstFrom(_blackboard);
 
 			var jobHandle = CreateMainPlannerJob().Schedule();
 
@@ -136,9 +147,9 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		public void CollectResult()
 		{
 			_currentState = LayerState.Idle;
-	        if (_ignoreResultOnce)
+	        if (_ignorePlannerResult)
 	        {
-		        _ignoreResultOnce = false;
+                _ignorePlannerResult = false;
 		        return;
 	        }
 			var currentResult = _result.First;

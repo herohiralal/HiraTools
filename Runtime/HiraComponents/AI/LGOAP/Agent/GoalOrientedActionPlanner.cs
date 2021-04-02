@@ -162,12 +162,14 @@ namespace HiraEngine.Components.AI.LGOAP
 
 			// main planner
 
+            _plannerDatasets.CopyFirstFrom(blackboard);
+
 			var mainPlanner = new MainPlannerJob(
 					domain.DomainData[0],
 					_goalResult.First,
 					_plannerResult.First,
 					maxFScore,
-					_plannerDatasets, blackboard,
+					_plannerDatasets.Unwrap(),
 					_plannerResult.Second)
 				.Schedule(goalCalculator);
 

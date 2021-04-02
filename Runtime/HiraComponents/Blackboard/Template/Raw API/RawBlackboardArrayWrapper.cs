@@ -21,5 +21,11 @@ namespace HiraEngine.Components.Blackboard.Raw
         public void Dispose() => _container.Dispose();
 
         public unsafe RawBlackboardArray Unwrap() => new RawBlackboardArray((byte*) _container.GetUnsafePtr(), _count, _size);
+
+        public unsafe void CopyFirstFrom(IBlackboardComponent blackboard)
+        {
+            var data = (byte*) _container.GetUnsafePtr();
+            UnsafeUtility.MemCpy(data, blackboard.Data.GetUnsafeReadOnlyPtr(), _size);
+        }
     }
 }
