@@ -5,11 +5,13 @@ using UnityEngine;
 
 namespace HiraEngine.Components.AI.LGOAP
 {
-    [CreateAssetMenu(menuName = "Hiralal/AI/LGOAP Domain", fileName = "New LGOAPDomain")]
+    [CreateAssetMenu(menuName = "Hiralal/AI/LGOAP Domain (1 Intermediate Layer)", fileName = "New LGOAPDomain")]
     [HiraCollectionCustomizer(1, MaxObjectCount = byte.MaxValue, Title = "Goals")]
     [HiraCollectionCustomizer(2, MaxObjectCount = byte.MaxValue, Title = "Intermediate Goals")]
     [HiraCollectionCustomizer(3, MaxObjectCount = byte.MaxValue, Title = "Actions")]
-    public class LayeredGoalOrientedActionPlannerDomain : HiraCollection<Goal, IntermediateGoal, Action, IBlackboardEffector>, IInitializable, IPlannerDomain
+    [HiraCollectionCustomizer(4, MaxObjectCount = byte.MaxValue, 
+        RequiredAttributes = new[] {typeof(HiraBlackboardEffectorAttribute)}, Title = "Restarters")]
+    public class OneLayeredGoalOrientedActionPlannerDomain : HiraCollection<Goal, IntermediateGoal, Action, IBlackboardEffector>, IInitializable, IPlannerDomain
     {
         [NonSerialized] private RawDomainData _rawDomainData = default;
         public RawDomainData DomainData => _rawDomainData;
@@ -24,14 +26,12 @@ namespace HiraEngine.Components.AI.LGOAP
         public void Initialize()
         {
             _rawDomainData = RawDomainData.Create(Goals, Restarters, Actions, IntermediateGoals);
-
             InitializationStatus = InitializationState.Active;
         }
 
         public void Shutdown()
         {
             _rawDomainData.Dispose();
-
             InitializationStatus = InitializationState.Inactive;
         }
     }
