@@ -28,7 +28,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		    _layerIndex = layerIndex;
 		    _maxFScore = maxFScore;
 
-            PlannerDatasets = plannerDatasets;
+            _plannerDatasets = plannerDatasets;
             _result.First = new PlannerResult(maxPlanLength, Allocator.Persistent) {Count = 0};
             _result.Second = new PlannerResult(maxPlanLength, Allocator.Persistent) {Count = 0};
 	    }
@@ -48,7 +48,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
         private readonly byte _layerIndex;
         private readonly float _maxFScore;
 
-        public RawBlackboardArrayWrapper PlannerDatasets;
+        private RawBlackboardArrayWrapper _plannerDatasets;
 
         private FlipFlopPool<PlannerResult> _result;
         public ref FlipFlopPool<PlannerResult> Result => ref _result;
@@ -109,7 +109,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 	            Parent.Result.First,
 	            _result.First,
 	            _maxFScore,
-	            PlannerDatasets.Unwrap(),
+	            _plannerDatasets.Unwrap(),
 	            _result.Second);
             _result.Flip();
             return output;
@@ -127,7 +127,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
             }
 			_currentState = LayerState.PlannerRunning;
 
-            PlannerDatasets.CopyFirstFrom(_blackboard);
+            _plannerDatasets.CopyFirstFrom(_blackboard);
 
             var currentJobHandle = CreateMainPlannerJob().Schedule();
 

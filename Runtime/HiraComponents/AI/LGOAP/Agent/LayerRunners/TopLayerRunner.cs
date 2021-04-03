@@ -21,7 +21,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			_blackboard = blackboard;
 			_domain = domain.DomainData;
 
-			PlannerDatasets = plannerDatasets;
+			_plannerDatasets = plannerDatasets;
             _result.First = new PlannerResult(1, Allocator.Persistent) {Count = 1, [0] = byte.MaxValue};
             _result.Second = new PlannerResult(1, Allocator.Persistent) {Count = 1, [0] = byte.MaxValue};
 		}
@@ -38,7 +38,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		private readonly IBlackboardComponent _blackboard;
 		private readonly RawDomainData _domain;
 
-        public RawBlackboardArrayWrapper PlannerDatasets;
+        private RawBlackboardArrayWrapper _plannerDatasets;
 
 		private FlipFlopPool<PlannerResult> _result;
 		public ref FlipFlopPool<PlannerResult> Result => ref _result;
@@ -114,7 +114,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
             
 			_currentState = LayerState.PlannerRunning;
 
-            PlannerDatasets.CopyFirstFrom(_blackboard);
+            _plannerDatasets.CopyFirstFrom(_blackboard);
 
 			var currentJobHandle = CreateGoalCalculatorJob().Schedule();
 
