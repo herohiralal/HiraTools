@@ -14,12 +14,14 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		public TopLayerRunner(
 			MonoBehaviour coroutineRunner,
 			IBlackboardComponent blackboard,
-			IPlannerDomain domain)
+			IPlannerDomain domain,
+			RawBlackboardArrayWrapper plannerDatasets)
 		{
 			_coroutineRunner = coroutineRunner;
 			_blackboard = blackboard;
 			_domain = domain.DomainData;
-            
+
+			PlannerDatasets = plannerDatasets;
             _result.First = new PlannerResult(1, Allocator.Persistent) {Count = 1, [0] = byte.MaxValue};
             _result.Second = new PlannerResult(1, Allocator.Persistent) {Count = 1, [0] = byte.MaxValue};
 		}

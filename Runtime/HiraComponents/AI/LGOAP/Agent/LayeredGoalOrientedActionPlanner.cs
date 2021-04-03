@@ -23,6 +23,8 @@ namespace HiraEngine.Components.AI.LGOAP
 
         private RawBlackboardArrayWrapper _plannerDatasets;
 
+        private void Update() => _taskRunner.Update(Time.deltaTime);
+
 		private void OnValidate()
 		{
             maxPlanLength = (byte) Mathf.Max(maxPlanLength, 2);
@@ -59,7 +61,7 @@ namespace HiraEngine.Components.AI.LGOAP
             _plannerDatasets = new RawBlackboardArrayWrapper((byte) (maxPlanLength + 1), blackboard.Template);
 
 			// top layer
-			_topLayerRunner = new TopLayerRunner(this, blackboard, validDomain);
+			_topLayerRunner = new TopLayerRunner(this, blackboard, validDomain, _plannerDatasets);
 
 			// intermediate layers overall
 			IParentLayerRunner currentLink = _topLayerRunner;
@@ -105,6 +107,8 @@ namespace HiraEngine.Components.AI.LGOAP
             InitializationStatus = InitializationState.Active;
 
             blackboard.OnKeyEssentialToDecisionMakingUpdate += _topLayerRunner.SchedulePlanner;
+            
+            _topLayerRunner.SchedulePlanner();
 		}
 
 		public void Shutdown() => StartCoroutine(ShutdownCoroutine());
