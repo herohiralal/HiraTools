@@ -37,8 +37,18 @@ namespace UnityEngine
         {
             lock (execution_queue)
             {
-                while (execution_queue.Count > 0)
-                    execution_queue.Dequeue().Invoke();
+                for (var i = execution_queue.Count; i > 0; i--)
+                {
+                    var current = execution_queue.Dequeue();
+                    try
+                    {
+                        current.Invoke();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e, this);
+                    }
+                }
             }
         }
 

@@ -105,7 +105,7 @@ namespace HiraEngine.Components.Blackboard
 					: EditorGUILayout.EnumFlagsField(name, enumCast);
 
 			var outputCast = RuntimeCastToUnderlyingType<T>(output);
-			if (!Equals(outputCast, value)) blackboard.SetValue(Index, outputCast);
+			if (!Equals(outputCast, value)) MainThreadDispatcher.Schedule(() => blackboard.SetValue(Index, outputCast));
 		}
 #endif
 	}
