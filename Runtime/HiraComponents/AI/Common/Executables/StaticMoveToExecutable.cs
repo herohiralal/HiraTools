@@ -7,11 +7,12 @@ namespace HiraEngine.Components.AI.Internal
     public class StaticMoveToExecutable : Executable, IPoolReturnCallbackReceiver
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public StaticMoveToExecutable Init(NavMeshAgent navMeshAgent, IBlackboardComponent blackboard, HiraBlackboardKey targetPositionKey, float tolerance)
+        public StaticMoveToExecutable Init(NavMeshAgent navMeshAgent, IBlackboardComponent blackboard, HiraBlackboardKey targetPositionKey, float speed, float tolerance)
         {
 	        _navMeshAgent = navMeshAgent;
             _blackboard = blackboard;
             _targetPositionKey = targetPositionKey.Index;
+            _speed = speed;
             _tolerance = tolerance;
             return this;
         }
@@ -21,6 +22,7 @@ namespace HiraEngine.Components.AI.Internal
         private IBlackboardComponent _blackboard;
         private ushort _targetPositionKey;
         private bool _hasFailed;
+        private float _speed;
         private float _tolerance;
 
         public override void OnExecutionStart()
@@ -31,6 +33,7 @@ namespace HiraEngine.Components.AI.Internal
             if (_path.status == NavMeshPathStatus.PathComplete)
             {
 	            _navMeshAgent.SetPath(_path);
+	            _navMeshAgent.speed = _speed;
 	            _navMeshAgent.stoppingDistance = _tolerance;
 	            _navMeshAgent.isStopped = false;
             }
