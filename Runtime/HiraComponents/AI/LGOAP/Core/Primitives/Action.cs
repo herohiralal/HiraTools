@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using HiraEngine.Components.AI.Internal;
+﻿using HiraEngine.Components.AI.Internal;
+using HiraEngine.Components.AI.LGOAP.Internal;
 using HiraEngine.Components.Blackboard.Internal;
 using UnityEngine;
 
@@ -16,15 +16,16 @@ namespace HiraEngine.Components.AI.LGOAP
         public IBlackboardScoreCalculator[] CostCalculator => Collection2;
         public IBlackboardEffector[] Effect => Collection3;
 
-        public Executable GetTask(HiraComponentContainer target, IBlackboardComponent blackboard) =>
-            Collection4.Length switch
-            {
-                0 => AutoFailExecutable.INSTANCE,
-                1 => Collection4[0].GetExecutable(target, blackboard),
-                _ => GenericPool<SequenceExecutable>.Retrieve().Init(Collection4, target, blackboard)
-            };
+        public void Populate(ExecutionQueue executionQueue, ServiceRunner serviceRunner, HiraComponentContainer target, IBlackboardComponent blackboard)
+        {
+	        if (Collection4.Length == 0)
+		        executionQueue.Append(AutoSucceedExecutable.INSTANCE);
 
-        public Service[] GetServices(HiraComponentContainer target, IBlackboardComponent blackboard) =>
-            Collection5.Select(sp => sp.GetService(target, blackboard)).ToArray();
+	        foreach (var provider in Collection4)
+		        executionQueue.Append(provider.GetExecutable(target, blackboard));
+
+	        foreach (var serviceProvider in Collection5)
+		        serviceRunner.Append(serviceProvider.GetService(target, blackboard));
+        }
     }
 }
