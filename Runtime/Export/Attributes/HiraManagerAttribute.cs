@@ -30,8 +30,14 @@ namespace UnityEngine
                 .SelectMany(assembly => assembly.GetTypes()
                     .Where(t => !t.IsAbstract && typeof(Component).IsAssignableFrom(t)))
                 .Select(type => (type, type.GetCustomAttribute<HiraManagerAttribute>()))
-                .Where(tuple => tuple.Item2 != null)
-                .OrderByDescending(tuple => tuple.Item2.Priority);
+                .Where(tuple => tuple.Item2 != null);
+
+#if !UNITY_EDITOR
+	        managerTypes = managerTypes.Where(t =>
+		        !ConditionalComponentHelpers.IsComponentEditorOnly(t.type) && !ConditionalComponentHelpers.IsGameObjectEditorOnly(t.type));
+#endif
+            
+            managerTypes = managerTypes.OrderByDescending(tuple => tuple.Item2.Priority);
 
             foreach (var (t, m) in managerTypes)
             {
@@ -85,10 +91,11 @@ namespace UnityEngine
             
             foreach (var component in valueCollection)
             {
-                component.GetType().Assign("Instance", null);
-                component.GetType().Assign("Current", null);
+	            if (component == null) continue;
 
-                if (component == null) continue;
+                component.GetType().Set("Instance", null);
+                component.GetType().Set("Current", null);
+
                 
 #if LOG_HIRA_MANAGERS
                 Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, null, 
@@ -105,8 +112,8 @@ namespace UnityEngine
         {
             Object.DontDestroyOnLoad(component);
 
-            type.Assign("Instance", component);
-            type.Assign("Current", component);
+            type.Set("Instance", component);
+            type.Set("Current", component);
 
             if (database.ContainsKey(type)) database[type] = component;
             else database.Add(type, component);
