@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using HiraEngine.Components.AI.LGOAP.Raw;
 using HiraEngine.Components.Blackboard.Raw;
 using Unity.Collections;
@@ -54,6 +55,21 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		public ref FlipFlopPool<PlannerResult> Result => ref _result;
 
 		private LayerState _currentState = LayerState.Idle;
+
+		private IPlannerDebugger _debugger = null;
+
+		public IPlannerDebugger Debugger
+		{
+			get => _debugger;
+			set
+			{
+				_debugger = value;
+				if (_result.First.ResultType == PlannerResultType.Success || _result.First.ResultType == PlannerResultType.Unchanged)
+					UpdateDebuggerPlan();
+
+				Runner.Debugger = value;
+			}
+		}
 		
 		public bool SelfAndAllChildrenIdle => _currentState == LayerState.Idle;
 		public bool SelfOrAnyChildScheduled => _currentState == LayerState.PlannerScheduled;
@@ -92,6 +108,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 				{
 					_result.First.MoveNext();
 					Runner.UpdateTask(_result.First.CurrentElement);
+					UpdateDebuggerPlanIndex();
 				}
 				else
 				{
@@ -164,14 +181,42 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 					{
 						_taskNeedsUpdate = false;
 						Runner.UpdateTask(_result.First.CurrentElement);
+						UpdateDebuggerPlan();
 					}
 					break;
 				case PlannerResultType.Success:
 					_taskNeedsUpdate = false;
 					Runner.UpdateTask(_result.First.CurrentElement);
+					UpdateDebuggerPlan();
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
+			}
+		}
+
+		[Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+		private void UpdateDebuggerPlan()
+		{
+			try
+			{
+				Debugger?.UpdateCorePlan(_result.First);
+			}
+			catch
+			{
+				// ignored
+			}
+		}
+
+		[Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+		private void UpdateDebuggerPlanIndex()
+		{
+			try
+			{
+				Debugger?.IncrementActionIndex();
+			}
+			catch
+			{
+				// ignored
 			}
 		}
 	}

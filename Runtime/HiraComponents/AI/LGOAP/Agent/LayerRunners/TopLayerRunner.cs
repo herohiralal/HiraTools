@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using HiraEngine.Components.AI.LGOAP.Raw;
 using HiraEngine.Components.Blackboard.Raw;
 using Unity.Collections;
@@ -44,6 +45,21 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		public ref FlipFlopPool<PlannerResult> Result => ref _result;
 
 		private LayerState _currentState = LayerState.Idle;
+
+		private IPlannerDebugger _debugger = null;
+
+		public IPlannerDebugger Debugger
+		{
+			get => _debugger;
+			set
+			{
+				_debugger = value;
+				if (_result.First.ResultType == PlannerResultType.Success || _result.First.ResultType == PlannerResultType.Unchanged)
+					UpdateDebugger(_result.First[0]);
+
+				Child.Debugger = value;
+			}
+		}
 
 		public bool SelfAndAllChildrenIdle => _currentState == LayerState.Idle && Child.SelfAndAllChildrenIdle;
 		public bool SelfOrAnyChildScheduled => _currentState == LayerState.PlannerScheduled || Child.SelfOrAnyChildScheduled;
@@ -144,12 +160,27 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 					throw new Exception("Goal calculator failed.");
 				case PlannerResultType.Unchanged:
 					Child.CollectResult();
+					UpdateDebugger(currentResult[0]);
 					break;
 				case PlannerResultType.Success:
 					Child.CollectResult();
+					UpdateDebugger(currentResult[0]);
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
+			}
+		}
+
+		[Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+		private void UpdateDebugger(byte goalIndex)
+		{
+			try
+			{
+				Debugger?.UpdateGoal(goalIndex);
+			}
+			catch
+			{
+				// ignored
 			}
 		}
 	}

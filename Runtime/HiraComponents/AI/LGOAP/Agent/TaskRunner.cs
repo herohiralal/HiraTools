@@ -15,12 +15,18 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			_onPlanRunnerFinished = onPlanRunnerFinished;
 		}
 
-		private readonly ExecutionQueue _executionQueue;
+		private ExecutionQueue _executionQueue;
 		private readonly ServiceRunner _serviceRunner;
 		private readonly HiraComponentContainer _target;
 		private readonly IBlackboardComponent _blackboard;
 		private readonly IPlannerDomain _domain;
 		private readonly Action<bool> _onPlanRunnerFinished;
+
+		public IPlannerDebugger Debugger
+		{
+			get => _executionQueue.Debugger;
+			set => _executionQueue.Debugger = value;
+		}
 
 		public void UpdateTask(byte index)
 		{

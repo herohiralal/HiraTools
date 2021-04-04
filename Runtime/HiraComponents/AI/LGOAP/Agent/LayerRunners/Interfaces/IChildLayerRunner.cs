@@ -2,6 +2,7 @@
 {
 	public interface IChildLayerRunner
 	{
+		IPlannerDebugger Debugger { get; set; }
 		void SchedulePlanner();
 		MainPlannerJob CreateMainPlannerJob();
 		void CollectResult();

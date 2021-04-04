@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using HiraEngine.Components.AI.LGOAP.Raw;
 using HiraEngine.Components.Blackboard.Raw;
 using Unity.Collections;
@@ -21,7 +22,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
             RawBlackboardArrayWrapper plannerDatasets,
             byte maxPlanLength)
 	    {
-		    Parent = parent;
+		    _parent = parent;
 		    _coroutineRunner = coroutineRunner;
 		    _blackboard = blackboard;
 		    _domain = domain.DomainData;
@@ -39,7 +40,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
             _result.Second.Dispose();
         }
 
-	    public readonly IParentLayerRunner Parent;
+        private readonly IParentLayerRunner _parent;
         public IChildLayerRunner Child { get; set; }
         
         private readonly MonoBehaviour _coroutineRunner;
@@ -54,6 +55,21 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
         public ref FlipFlopPool<PlannerResult> Result => ref _result;
 
 		private LayerState _currentState = LayerState.Idle;
+
+		private IPlannerDebugger _debugger = null;
+
+		public IPlannerDebugger Debugger
+		{
+			get => _debugger;
+			set
+			{
+				_debugger = value;
+				if (_result.First.ResultType == PlannerResultType.Success || _result.First.ResultType == PlannerResultType.Unchanged)
+					UpdateDebuggerPlan();
+
+				Child.Debugger = value;
+			}
+		}
 		
 		public bool SelfAndAllChildrenIdle => _currentState == LayerState.Idle && Child.SelfAndAllChildrenIdle;
 		public bool SelfOrAnyChildScheduled => _currentState == LayerState.PlannerScheduled || Child.SelfOrAnyChildScheduled;
@@ -89,6 +105,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			{
 				_result.First.MoveNext();
 				Child.SchedulePlanner();
+				UpdateDebuggerPlanIndex();
 			}
 			else
 			{
@@ -96,7 +113,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 				// so that MainPlannerJob can check if it can be reused.
 				_result.First.RestartPlan();
 
-				Parent.OnChildFinished();
+				_parent.OnChildFinished();
 			}
         }
 
@@ -106,7 +123,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
         {
             var output = new MainPlannerJob(
 	            _domain[_layerIndex],
-	            Parent.Result.First,
+	            _parent.Result.First,
 	            _result.First,
 	            _maxFScore,
 	            _plannerDatasets.Unwrap(),
@@ -157,13 +174,41 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
                     throw new Exception($"Planner at index {_layerIndex} failed, possible reason: Max F-Score not high enough, or a parent planner failed.");
                 case PlannerResultType.Unchanged:
                     Child.CollectResult();
+                    UpdateDebuggerPlan();
                     break;
                 case PlannerResultType.Success:
                     Child.CollectResult();
+                    UpdateDebuggerPlan();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+        private void UpdateDebuggerPlan()
+        {
+	        try
+	        {
+		        Debugger?.UpdateIntermediatePlan(_layerIndex, _result.First);
+	        }
+	        catch
+	        {
+		        // ignored
+	        }
+        }
+
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
+        private void UpdateDebuggerPlanIndex()
+        {
+	        try
+	        {
+		        Debugger?.IncrementIntermediateGoalIndex(_layerIndex);
+	        }
+	        catch
+	        {
+		        // ignored
+	        }
         }
     }
 }

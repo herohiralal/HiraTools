@@ -72,6 +72,12 @@ namespace HiraEngine.Components.AI.LGOAP
 	        set => maxFScores = value;
         }
 
+        public IPlannerDebugger Debugger
+        {
+	        get => _topLayerRunner.Debugger;
+	        set => _topLayerRunner.Debugger = value;
+        }
+
         private void Update() => _taskRunner.Update(Time.deltaTime);
 
 		private void OnValidate()
