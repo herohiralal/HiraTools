@@ -3,7 +3,6 @@ using System.Collections;
 using HiraEngine.Components.AI.LGOAP.Internal;
 using HiraEngine.Components.Blackboard.Raw;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace HiraEngine.Components.AI.LGOAP
 {
@@ -23,6 +22,56 @@ namespace HiraEngine.Components.AI.LGOAP
 
         private RawBlackboardArrayWrapper _plannerDatasets;
 
+        public HiraComponentContainer Target
+        {
+	        get => target;
+	        set
+	        {
+		        if (InitializationStatus != InitializationState.Inactive)
+			        throw new Exception("Cannot change the target of the planner while it's running.");
+
+		        if (value == null)
+			        throw new ArgumentNullException(nameof(Target));
+
+		        target = value;
+	        }
+        }
+
+        public HiraBlackboard Blackboard => blackboard;
+
+        public IPlannerDomain Domain
+        {
+	        get => (IPlannerDomain) domain;
+	        set
+	        {
+		        if (value == null)
+			        throw new ArgumentNullException(nameof(Domain));
+		        
+		        if (!(value is ScriptableObject scriptableObject))
+			        throw new Exception("The planner domain must be a ScriptableObject.");
+
+		        domain = scriptableObject;
+	        }
+        }
+
+        public byte MaxPlanLength
+        {
+	        get => maxPlanLength;
+	        set
+	        {
+		        if (value <= 2)
+			        throw new InvalidOperationException("A plan with 1 or 0 actions is called an action.");
+		        
+		        maxPlanLength = value;
+	        }
+        }
+
+        public float[] MaxFScores
+        {
+	        get => maxFScores;
+	        set => maxFScores = value;
+        }
+
         private void Update() => _taskRunner.Update(Time.deltaTime);
 
 		private void OnValidate()
@@ -40,7 +89,7 @@ namespace HiraEngine.Components.AI.LGOAP
 				else
 				{
 					domain = null;
-					Assert.IsTrue(false, "Assigned domain is not a valid planner domain.");
+					throw new InvalidOperationException("Assigned domain is not a valid planner domain.");
 				}
 			}
 		}
@@ -49,14 +98,23 @@ namespace HiraEngine.Components.AI.LGOAP
 
 		public void Initialize()
 		{
-			Assert.AreEqual(InitializationStatus, InitializationState.Inactive);
-			Assert.IsTrue(target != null);
-			Assert.IsTrue(blackboard != null);
-			Assert.IsTrue(domain != null && domain is IPlannerDomain);
-			var validDomain = (IPlannerDomain) domain;
-			Assert.IsTrue(validDomain.IsInitialized);
-			Assert.AreEqual(validDomain.IntermediateLayerCount + 1, maxFScores.Length);
-            Assert.IsTrue(maxPlanLength >= 2);
+			if (InitializationStatus != InitializationState.Inactive)
+				throw new InvalidOperationException($"Initialize() called on planner {gameObject.name} even though it's already initialized.");
+
+			if (target == null)
+				throw new NullReferenceException($"Target not found on planner {gameObject.name}.");
+
+			if (blackboard == null)
+				throw new NullReferenceException($"Planner {gameObject.name} needs a blackboard to initialize.");
+
+			if (domain == null || !(domain is IPlannerDomain {IsInitialized: true} validDomain))
+				throw new NullReferenceException($"Planner {gameObject.name} does not have a valid domain.");
+
+			if (validDomain.IntermediateLayerCount + 1 != maxFScores.Length)
+				throw new Exception($"Planner {gameObject.name} does not have correct number of max F-Scores");
+
+			if (maxPlanLength < 2)
+				throw new Exception($"Planner {gameObject.name} has max plan length set to less than 2, which is not called a plan.");
 
             _plannerDatasets = new RawBlackboardArrayWrapper((byte) (maxPlanLength + 1), blackboard.Template);
 
@@ -115,7 +173,9 @@ namespace HiraEngine.Components.AI.LGOAP
 
 		private IEnumerator ShutdownCoroutine()
 		{
-            Assert.AreEqual(InitializationStatus, InitializationState.Active);
+			if (InitializationStatus != InitializationState.Active)
+				throw new InvalidOperationException($"Shutdown() called on {gameObject.name} even though its not initialized.");
+			
             InitializationStatus = InitializationState.ShuttingDown;
             blackboard.OnKeyEssentialToDecisionMakingUpdate -= _topLayerRunner.SchedulePlanner;
             
