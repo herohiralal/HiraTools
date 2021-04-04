@@ -20,6 +20,7 @@ namespace HiraEngine.Components.AI.LGOAP
         public IntermediateGoal[] IntermediateGoals1 => Collection2;
         public IntermediateGoal[] IntermediateGoals2 => Collection3;
         public byte IntermediateLayerCount => 2;
+        public IntermediateGoal[][] IntermediateLayers => new[] {Collection2, Collection3};
         public Action[] Actions => Collection4;
         public IBlackboardEffector[] Restarters => Collection5;
         public bool IsInitialized => InitializationStatus == InitializationState.Active;

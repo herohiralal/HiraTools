@@ -6,6 +6,7 @@ namespace HiraEngine.Components.AI.LGOAP
     {
 	    Goal[] Goals { get; }
 	    byte IntermediateLayerCount { get; }
+	    IntermediateGoal[][] IntermediateLayers { get; }
 	    Action[] Actions { get; }
 		bool IsInitialized { get; }
         RawDomainData DomainData { get; }

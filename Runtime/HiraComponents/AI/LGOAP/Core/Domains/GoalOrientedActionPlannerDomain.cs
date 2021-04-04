@@ -16,6 +16,7 @@ namespace HiraEngine.Components.AI.LGOAP
         public RawDomainData DomainData => _rawDomainData;
         public Goal[] Goals => Collection1;
         public byte IntermediateLayerCount => 0;
+        public IntermediateGoal[][] IntermediateLayers { get; } = { };
         public Action[] Actions => Collection2;
         public IBlackboardEffector[] Restarters => Collection3;
         public bool IsInitialized => InitializationStatus == InitializationState.Active;
