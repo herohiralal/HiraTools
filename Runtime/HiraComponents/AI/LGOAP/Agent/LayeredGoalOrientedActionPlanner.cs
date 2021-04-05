@@ -192,7 +192,7 @@ namespace HiraEngine.Components.AI.LGOAP
             }
 
             if (_topLayerRunner.SelfOrAnyChildScheduled)
-                _topLayerRunner.IgnorePlannerResultForSelfAndChild();
+                _topLayerRunner.IgnoreScheduledPlannerRunForSelfAndChild();
             
             _taskRunner.ForceClearTask();
             
