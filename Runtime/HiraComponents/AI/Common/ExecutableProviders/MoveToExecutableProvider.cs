@@ -21,5 +21,12 @@ namespace HiraEngine.Components.AI.Internal
 	        
 	        return AutoFailExecutable.INSTANCE;
         }
+
+        private void OnValidate() => name = ToString();
+
+        public override string ToString() =>
+            targetPosition == null 
+                ? "INVALID EXECUTABLE" 
+                : $"Move to {targetPosition.name}";
     }
 }

@@ -65,7 +65,7 @@ namespace HiraEditor.Internal
 			{
 				foreach (var task in _tasks)
 				{
-					EditorGUILayout.LabelField("Executable", task.targetObject.name, EditorStyles.boldLabel);
+					EditorGUILayout.LabelField(task.targetObject.ToString(), EditorStyles.boldLabel);
 					task.Update();
 					var iterator = task.GetIterator();
 					iterator.NextVisible(true);
