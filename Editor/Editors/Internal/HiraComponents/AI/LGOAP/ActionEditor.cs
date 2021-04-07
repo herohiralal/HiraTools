@@ -8,22 +8,21 @@ namespace HiraEditor.Internal
 	public class ActionEditor : HiraCollectionTargetBaseEditor
 	{
 		private Action Action => (Action) Target;
-		private SerializedObject _task = null;
+		private SerializedObject[] _tasks = null;
 
 		public override void OnEnable()
 		{
 			base.OnEnable();
 
 			var executables = Action.CollectionInternal[3];
-			if (executables.Length > 0)
-			{
-				_task = new SerializedObject(executables[0]);
-			}
+			_tasks = new SerializedObject[executables.Length];
+			for (var i = 0; i < executables.Length; i++)
+				_tasks[i] = new SerializedObject(executables[i]);
 		}
 
 		public override void OnDisable()
 		{
-			_task = null;
+			_tasks = null;
 			
 			base.OnDisable();
 		}
@@ -62,17 +61,20 @@ namespace HiraEditor.Internal
 				EditorGUILayout.LabelField(effects.ToString());
 			}
 
-			if (_task != null)
+			if (_tasks != null)
 			{
-				EditorGUILayout.LabelField("Executable", _task.targetObject.name, EditorStyles.boldLabel);
-				_task.Update();
-				var iterator = _task.GetIterator();
-				iterator.NextVisible(true);
-				while (iterator.NextVisible(false))
+				foreach (var task in _tasks)
 				{
-					EditorGUILayout.PropertyField(iterator);
+					EditorGUILayout.LabelField("Executable", task.targetObject.name, EditorStyles.boldLabel);
+					task.Update();
+					var iterator = task.GetIterator();
+					iterator.NextVisible(true);
+					while (iterator.NextVisible(false))
+					{
+						EditorGUILayout.PropertyField(iterator);
+					}
+					task.ApplyModifiedProperties();
 				}
-				_task.ApplyModifiedProperties();
 			}
 		}
 	}
