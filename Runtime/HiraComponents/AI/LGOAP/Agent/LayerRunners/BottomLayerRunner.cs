@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
-using HiraEngine.Components.AI.LGOAP.Raw;
+using HiraEngine.Components.Blackboard;
 using HiraEngine.Components.Blackboard.Raw;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using UnityEngine;
 
@@ -15,7 +14,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		public BottomLayerRunner(
 			IParentLayerRunner parent,
 			MonoBehaviour coroutineRunner,
-			 IBlackboardComponent blackboard,
+			IBlackboardComponent blackboard,
 			IPlannerDomain domain,
 			byte layerIndex,
 			float maxFScore,
@@ -25,7 +24,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 			Parent = parent;
 			_coroutineRunner = coroutineRunner;
 			_blackboard = blackboard;
-			_domain = domain.DomainData;
+			_domain = domain;
 			_layerIndex = layerIndex;
 			_maxFScore = maxFScore;
 
@@ -45,7 +44,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		
 		private readonly MonoBehaviour _coroutineRunner;
 		private readonly IBlackboardComponent _blackboard;
-		private readonly RawDomainData _domain;
+		private readonly IPlannerDomain _domain;
 		private readonly byte _layerIndex;
 		private readonly float _maxFScore;
 
@@ -95,14 +94,8 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		{
 			if (success)
 			{
-				_domain[_layerIndex].Break(out _, out var actions);
-				actions[_result.First.CurrentIndex].Break(out _, out _, out var effect);
-				unsafe
-				{
-					// this will directly modify the blackboard, and not broadcast any events
-					// but that is exactly what we want, because the modification is intended
-					effect.Execute((byte*) _blackboard.Data.GetUnsafePtr());
-				}
+                using (new BlackboardComponentBroadcastDisabler())
+                    _domain.Actions[_result.First.CurrentIndex].Effect.ApplyTo(_blackboard);
 
 				if (_result.First.CanMoveNext)
 				{
@@ -132,7 +125,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		public MainPlannerJob CreateMainPlannerJob()
 		{
 			var output = new MainPlannerJob(
-				_domain[_layerIndex],
+				_domain.DomainData[_layerIndex],
 				Parent.Result.First,
 				_result.First,
 				_maxFScore,

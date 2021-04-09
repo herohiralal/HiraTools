@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
-using HiraEngine.Components.AI.LGOAP.Raw;
+using HiraEngine.Components.Blackboard;
 using HiraEngine.Components.Blackboard.Raw;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using UnityEngine;
 
@@ -20,7 +19,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		{
 			_coroutineRunner = coroutineRunner;
 			_blackboard = blackboard;
-			_domain = domain.DomainData;
+			_domain = domain;
 
 			_plannerDatasets = plannerDatasets;
             _result.First = new PlannerResult(1, Allocator.Persistent) {Count = 1, [0] = byte.MaxValue};
@@ -37,7 +36,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 
 		private readonly MonoBehaviour _coroutineRunner;
 		private readonly IBlackboardComponent _blackboard;
-		private readonly RawDomainData _domain;
+		private readonly IPlannerDomain _domain;
 
         private RawBlackboardArrayWrapper _plannerDatasets;
 
@@ -82,12 +81,8 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 
 		public void OnChildFinished()
 		{
-			unsafe
-			{
-				// this will directly modify the blackboard, and not broadcast any events
-				// but that is exactly what we want, because the modification is intended
-				_domain.Restarters.Execute((byte*) _blackboard.Data.GetUnsafePtr());
-			}
+            using (new BlackboardComponentBroadcastDisabler())
+                _domain.Restarters.ApplyTo(_blackboard);
 
 			SchedulePlanner();
 		}
@@ -101,7 +96,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 
 			var output = new GoalCalculatorJob(
 				_blackboard,
-				_domain.InsistenceCalculators,
+				_domain.DomainData.InsistenceCalculators,
 				goalResult);
 			_result.Flip();
 			return output;
