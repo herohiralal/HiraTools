@@ -35,6 +35,8 @@ namespace HiraEngine.Components.Blackboard.Internal
 				? _equalsTrueDecoratorFunction
 				: _equalsFalseDecoratorFunction;
 
+        public bool IsValidOn(IBlackboardComponent blackboard) => blackboard.GetValue<byte>(key.Index) == value.ToByte();
+
 		public override string ToString() => key == null ? "INVALID CONDITION" : $"{key.name} equals {value}";
 		private void OnValidate() => name = ToString();
 	}

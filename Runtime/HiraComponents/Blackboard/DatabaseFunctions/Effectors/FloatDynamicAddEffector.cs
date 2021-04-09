@@ -53,6 +53,18 @@ namespace HiraEngine.Components.Blackboard.Internal
 				_ => throw new ArgumentOutOfRangeException(nameof(toAdd))
 			};
 
+        public void ApplyTo(IBlackboardComponent blackboard)
+        {
+            var value = toAdd switch
+            {
+                FloatKey _ => blackboard.GetValue<float>(toAdd.Index),
+                IntegerKey _ => blackboard.GetValue<int>(toAdd.Index),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            blackboard.SetValue<float>(key.Index, blackboard.GetValue<float>(key.Index) + value);
+        }
+
 		public override string ToString() => key == null || toAdd == null ? "INVALID EFFECT" : $"{key.name} plus {toAdd.name}";
 		private void OnValidate() => name = ToString();
 	}

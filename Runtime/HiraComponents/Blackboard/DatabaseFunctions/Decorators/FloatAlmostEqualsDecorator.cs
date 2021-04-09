@@ -53,6 +53,9 @@ namespace HiraEngine.Components.Blackboard.Internal
 				? _notEqualsDecoratorFunction
 				: _equalsDecoratorFunction;
 
+        public bool IsValidOn(IBlackboardComponent blackboard) =>
+            invert != (Mathf.Abs(blackboard.GetValue<float>(key.Index) - value) <= tolerance);
+
 		public override string ToString() => key == null ? "INVALID CONDITION" : $"{key.name} is {(invert ? "not" : "")} between {value - tolerance} and {value + tolerance}";
 		private void OnValidate() => name = ToString();
 	}

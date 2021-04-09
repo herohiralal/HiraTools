@@ -28,6 +28,8 @@ namespace HiraEngine.Components.Blackboard.Internal
 
 		public FunctionPointer<EffectorDelegate> Function => _effectorFunction;
 
+        public void ApplyTo(IBlackboardComponent blackboard) => blackboard.SetValue<float>(key.Index, blackboard.GetValue<float>(key.Index) * value);
+
 		public override string ToString() => key == null ? "INVALID EFFECT" : $"{key.name} plus {value}";
 		private void OnValidate() => name = ToString();
 	}

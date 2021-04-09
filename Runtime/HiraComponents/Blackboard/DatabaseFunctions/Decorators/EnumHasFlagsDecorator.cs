@@ -113,6 +113,21 @@ namespace HiraEngine.Components.Blackboard.Internal
 				}
 			};
 
+        public bool IsValidOn(IBlackboardComponent blackboard) =>
+            value.EnumUnderlyingType switch
+            {
+                DynamicEnumValue.Type.Byte => invert != ((blackboard.GetValue<byte>(key.Index) & value.byteValue) == value.byteValue),
+                DynamicEnumValue.Type.SignedByte => invert != ((blackboard.GetValue<sbyte>(key.Index) & value.sByteValue) == value.sByteValue),
+                DynamicEnumValue.Type.UnsignedShort => invert != ((blackboard.GetValue<ushort>(key.Index) & value.uShortValue) == value.uShortValue),
+                DynamicEnumValue.Type.Short => invert != ((blackboard.GetValue<short>(key.Index) & value.shortValue) == value.shortValue),
+                DynamicEnumValue.Type.UnsignedInt => invert != ((blackboard.GetValue<uint>(key.Index) & value.uIntValue) == value.uIntValue),
+                DynamicEnumValue.Type.Int => invert != ((blackboard.GetValue<int>(key.Index) & value.intValue) == value.intValue),
+                DynamicEnumValue.Type.UnsignedLong => invert != ((blackboard.GetValue<ulong>(key.Index) & value.uLongValue) == value.uLongValue),
+                DynamicEnumValue.Type.Long => invert != ((blackboard.GetValue<long>(key.Index) & value.longValue) == value.longValue),
+                DynamicEnumValue.Type.Invalid => throw new ArgumentOutOfRangeException(),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
 		public override string ToString() => key == null || !value.IsValid ? "INVALID CONDITION" : $"{key.name} {(invert ? "lacks" : "has")} ({value}) flags";
 	}
 }

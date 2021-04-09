@@ -36,6 +36,9 @@ namespace HiraEngine.Components.Blackboard.Internal
 				? _invertedDecoratorFunction
 				: _decoratorFunction;
 
+        public bool IsValidOn(IBlackboardComponent blackboard) =>
+            invert != (blackboard.GetValue<int>(key.Index) > value);
+
 		public override string ToString() => key == null ? "INVALID CONDITION" : $"{key.name} {(invert ? "not" : "")} greater than {value}";
 		private void OnValidate() => name = ToString();
 	}

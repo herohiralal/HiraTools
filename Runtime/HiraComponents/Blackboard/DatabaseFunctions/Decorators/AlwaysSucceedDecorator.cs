@@ -26,6 +26,8 @@ namespace HiraEngine.Components.Blackboard.Internal
 
         public FunctionPointer<DecoratorDelegate> Function => _function;
 
+        public bool IsValidOn(IBlackboardComponent blackboard) => true;
+
         public override string ToString() => "Always Succeed";
         private void OnValidate() => name = ToString();
     }

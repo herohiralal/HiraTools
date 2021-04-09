@@ -28,6 +28,9 @@ namespace HiraEngine.Components.Blackboard.Internal
 
 		public FunctionPointer<EffectorDelegate> Function => _effectorFunction;
 
+        public void ApplyTo(IBlackboardComponent blackboard) =>
+            blackboard.SetValue<int>(key.Index, blackboard.GetValue<int>(key.Index) * value);
+
 		public override string ToString() => key == null ? "INVALID EFFECT" : $"{key.name} multiplied by {value}";
 		private void OnValidate() => name = ToString();
 	}

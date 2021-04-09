@@ -72,6 +72,41 @@ namespace HiraEngine.Components.Blackboard.Internal
 				_ => throw new ArgumentOutOfRangeException()
 			};
 
+        public void ApplyTo(IBlackboardComponent blackboard)
+        {
+            switch (value.EnumUnderlyingType)
+            {
+                case DynamicEnumValue.Type.Byte:
+                    blackboard.SetValue<byte>(key.Index, (byte) (blackboard.GetValue<byte>(key.Index) | value.byteValue));
+                    break;
+                case DynamicEnumValue.Type.SignedByte:
+                    blackboard.SetValue<sbyte>(key.Index, (sbyte) (blackboard.GetValue<sbyte>(key.Index) | value.sByteValue));
+                    break;
+                case DynamicEnumValue.Type.UnsignedShort:
+                    blackboard.SetValue<ushort>(key.Index, (ushort) (blackboard.GetValue<ushort>(key.Index) | value.uShortValue));
+                    break;
+                case DynamicEnumValue.Type.Short:
+                    blackboard.SetValue<short>(key.Index, (short) (blackboard.GetValue<short>(key.Index) | value.shortValue));
+                    break;
+                case DynamicEnumValue.Type.UnsignedInt:
+                    blackboard.SetValue<uint>(key.Index, (uint) (blackboard.GetValue<uint>(key.Index) | value.uIntValue));
+                    break;
+                case DynamicEnumValue.Type.Int:
+                    blackboard.SetValue<int>(key.Index, (int) (blackboard.GetValue<int>(key.Index) | value.intValue));
+                    break;
+                case DynamicEnumValue.Type.UnsignedLong:
+                    blackboard.SetValue<ulong>(key.Index, (ulong) (blackboard.GetValue<ulong>(key.Index) | value.uLongValue));
+                    break;
+                case DynamicEnumValue.Type.Long:
+                    blackboard.SetValue<long>(key.Index, (long) (blackboard.GetValue<long>(key.Index) | value.longValue));
+                    break;
+                case DynamicEnumValue.Type.Invalid:
+                    throw new ArgumentOutOfRangeException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
 		public override string ToString() => key == null || !value.IsValid ? "INVALID EFFECT" : $"Add ({value}) flags to {key.name}";
 	}
 }

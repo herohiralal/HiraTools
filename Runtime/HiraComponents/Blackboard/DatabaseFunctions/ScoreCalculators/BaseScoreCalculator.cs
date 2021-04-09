@@ -18,6 +18,8 @@ namespace HiraEngine.Components.Blackboard.Internal
             base.AppendMemory(stream + sizeof(float));
         }
 
+        public float CalculateScore(IBlackboardComponent blackboard) => score;
+
         public override string ToString() => $"Base ({score:+0;-#})";
     }
 }

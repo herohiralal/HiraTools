@@ -2,5 +2,6 @@
 {
 	public interface IBlackboardDecorator : IBlackboardDatabaseFunction<DecoratorDelegate>
 	{
+        bool IsValidOn(UnityEngine.IBlackboardComponent blackboard);
 	}
 }

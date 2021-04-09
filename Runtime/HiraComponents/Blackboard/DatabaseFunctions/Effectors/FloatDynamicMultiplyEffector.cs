@@ -53,6 +53,18 @@ namespace HiraEngine.Components.Blackboard.Internal
 				_ => throw new ArgumentOutOfRangeException(nameof(toMultiply))
 			};
 
+        public void ApplyTo(IBlackboardComponent blackboard)
+        {
+            var value = toMultiply switch
+            {
+                FloatKey _ => blackboard.GetValue<float>(toMultiply.Index),
+                IntegerKey _ => blackboard.GetValue<int>(toMultiply.Index),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            blackboard.SetValue<float>(key.Index, blackboard.GetValue<float>(key.Index) * value);
+        }
+
 		public override string ToString() => key == null || toMultiply == null ? "INVALID EFFECT" : $"{key.name} multiplied by {toMultiply.name}";
 		private void OnValidate() => name = ToString();
 	}

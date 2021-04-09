@@ -113,6 +113,21 @@ namespace HiraEngine.Components.Blackboard.Internal
 				}
 			};
 
+        public bool IsValidOn(IBlackboardComponent blackboard) =>
+            value.EnumUnderlyingType switch
+            {
+                DynamicEnumValue.Type.Byte => invert != (blackboard.GetValue<byte>(key.Index) == value.byteValue),
+                DynamicEnumValue.Type.SignedByte => invert != (blackboard.GetValue<sbyte>(key.Index) == value.sByteValue),
+                DynamicEnumValue.Type.UnsignedShort => invert != (blackboard.GetValue<ushort>(key.Index) == value.uShortValue),
+                DynamicEnumValue.Type.Short => invert != (blackboard.GetValue<short>(key.Index) == value.shortValue),
+                DynamicEnumValue.Type.UnsignedInt => invert != (blackboard.GetValue<uint>(key.Index) == value.uIntValue),
+                DynamicEnumValue.Type.Int => invert != (blackboard.GetValue<int>(key.Index) == value.intValue),
+                DynamicEnumValue.Type.UnsignedLong => invert != (blackboard.GetValue<ulong>(key.Index) == value.uLongValue),
+                DynamicEnumValue.Type.Long => invert != (blackboard.GetValue<long>(key.Index) == value.longValue),
+                DynamicEnumValue.Type.Invalid => throw new ArgumentOutOfRangeException(),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
 		public override string ToString() => key == null || !value.IsValid ? "INVALID CONDITION" : $"{key.name} {(invert ? "not" : "")} equals {value}";
 	}
 }

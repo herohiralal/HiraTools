@@ -2,5 +2,6 @@
 {
 	public interface IBlackboardEffector : IBlackboardDatabaseFunction<EffectorDelegate>
 	{
+        void ApplyTo(UnityEngine.IBlackboardComponent blackboard);
 	}
 }

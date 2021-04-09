@@ -27,6 +27,8 @@ namespace HiraEngine.Components.Blackboard.Internal
 
 		public FunctionPointer<EffectorDelegate> Function => _effectorFunction;
 
+        public void ApplyTo(IBlackboardComponent blackboard) => blackboard.SetValue<byte>(key.Index, (byte) (1 - blackboard.GetValue<byte>(key.Index)));
+
 		public override string ToString() => key == null ? "INVALID EFFECT" : $"Flip {key.name}";
 		private void OnValidate() => name = ToString();
 	}

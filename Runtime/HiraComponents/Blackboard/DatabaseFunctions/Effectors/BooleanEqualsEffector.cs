@@ -35,6 +35,8 @@ namespace HiraEngine.Components.Blackboard.Internal
 				? _equalsTrueEffectorFunction
 				: _equalsFalseEffectorFunction;
 
+        public void ApplyTo(IBlackboardComponent blackboard) => blackboard.SetValue<byte>(key.Index, value.ToByte());
+
 		public override string ToString() => key == null ? "INVALID EFFECT" : $"{key.name} equals {value}";
 		private void OnValidate() => name = ToString();
 	}
