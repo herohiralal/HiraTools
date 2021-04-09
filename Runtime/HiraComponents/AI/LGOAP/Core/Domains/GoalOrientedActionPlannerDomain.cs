@@ -24,7 +24,7 @@ namespace HiraEngine.Components.AI.LGOAP
 
         public void Initialize()
         {
-            _rawDomainData = RawDomainData.Create(Goals, Restarters, Actions);
+            _rawDomainData = RawDomainData.Create(Goals, Actions);
             InitializationStatus = InitializationState.Active;
         }
 

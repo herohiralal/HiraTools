@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using HiraEngine.Components.Blackboard.Internal;
-using HiraEngine.Components.Blackboard.Raw;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
@@ -23,19 +22,17 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
 
         public RawInsistenceCalculatorsArray InsistenceCalculators => new RawInsistenceCalculatorsArray(_address);
 
-        public RawBlackboardEffectorsArray Restarters => new RawBlackboardEffectorsArray(_address + InsistenceCalculators.Size);
-
         public byte LayerCount
         {
-	        get => *(_address + InsistenceCalculators.Size + Restarters.Size);
-	        private set => *(_address + InsistenceCalculators.Size + Restarters.Size) = value;
+	        get => *(_address + InsistenceCalculators.Size);
+	        private set => *(_address + InsistenceCalculators.Size) = value;
         }
 
         public RawLayer this[byte index]
         {
             get
             {
-                var countAddress = _address + InsistenceCalculators.Size + Restarters.Size;
+                var countAddress = _address + InsistenceCalculators.Size;
                 if (index >= *countAddress) throw new IndexOutOfRangeException();
 
                 var current = countAddress + sizeof(byte);
@@ -49,15 +46,11 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
         private static void Compile(
             byte* address,
             IEnumerable<IEnumerable<IBlackboardScoreCalculator>> insistenceCalculators,
-            IEnumerable<IBlackboardEffector> restarters,
             IEnumerable<(IEnumerable<IEnumerable<IBlackboardDecorator>>,
                 IEnumerable<(IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>)> layers)
         {
             var createdInsistenceCalculators = RawInsistenceCalculatorsArray.Create(insistenceCalculators, address);
             var size = createdInsistenceCalculators.Size;
-
-            var createdRestarters = RawBlackboardEffectorsArray.Create(restarters, address + size);
-            size += createdRestarters.Size;
             
             size += sizeof(byte); // skip layer count
 
@@ -69,15 +62,12 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
 
         private static ushort GetSize(
             IEnumerable<IEnumerable<IBlackboardScoreCalculator>> insistenceCalculators,
-            IEnumerable<IBlackboardEffector> restarters,
             IEnumerable<(IEnumerable<IEnumerable<IBlackboardDecorator>>,
                 IEnumerable<(IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>)> layers)
         {
             ushort size = 0;
 
             size += RawInsistenceCalculatorsArray.GetSize(insistenceCalculators);
-
-            size += RawBlackboardEffectorsArray.GetSize(restarters);
 
             size += sizeof(byte); // layer count
 
@@ -89,7 +79,7 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
             return size;
         }
 
-        public static RawDomainData Create(Goal[] goals, IBlackboardEffector[] restarters, Action[] actions, params IntermediateGoal[][] layers)
+        public static RawDomainData Create(Goal[] goals, Action[] actions, params IntermediateGoal[][] layers)
         {
             // arrange data for compiler
             var layerData = new (IEnumerable<IEnumerable<IBlackboardDecorator>>, IEnumerable<(IBlackboardDecorator[], IBlackboardScoreCalculator[], IBlackboardEffector[])>)[layers.Length + 1];
@@ -109,13 +99,13 @@ namespace HiraEngine.Components.AI.LGOAP.Raw
                 (a.Precondition, a.CostCalculator, a.Effect)).ToArray();
 
             // determine required size
-            var size = GetSize(insistenceCalculators, restarters, layerData);
+            var size = GetSize(insistenceCalculators, layerData);
             
             // allocate
             var rawData = new NativeArray<byte>(size, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
             
             // compile
-            Compile((byte*) rawData.GetUnsafePtr(), insistenceCalculators, restarters, layerData);
+            Compile((byte*) rawData.GetUnsafePtr(), insistenceCalculators, layerData);
 
             // finalize
             return new RawDomainData(rawData) {LayerCount = (byte) (layers.Length + 1)};
