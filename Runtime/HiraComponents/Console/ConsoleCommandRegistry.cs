@@ -85,5 +85,14 @@ namespace HiraEngine.Components.Console.Internal
 
 			return database.ContainsKey(command) && database[command].TryInvoke(args);
 		}
+
+		public static void GetSimilarCommands(string match, List<string> outputBuffer)
+		{
+			foreach (var s in COMMANDS)
+			{
+				if (s.Contains(match))
+					outputBuffer.Add(s);
+			}
+		}
 	}
 }
