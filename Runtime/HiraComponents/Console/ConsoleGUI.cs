@@ -33,13 +33,12 @@ namespace HiraEngine.Components.Console.Internal
 
         private void OnGUI()
         {
-	        // ReSharper disable once RedundantAssignment
             var y = 5f; // initial padding
 
             const string controlName = "Console";
 
             GUI.SetNextControlName(controlName);
-            var receivedInput = GUI.TextArea(new Rect(10f, y, Screen.width - 20f, 20f), input);
+            var receivedInput = GUI.TextArea(new Rect(5f, y, Screen.width - 10f, 20f), input);
             if (_needToFocus)
             {
 	            GUI.FocusControl(controlName);
@@ -58,30 +57,47 @@ namespace HiraEngine.Components.Console.Internal
             else
             {
 	            _similarCommands.Clear();
-	            GUI.Label(new Rect(5f, y, Screen.width - 10f, 20f), "Please enter 3+ letters to search correctly.");
-	            y += 20f + 5f;
+                var infoLabelRect = new Rect(5f, y, Screen.width - 10f, 20f);
+	            GUI.Label(infoLabelRect, "Please enter 3+ letters to search correctly.");
+	            y += infoLabelRect.height + 5f;
             }
 
             input = receivedInput;
 
-            if (_similarCommands.Count > 0)
+            var similarCommandsCount = _similarCommands.Count;
+            if (similarCommandsCount > 0)
             {
-	            var scrollViewPosition = new Rect(5f, y, Screen.width - 10f, 100f);
-	            var innerRect = new Rect(0f, 0f, Screen.width - 50f, (20f * _similarCommands.Count) + 10f);
+	            var scrollViewPosition = new Rect(5f, y, Screen.width - 10f, (Mathf.Min(similarCommandsCount, 4) * 20f) + 20f);
+	            var innerRect = new Rect(0f, 0f, Screen.width - 50f, (20f * similarCommandsCount) + 10f);
+                
+                // background
+                GUI.Box(scrollViewPosition, "");
+                
+                // scroll
 	            _scroll = GUI.BeginScrollView(scrollViewPosition, _scroll, innerRect);
 
-	            for (var i = 0; i < _similarCommands.Count; i++)
+	            for (var i = 0; i < similarCommandsCount; i++)
 	            {
-		            var infoRect = new Rect(5f, 5f + (i * 20f), innerRect.width, 20f);
-		            GUI.Label(infoRect, _similarCommands[i]);
-	            }
+		            var commandNameRect = new Rect(6f, 6f + (i * 20f), innerRect.width - 6f, 18f);
+
+                    var currentSimilarCommand = _similarCommands[i];
+                    if (GUI.Button(commandNameRect, currentSimilarCommand, GUI.skin.label))
+                    {
+                        var t = (TextEditor) GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
+                        t.text = currentSimilarCommand;
+                        input = currentSimilarCommand;
+                        t.MoveTextEnd();
+                    }
+                }
 
 	            GUI.EndScrollView();
 
-	            y += 100f + 5f;
+	            y += scrollViewPosition.height + 5f;
 
-	            GUI.Label(new Rect(5f, y, Screen.width - 10f, 20f), "Similar commands");
-	            y += 20f + 5f;
+                var infoLabelRect = new Rect(5f, y, Screen.width - 10f, 20f);
+	            GUI.Box(infoLabelRect, "Similar commands");
+                // ReSharper disable once RedundantAssignment
+	            y += infoLabelRect.height + 5f;
             }
 
             if (input.Contains("`"))

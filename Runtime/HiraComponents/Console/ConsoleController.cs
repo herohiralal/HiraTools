@@ -2,16 +2,16 @@
 
 namespace HiraEngine.Components.Console.Internal
 {
-    [HiraManager, HiraConsole]
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    [HiraManager]
+#endif
     public class ConsoleController : MonoBehaviour
     {
         private bool _consoleActive = false;
         [SerializeField] private ConsoleGUI gui = null;
-        [SerializeField] private string[] commands = null;
 
         private void Awake()
         {
-	        commands = ConsoleCommandRegistry.COMMANDS;
             gui = gameObject.AddComponent<ConsoleGUI>();
             gui.enabled = false;
         }
