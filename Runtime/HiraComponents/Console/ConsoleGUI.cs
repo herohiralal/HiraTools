@@ -67,8 +67,8 @@ namespace HiraEngine.Components.Console.Internal
             var similarCommandsCount = _similarCommands.Count;
             if (similarCommandsCount > 0)
             {
-	            var scrollViewPosition = new Rect(5f, y, Screen.width - 10f, (Mathf.Min(similarCommandsCount, 4) * 20f) + 20f);
-	            var innerRect = new Rect(0f, 0f, Screen.width - 50f, (20f * similarCommandsCount) + 10f);
+	            var scrollViewPosition = new Rect(5f, y, Screen.width - 10f, (Mathf.Min(similarCommandsCount, 4) * 30f) + 20f);
+	            var innerRect = new Rect(0f, 0f, Screen.width - 50f, (30f * similarCommandsCount) + 10f);
                 
                 // background
                 GUI.Box(scrollViewPosition, "");
@@ -78,7 +78,7 @@ namespace HiraEngine.Components.Console.Internal
 
 	            for (var i = 0; i < similarCommandsCount; i++)
 	            {
-		            var commandNameRect = new Rect(6f, 6f + (i * 20f), innerRect.width - 6f, 18f);
+		            var commandNameRect = new Rect(6f, 6f + (i * 30f), innerRect.width - 6f, 20f);
 
                     var currentSimilarCommand = _similarCommands[i];
                     if (GUI.Button(commandNameRect, currentSimilarCommand.DisplayName, GUI.skin.label))
