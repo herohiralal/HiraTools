@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -20,14 +19,22 @@ namespace HiraEngine.Components.Console.Internal
 				.GetTypesWithThisAttribute(true);
 
 			foreach (var consoleType in consoleTypes)
-			{
-				var consoleMethods = consoleType
-					.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
-					.Where(mi => mi.GetCustomAttribute<HiraConsoleAttribute>() != null);
+            {
+                var consoleAttributeOnType = consoleType.GetCustomAttribute<HiraConsoleAttribute>();
+                var consoleMethods = consoleType
+                    .GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
-				foreach (var method in consoleMethods)
-				{
-					var commandName = $"{consoleType.Name}.{method.Name}".ToLower();
+                var consoleTypeName = string.IsNullOrWhiteSpace(consoleAttributeOnType.Name) ? consoleType.Name : consoleAttributeOnType.Name;
+
+				foreach (var consoleMethod in consoleMethods)
+                {
+                    // ignore any method that does not have HiraConsoleAttribute attribute
+                    var consoleAttributeOnMethod = consoleMethod.GetCustomAttribute<HiraConsoleAttribute>();
+                    if (consoleAttributeOnMethod == null) continue;
+
+                    var methodTypeName = string.IsNullOrWhiteSpace(consoleAttributeOnMethod.Name) ? consoleMethod.Name : consoleAttributeOnMethod.Name;
+
+					var commandName = $"{consoleTypeName}.{methodTypeName}".ToLower();
 
 					if (db.ContainsKey(commandName))
 					{
@@ -35,7 +42,7 @@ namespace HiraEngine.Components.Console.Internal
 						continue;
 					}
 
-					if (!method.TryConvertToCommand(out var command))
+					if (!consoleMethod.TryConvertToCommand(out var command))
 					{
 						Debug.LogError($"Unsupported command detected: {commandName}.");
 						continue;
