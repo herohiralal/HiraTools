@@ -31,7 +31,7 @@ namespace HiraEngine.Components.Console.Internal
         public void Toggle()
         {
             _consoleActive = !_consoleActive;
-            Time.timeScale = _consoleActive ? 0f : 1f;
+            // Time.timeScale = _consoleActive ? 0f : 1f;
             gui.enabled = _consoleActive;
             enabled = !_consoleActive;
         }

@@ -15,26 +15,27 @@ namespace HiraEngine.Components.Console.Internal
 			var db = new Dictionary<string, ConsoleCommand>();
 			var commandList = new List<string>();
 
-			var consoleTypes = typeof(HiraConsoleAttribute)
+			var consoleTypes = typeof(HiraConsoleTypeAttribute)
 				.GetTypesWithThisAttribute(true);
 
 			foreach (var consoleType in consoleTypes)
             {
-                var consoleAttributeOnType = consoleType.GetCustomAttribute<HiraConsoleAttribute>();
+                var consoleAttributeOnType = consoleType.GetCustomAttribute<HiraConsoleTypeAttribute>();
                 var consoleMethods = consoleType
                     .GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
-                var consoleTypeName = string.IsNullOrWhiteSpace(consoleAttributeOnType.Name) ? consoleType.Name : consoleAttributeOnType.Name;
+                var consoleTypeName = consoleAttributeOnType.Name ?? consoleType.Name;
+                if (consoleAttributeOnType.AddDot) consoleTypeName += '.';
 
 				foreach (var consoleMethod in consoleMethods)
                 {
                     // ignore any method that does not have HiraConsoleAttribute attribute
-                    var consoleAttributeOnMethod = consoleMethod.GetCustomAttribute<HiraConsoleAttribute>();
+                    var consoleAttributeOnMethod = consoleMethod.GetCustomAttribute<HiraConsoleCallableAttribute>();
                     if (consoleAttributeOnMethod == null) continue;
 
                     var methodTypeName = string.IsNullOrWhiteSpace(consoleAttributeOnMethod.Name) ? consoleMethod.Name : consoleAttributeOnMethod.Name;
 
-					var commandName = $"{consoleTypeName}.{methodTypeName}".ToLower();
+					var commandName = $"{consoleTypeName}{methodTypeName}".ToLower();
 
 					if (db.ContainsKey(commandName))
 					{
