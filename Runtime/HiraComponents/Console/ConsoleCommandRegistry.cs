@@ -85,14 +85,24 @@ namespace HiraEngine.Components.Console.Internal
 			return true;
 		}
 
-		public static bool TryInvoke(string commandline)
+		public static void TryInvoke(string commandline)
 		{
             ParsingUtility.ParseCommandline(commandline, out var command, out var args);
-			return database.ContainsKey(command) && database[command].TryInvoke(args);
+            
+            if (!database.ContainsKey(command))
+	            throw new InvalidOperationException($"Could not recognize the command {command}.");
+            
+            database[command].TryInvoke(args);
 		}
 
 		public static void GetSimilarCommands(string match, List<CommandMetadata> outputBuffer)
 		{
+			if (string.IsNullOrWhiteSpace(match))
+			{
+				foreach (var c in COMMANDS) outputBuffer.Add(c);
+				return;
+			}
+			
 			foreach (var s in COMMANDS)
 			{
 				if (s.CommandName.Contains(match))

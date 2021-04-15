@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace HiraEngine.Components.Console.Internal
@@ -27,6 +26,7 @@ namespace HiraEngine.Components.Console.Internal
         private void OnEnable()
         {
 	        _similarCommands.Clear();
+	        ConsoleCommandRegistry.GetSimilarCommands("", _similarCommands);
             input = "";
             _needToFocus = true;
         }
@@ -46,21 +46,11 @@ namespace HiraEngine.Components.Console.Internal
             }
             y += 20f + 5f; // commandline height + padding
 
-            if (receivedInput.Length >= 3)
-            {
-	            if (receivedInput != input)
-	            {
-		            _similarCommands.Clear();
-		            ConsoleCommandRegistry.GetSimilarCommands(receivedInput, _similarCommands);
-	            }
-            }
-            else
-            {
-	            _similarCommands.Clear();
-                var infoLabelRect = new Rect(5f, y, Screen.width - 10f, 20f);
-	            GUI.Label(infoLabelRect, "Please enter 3+ letters to search correctly.");
-	            y += infoLabelRect.height + 5f;
-            }
+			if (receivedInput != input)
+			{
+				_similarCommands.Clear();
+				ConsoleCommandRegistry.GetSimilarCommands(receivedInput, _similarCommands);
+			}
 
             input = receivedInput;
 
@@ -109,8 +99,7 @@ namespace HiraEngine.Components.Console.Internal
             {
 	            var currentInput = input.Replace("\n", "");
 	            input = "";
-	            if (!ConsoleCommandRegistry.TryInvoke(currentInput))
-		            throw new InvalidOperationException("Command unrecognized.");
+	            ConsoleCommandRegistry.TryInvoke(currentInput);
             }
         }
     }

@@ -47,24 +47,23 @@ namespace HiraEngine.Components.Console.Internal
 
 		public static bool IsTypeSupported(Type type) => supported_types.ContainsKey(type);
 
-		public bool TryInvoke(string args)
+		public void TryInvoke(string args)
 		{
 			var parsedArgs = args.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
 			var parameters = new object[_argumentCount];
 
 			if (parsedArgs.Length < _argumentCount)
-				return false;
+				throw new InvalidOperationException("Not enough number of arguments.");
 
 			for (byte i = 0; i < _argumentCount; i++)
 			{
 				if (!ParsingUtility.TryParse(parsedArgs[i], GetArgumentType(i), out var parsedParameter))
-					return false;
+					throw new InvalidCastException($"Could not correctly parse the argument {parsedArgs[i]} as {GetArgumentType(i)}.");
 
 				parameters[i] = parsedParameter;
 			}
 
 			_method.Invoke(null, parameters);
-			return true;
 		}
         
         private HiraConsoleCommandArgumentType GetArgumentType(byte index) => index switch
