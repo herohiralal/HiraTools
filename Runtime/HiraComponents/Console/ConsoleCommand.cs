@@ -84,9 +84,9 @@ namespace HiraEngine.Components.Console.Internal
             {
                 var sb = new StringBuilder(100);
                 var parameters = _method.GetParameters();
-                foreach (var parameterInfo in parameters)
+                for (byte i = 0; i < parameters.Length; i++)
                 {
-                    sb.Append($" [{parameterInfo.ParameterType.Name} {parameterInfo.Name}]");
+	                sb.Append($" [{GetArgumentType(i)} {parameters[i].Name}]");
                 }
 
                 return sb.ToString();
