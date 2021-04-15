@@ -9,7 +9,7 @@ namespace HiraEngine.Components.Console.Internal
         [SerializeField] private string input = "";
 
         [SerializeField] private ConsoleController controller = null;
-        private readonly List<string> _similarCommands = new List<string>();
+        private readonly List<CommandMetadata> _similarCommands = new List<CommandMetadata>();
         
         private bool _needToFocus = false;
         private Vector2 _scroll = Vector2.zero;
@@ -81,11 +81,11 @@ namespace HiraEngine.Components.Console.Internal
 		            var commandNameRect = new Rect(6f, 6f + (i * 20f), innerRect.width - 6f, 18f);
 
                     var currentSimilarCommand = _similarCommands[i];
-                    if (GUI.Button(commandNameRect, currentSimilarCommand, GUI.skin.label))
+                    if (GUI.Button(commandNameRect, currentSimilarCommand.DisplayName, GUI.skin.label))
                     {
                         var t = (TextEditor) GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
-                        t.text = currentSimilarCommand;
-                        input = currentSimilarCommand;
+                        t.text = currentSimilarCommand.CommandName;
+                        input = currentSimilarCommand.CommandName;
                         t.MoveTextEnd();
                     }
                 }

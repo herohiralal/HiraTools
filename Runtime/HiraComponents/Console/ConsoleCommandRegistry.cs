@@ -5,15 +5,15 @@ using UnityEngine;
 
 namespace HiraEngine.Components.Console.Internal
 {
-	internal static class ConsoleCommandRegistry
+    internal static class ConsoleCommandRegistry
 	{
 		private static readonly Dictionary<string, ConsoleCommand> database;
-		public static readonly string[] COMMANDS;
+		public static readonly CommandMetadata[] COMMANDS;
 
 		static ConsoleCommandRegistry()
 		{
 			var db = new Dictionary<string, ConsoleCommand>();
-			var commandList = new List<string>();
+			var commandList = new List<CommandMetadata>();
 
 			var consoleTypes = typeof(HiraConsoleTypeAttribute)
 				.GetTypesWithThisAttribute(true);
@@ -49,7 +49,7 @@ namespace HiraEngine.Components.Console.Internal
 						continue;
 					}
 					
-					commandList.Add(commandName);
+					commandList.Add(new CommandMetadata(commandName, command.ArgumentMetadata));
 					db.Add(commandName, command);
 				}
 			}
@@ -85,20 +85,17 @@ namespace HiraEngine.Components.Console.Internal
 			return true;
 		}
 
-		public static bool TryInvoke(string command)
+		public static bool TryInvoke(string commandline)
 		{
-			var parsedCommand = command.Split(new[] {' '}, 2, StringSplitOptions.RemoveEmptyEntries);
-			command = parsedCommand[0].ToLower();
-			var args = parsedCommand.Length > 1 ? parsedCommand[1] : "";
-
+            ParsingUtility.ParseCommandline(commandline, out var command, out var args);
 			return database.ContainsKey(command) && database[command].TryInvoke(args);
 		}
 
-		public static void GetSimilarCommands(string match, List<string> outputBuffer)
+		public static void GetSimilarCommands(string match, List<CommandMetadata> outputBuffer)
 		{
 			foreach (var s in COMMANDS)
 			{
-				if (s.Contains(match))
+				if (s.CommandName.Contains(match))
 					outputBuffer.Add(s);
 			}
 		}
