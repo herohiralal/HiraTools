@@ -20,7 +20,6 @@ namespace HiraEngine.Components.Console.Internal
         {
             gui.enabled = true;
             if (gui != null) Destroy(gui);
-            ConsoleCommandRegistry.Cleanup();
         }
 
         private void Update()
@@ -31,7 +30,6 @@ namespace HiraEngine.Components.Console.Internal
         public void Toggle()
         {
             _consoleActive = !_consoleActive;
-            // Time.timeScale = _consoleActive ? 0f : 1f;
             gui.enabled = _consoleActive;
             enabled = !_consoleActive;
         }

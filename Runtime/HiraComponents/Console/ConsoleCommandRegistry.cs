@@ -58,11 +58,6 @@ namespace HiraEngine.Components.Console.Internal
 			database = db;
 		}
 
-		public static void Cleanup()
-		{
-			database.Clear();
-		}
-
 		private static bool TryConvertToCommand(this MethodInfo mi, out ConsoleCommand command)
 		{
 			var parameters = mi.GetParameters();
