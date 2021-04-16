@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace HiraEngine.Components.Console.Internal
 {
@@ -9,17 +10,28 @@ namespace HiraEngine.Components.Console.Internal
     {
         private bool _consoleActive = false;
         [SerializeField] private ConsoleGUI gui = null;
+        [SerializeField] private ConsoleExecutor executor = null;
+
+        private void OnValidate()
+        {
+	        executor = GetComponent<ConsoleExecutor>();
+	        gui = GetComponent<ConsoleGUI>();
+        }
 
         private void Awake()
         {
-            gui = gameObject.AddComponent<ConsoleGUI>();
+	        if (executor == null) executor = gameObject.AddComponent<ConsoleExecutor>();
+            if (gui == null) gui = gameObject.AddComponent<ConsoleGUI>();
+            gui.OnClose += OnGUIClose;
             gui.enabled = false;
         }
 
         private void OnDestroy()
         {
             gui.enabled = true;
+            gui.OnClose -= OnGUIClose;
             if (gui != null) Destroy(gui);
+            if (executor != null) Destroy(executor);
         }
 
         private void Update()
@@ -27,11 +39,15 @@ namespace HiraEngine.Components.Console.Internal
             if (Input.GetKeyDown(KeyCode.BackQuote)) Toggle();
         }
 
-        public void Toggle()
+        private void OnGUIClose() => SetConsoleGUIVisibility(false);
+
+        private void Toggle() => SetConsoleGUIVisibility(!_consoleActive);
+
+        private void SetConsoleGUIVisibility(bool value)
         {
-            _consoleActive = !_consoleActive;
-            gui.enabled = _consoleActive;
-            enabled = !_consoleActive;
+	        _consoleActive = value;
+	        gui.enabled = value;
+	        enabled = !value;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace HiraEngine.Components.Console.Internal
@@ -6,21 +7,28 @@ namespace HiraEngine.Components.Console.Internal
     public class ConsoleGUI : MonoBehaviour
     {
         [SerializeField] private string input = "";
+        [SerializeField] private ConsoleExecutor executor = null;
 
-        [SerializeField] private ConsoleController controller = null;
+        public event System.Action OnClose = null;
+
         private readonly List<CommandMetadata> _similarCommands = new List<CommandMetadata>();
         
         private bool _needToFocus = false;
         private Vector2 _scroll = Vector2.zero;
 
+        private void OnValidate()
+        {
+	        executor = GetComponent<ConsoleExecutor>();
+        }
+
         private void Awake()
         {
-            controller = GetComponent<ConsoleController>();
+            if (executor == null) executor = GetComponent<ConsoleExecutor>();
         }
 
         private void OnDestroy()
         {
-            controller = null;
+            executor = null;
         }
 
         private void OnEnable()
@@ -92,7 +100,7 @@ namespace HiraEngine.Components.Console.Internal
 
             if (input.Contains("`"))
             {
-                controller.Toggle();
+                OnClose.Invoke();
                 GUI.FocusControl(null);
             }
             else if (input.Contains("\n"))
