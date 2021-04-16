@@ -8,7 +8,9 @@ namespace HiraEngine.Components.Console.Internal
     internal static class ConsoleCommandRegistry
 	{
 		private static readonly Dictionary<string, ConsoleCommand> database;
-		public static readonly CommandMetadata[] COMMANDS;
+		private static readonly CommandMetadata[] commands;
+
+		public static IReadOnlyDictionary<string, ConsoleCommand> Database => database;
 
 		static ConsoleCommandRegistry()
 		{
@@ -54,7 +56,7 @@ namespace HiraEngine.Components.Console.Internal
 				}
 			}
 
-			COMMANDS = commandList.ToArray();
+			commands = commandList.ToArray();
 			database = db;
 		}
 
@@ -80,28 +82,18 @@ namespace HiraEngine.Components.Console.Internal
 			return true;
 		}
 
-		public static void TryInvoke(string commandline)
-		{
-            ParsingUtility.ParseCommandline(commandline, out var command, out var args);
-            
-            if (!database.ContainsKey(command))
-	            throw new InvalidOperationException($"Could not recognize the command {command}.");
-            
-            database[command].TryInvoke(args);
-		}
-
 		public static void GetSimilarCommands(string match, List<CommandMetadata> outputBuffer)
 		{
 			if (string.IsNullOrWhiteSpace(match))
 			{
-				foreach (var c in COMMANDS) outputBuffer.Add(c);
+				foreach (var cm in commands) outputBuffer.Add(cm);
 				return;
 			}
 			
-			foreach (var s in COMMANDS)
+			foreach (var cm in commands)
 			{
-				if (s.CommandName.Contains(match))
-					outputBuffer.Add(s);
+				if (cm.CommandName.Contains(match))
+					outputBuffer.Add(cm);
 			}
 		}
 	}

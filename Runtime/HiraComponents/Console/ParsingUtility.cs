@@ -1,16 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace HiraEngine.Components.Console.Internal
 {
     internal static class ParsingUtility
     {
-        internal static void ParseCommandline(string commandline, out string command, out string args)
-        {
-            var parsedCommand = commandline.Split(new[] {' '}, 2, StringSplitOptions.RemoveEmptyEntries);
-            command = parsedCommand[0].ToLower();
-            args = parsedCommand.Length > 1 ? parsedCommand[1] : "";
-        }
+	    internal static void ParseCommandline(string commandline, out string command, List<string> argsBuffer)
+	    {
+		    var doubleQuotesCount = commandline.Count(c => c == '"');
+		    if (doubleQuotesCount % 2 == 1)
+			    throw new Exception("Odd number of double quotes in the commandline.");
+
+		    var commandAndArgsSplit = commandline.Split(new[] {' '}, 2, StringSplitOptions.RemoveEmptyEntries);
+		    command = commandAndArgsSplit[0];
+
+		    if (commandAndArgsSplit.Length == 1) return;
+
+		    var allArguments = commandAndArgsSplit[1].Split('"')
+			    .SelectMany((element, index) => index % 2 == 0
+				    ? element.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries) // if the zero-based index is even, treat normally
+				    : new[] {element}); // otherwise use the whole element as just one
+
+		    foreach (var argument in allArguments) argsBuffer.Add(argument);
+	    }
 
         internal static bool TryParse(string arg, ConsoleCommandArgumentType argType, out object output)
 		{

@@ -9,7 +9,7 @@ namespace HiraEngine.Components.Console.Internal
         [SerializeField] private string input = "";
         [SerializeField] private ConsoleExecutor executor = null;
 
-        public event System.Action OnClose = null;
+        public event Action OnClose = null;
 
         private readonly List<CommandMetadata> _similarCommands = new List<CommandMetadata>();
         
@@ -107,7 +107,7 @@ namespace HiraEngine.Components.Console.Internal
             {
 	            var currentInput = input.Replace("\n", "");
 	            input = "";
-	            ConsoleCommandRegistry.TryInvoke(currentInput);
+	            executor.Execute(currentInput);
             }
         }
     }
