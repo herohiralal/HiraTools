@@ -6,24 +6,24 @@ namespace HiraEngine.Components.Console.Internal
 {
     internal partial class ConsoleCommand
     {
-        private static readonly Dictionary<Type, HiraConsoleCommandArgumentType> supported_types =
-            new Dictionary<Type, HiraConsoleCommandArgumentType>
+        private static readonly Dictionary<Type, ConsoleCommandArgumentType> supported_types =
+            new Dictionary<Type, ConsoleCommandArgumentType>
             {
-                {typeof(bool), HiraConsoleCommandArgumentType.Boolean},
-                {typeof(byte), HiraConsoleCommandArgumentType.Byte},
-                {typeof(sbyte), HiraConsoleCommandArgumentType.SByte},
-                {typeof(short), HiraConsoleCommandArgumentType.Short},
-                {typeof(ushort), HiraConsoleCommandArgumentType.UShort},
-                {typeof(int), HiraConsoleCommandArgumentType.Int},
-                {typeof(uint), HiraConsoleCommandArgumentType.UInt},
-                {typeof(long), HiraConsoleCommandArgumentType.Long},
-                {typeof(ulong), HiraConsoleCommandArgumentType.ULong},
-                {typeof(float), HiraConsoleCommandArgumentType.Float},
-                {typeof(double), HiraConsoleCommandArgumentType.Double},
-                {typeof(string), HiraConsoleCommandArgumentType.String},
-                {typeof(Vector2), HiraConsoleCommandArgumentType.Vector2},
-                {typeof(Vector3), HiraConsoleCommandArgumentType.Vector3},
-                {typeof(Quaternion), HiraConsoleCommandArgumentType.Quaternion},
+                {typeof(bool), ConsoleCommandArgumentType.Boolean},
+                {typeof(byte), ConsoleCommandArgumentType.Byte},
+                {typeof(sbyte), ConsoleCommandArgumentType.SByte},
+                {typeof(short), ConsoleCommandArgumentType.Short},
+                {typeof(ushort), ConsoleCommandArgumentType.UShort},
+                {typeof(int), ConsoleCommandArgumentType.Int},
+                {typeof(uint), ConsoleCommandArgumentType.UInt},
+                {typeof(long), ConsoleCommandArgumentType.Long},
+                {typeof(ulong), ConsoleCommandArgumentType.ULong},
+                {typeof(float), ConsoleCommandArgumentType.Float},
+                {typeof(double), ConsoleCommandArgumentType.Double},
+                {typeof(string), ConsoleCommandArgumentType.String},
+                {typeof(Vector2), ConsoleCommandArgumentType.Vector2},
+                {typeof(Vector3), ConsoleCommandArgumentType.Vector3},
+                {typeof(Quaternion), ConsoleCommandArgumentType.Quaternion},
             };
     }
 }

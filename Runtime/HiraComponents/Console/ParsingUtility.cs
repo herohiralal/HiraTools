@@ -12,11 +12,11 @@ namespace HiraEngine.Components.Console.Internal
             args = parsedCommand.Length > 1 ? parsedCommand[1] : "";
         }
 
-        internal static bool TryParse(string arg, HiraConsoleCommandArgumentType argType, out object output)
+        internal static bool TryParse(string arg, ConsoleCommandArgumentType argType, out object output)
 		{
             switch (argType)
 			{
-				case HiraConsoleCommandArgumentType.Boolean:
+				case ConsoleCommandArgumentType.Boolean:
 					if (bool.TryParse(arg, out var result))
 					{
 						output = result;
@@ -24,7 +24,7 @@ namespace HiraEngine.Components.Console.Internal
 					}
 
 					break;
-				case HiraConsoleCommandArgumentType.Byte:
+				case ConsoleCommandArgumentType.Byte:
 					if (byte.TryParse(arg, out var byteResult))
 					{
 						output = byteResult;
@@ -32,7 +32,7 @@ namespace HiraEngine.Components.Console.Internal
 					}
 
 					break;
-				case HiraConsoleCommandArgumentType.SByte:
+				case ConsoleCommandArgumentType.SByte:
 					if (sbyte.TryParse(arg, out var sbyteResult))
 					{
 						output = sbyteResult;
@@ -40,7 +40,7 @@ namespace HiraEngine.Components.Console.Internal
 					}
 
 					break;
-				case HiraConsoleCommandArgumentType.Short:
+				case ConsoleCommandArgumentType.Short:
 					if (short.TryParse(arg, out var shortResult))
 					{
 						output = shortResult;
@@ -48,7 +48,7 @@ namespace HiraEngine.Components.Console.Internal
 					}
 
 					break;
-				case HiraConsoleCommandArgumentType.UShort:
+				case ConsoleCommandArgumentType.UShort:
 					if (ushort.TryParse(arg, out var ushortResult))
 					{
 						output = ushortResult;
@@ -56,7 +56,7 @@ namespace HiraEngine.Components.Console.Internal
 					}
 
 					break;
-				case HiraConsoleCommandArgumentType.Int:
+				case ConsoleCommandArgumentType.Int:
 					if (int.TryParse(arg, out var intResult))
 					{
 						output = intResult;
@@ -64,7 +64,7 @@ namespace HiraEngine.Components.Console.Internal
 					}
 
 					break;
-				case HiraConsoleCommandArgumentType.UInt:
+				case ConsoleCommandArgumentType.UInt:
 					if (uint.TryParse(arg, out var uintResult))
 					{
 						output = uintResult;
@@ -72,7 +72,7 @@ namespace HiraEngine.Components.Console.Internal
 					}
 
 					break;
-				case HiraConsoleCommandArgumentType.Long:
+				case ConsoleCommandArgumentType.Long:
 					if (long.TryParse(arg, out var longResult))
 					{
 						output = longResult;
@@ -80,7 +80,7 @@ namespace HiraEngine.Components.Console.Internal
 					}
 
 					break;
-				case HiraConsoleCommandArgumentType.ULong:
+				case ConsoleCommandArgumentType.ULong:
 					if (ulong.TryParse(arg, out var ulongResult))
 					{
 						output = ulongResult;
@@ -88,7 +88,7 @@ namespace HiraEngine.Components.Console.Internal
 					}
 
 					break;
-				case HiraConsoleCommandArgumentType.Float:
+				case ConsoleCommandArgumentType.Float:
 					if (float.TryParse(arg, out var floatResult))
 					{
 						output = floatResult;
@@ -96,7 +96,7 @@ namespace HiraEngine.Components.Console.Internal
 					}
 
 					break;
-				case HiraConsoleCommandArgumentType.Double:
+				case ConsoleCommandArgumentType.Double:
 					if (double.TryParse(arg, out var doubleResult))
 					{
 						output = doubleResult;
@@ -104,11 +104,11 @@ namespace HiraEngine.Components.Console.Internal
 					}
 
 					break;
-				case HiraConsoleCommandArgumentType.String:
+				case ConsoleCommandArgumentType.String:
 					output = arg;
 					
 					return true;
-				case HiraConsoleCommandArgumentType.Vector2:
+				case ConsoleCommandArgumentType.Vector2:
 					var v2SplitArgs = arg.Split(new[]{','}, StringSplitOptions.RemoveEmptyEntries);
 					if (v2SplitArgs.Length >= 2
 					    && float.TryParse(v2SplitArgs[0], out var v2X)
@@ -119,7 +119,7 @@ namespace HiraEngine.Components.Console.Internal
 					}
 
 					break;
-				case HiraConsoleCommandArgumentType.Vector3:
+				case ConsoleCommandArgumentType.Vector3:
 					var v3SplitArgs = arg.Split(new[]{','}, StringSplitOptions.RemoveEmptyEntries);
 					if (v3SplitArgs.Length >= 3
 					    && float.TryParse(v3SplitArgs[0], out var v3X)
@@ -131,7 +131,7 @@ namespace HiraEngine.Components.Console.Internal
 					}
 
 					break;
-				case HiraConsoleCommandArgumentType.Quaternion:
+				case ConsoleCommandArgumentType.Quaternion:
 					var qSplitArgs = arg.Split(new[]{','}, StringSplitOptions.RemoveEmptyEntries);
 					if (qSplitArgs.Length >= 4
 					    && float.TryParse(qSplitArgs[0], out var qX)

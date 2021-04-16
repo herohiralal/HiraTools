@@ -1,6 +1,6 @@
 ﻿namespace HiraEngine.Components.Console.Internal
 {
-    internal enum HiraConsoleCommandArgumentType : byte
+    internal enum ConsoleCommandArgumentType : byte
     {
         Boolean,
         Byte,

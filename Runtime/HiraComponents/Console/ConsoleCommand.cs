@@ -38,12 +38,12 @@ namespace HiraEngine.Components.Console.Internal
 
 		private readonly MethodInfo _method;
 		private readonly byte _argumentCount;
-		private readonly HiraConsoleCommandArgumentType _arg1;
-		private readonly HiraConsoleCommandArgumentType _arg2;
-		private readonly HiraConsoleCommandArgumentType _arg3;
-		private readonly HiraConsoleCommandArgumentType _arg4;
-		private readonly HiraConsoleCommandArgumentType _arg5;
-		private readonly HiraConsoleCommandArgumentType _arg6;
+		private readonly ConsoleCommandArgumentType _arg1;
+		private readonly ConsoleCommandArgumentType _arg2;
+		private readonly ConsoleCommandArgumentType _arg3;
+		private readonly ConsoleCommandArgumentType _arg4;
+		private readonly ConsoleCommandArgumentType _arg5;
+		private readonly ConsoleCommandArgumentType _arg6;
 
 		public static bool IsTypeSupported(Type type) => supported_types.ContainsKey(type);
 
@@ -66,7 +66,7 @@ namespace HiraEngine.Components.Console.Internal
 			_method.Invoke(null, parameters);
 		}
         
-        private HiraConsoleCommandArgumentType GetArgumentType(byte index) => index switch
+        private ConsoleCommandArgumentType GetArgumentType(byte index) => index switch
 			{
 				0 => _arg1,
 				1 => _arg2,
