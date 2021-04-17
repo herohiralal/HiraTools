@@ -18,7 +18,7 @@ namespace HiraEngine.Components.Console.Internal
             
 			var executableCommand = ExecutableCommand;
 			
-			executableCommand.Method.Invoke(null, GetArguments(executableCommand));
+			executableCommand.Execute(GetArguments(executableCommand));
 		}
 
 		private void ParseInput()

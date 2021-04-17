@@ -51,7 +51,7 @@ namespace HiraEngine.Components.Console.Internal
 						continue;
 					}
 					
-					commandList.Add(new CommandMetadata(commandName, command.ArgumentMetadata));
+					commandList.Add(new CommandMetadata(commandName, consoleMethod.GetArgumentMetadata()));
 					db.Add(commandName, command);
 				}
 			}
@@ -81,6 +81,18 @@ namespace HiraEngine.Components.Console.Internal
 			command = new ConsoleCommand(mi, parameters);
 			return true;
 		}
+
+        private static string GetArgumentMetadata(this MethodInfo methodInfo)
+        {
+            var sb = new System.Text.StringBuilder(100);
+            var parameters = methodInfo.GetParameters();
+            for (byte i = 0; i < parameters.Length; i++)
+            {
+                sb.Append($" [{ConsoleCommand.SUPPORTED_TYPES[parameters[i].ParameterType]} {parameters[i].Name}]");
+            }
+
+            return sb.ToString();
+        }
 
 		public static void GetSimilarCommands(string match, List<CommandMetadata> outputBuffer)
 		{

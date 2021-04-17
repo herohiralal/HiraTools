@@ -6,7 +6,7 @@ namespace HiraEngine.Components.Console.Internal
 {
     internal partial class ConsoleCommand
     {
-        private static readonly Dictionary<Type, ConsoleCommandArgumentType> supported_types =
+        public static readonly Dictionary<Type, ConsoleCommandArgumentType> SUPPORTED_TYPES =
             new Dictionary<Type, ConsoleCommandArgumentType>
             {
                 {typeof(bool), ConsoleCommandArgumentType.Boolean},
