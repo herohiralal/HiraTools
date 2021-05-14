@@ -1,20 +1,19 @@
 {
   "name": "com.rohanjadav.hiraengine",
-  "version": "1.6.0",
+  "version": "1.6.5",
   "displayName": "HiraEngine",
   "description": "A bunch of tools that cut down significantly on the boilerplate you might need to write.\n\nAnd as of the later versions, much much more.",
-  "unity": "2020.2",
-  "unityRelease": "1f1",
+  "unity": "2021.1",
+  "unityRelease": "5f1",
   "keywords": [
     "HiraEngine"
   ],
   "author": {
     "name": "Rohan Jadav",
-    "email": "",
-    "url": "https://neverendingwhining.wordpress.com/"
+    "email": ""
   },
   "dependencies": {
-    "com.unity.burst": "1.4.6",
+    "com.unity.burst": "1.5.0",
     "com.unity.mathematics": "1.2.1"
   },
   "repository": {
