@@ -1,8 +1,6 @@
 ﻿public class ThreadSafeObject<T>
 {
-    public ThreadSafeObject() => _value = default;
-
-    public ThreadSafeObject(T value) => _value = value;
+	public ThreadSafeObject(T value = default) => _value = value;
 
     private T _value;
     private readonly object _lock = new object();

@@ -8,11 +8,8 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class HiraManagerAttribute : Attribute
     {
-        public HiraManagerAttribute() : this(null)
-        {
-        }
+        public HiraManagerAttribute(string defaultPrefabLocation = null) => DefaultPrefabLocation = defaultPrefabLocation;
         
-        public HiraManagerAttribute(string defaultPrefabLocation) => DefaultPrefabLocation = defaultPrefabLocation;
         public readonly string DefaultPrefabLocation;
         public byte Priority { get; set; } = 0;
     }

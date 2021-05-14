@@ -4,6 +4,7 @@ using UnityEngine.Assertions;
 
 namespace UnityEngine
 {
+	[HiraManager]
 	public class HiraCommandBuffer : MonoBehaviour
 	{
 		private struct ActiveTimer
@@ -53,7 +54,14 @@ namespace UnityEngine
 				if (_commandBuffer[i].Active && _commandBuffer[i].TimeRemaining <= 0)
 				{
 					Invalidate(i);
-					_commandBuffer[i].Action.Invoke();
+					try
+					{
+						_commandBuffer[i].Action.Invoke();
+					}
+					catch (Exception e)
+					{
+						Debug.LogException(e);
+					}
 				}
 			}
 		}
@@ -119,7 +127,7 @@ namespace UnityEngine
 
 	public readonly struct TimerHandle
 	{
-		public TimerHandle(HiraCommandBuffer owner, ushort bufferIndex, ulong hash)
+		internal TimerHandle(HiraCommandBuffer owner, ushort bufferIndex, ulong hash)
 		{
 			_owner = owner;
 			BufferIndex = bufferIndex;
@@ -153,8 +161,11 @@ namespace UnityEngine
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Cancel() => _owner.CancelTimer(in this);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void ChangeAction(Action action) => _owner.ChangeAction(in this, action);
+		
+		public Action OnCompletionDelegate
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => _owner.ChangeAction(in this, value);
+		}
 	}
 }

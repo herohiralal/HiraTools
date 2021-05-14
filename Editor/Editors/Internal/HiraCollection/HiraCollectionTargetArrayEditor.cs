@@ -73,7 +73,7 @@ namespace HiraEditor.Internal
             }
         }
 
-        private void AddObjectToFileIfNotPresent(Object target, Object main)
+        private static void AddObjectToFileIfNotPresent(Object target, Object main)
         {
             if (target is IHiraCollectionEditorInterface hiraCollection)
             {
@@ -296,7 +296,7 @@ namespace HiraEditor.Internal
             AssetDatabase.SaveAssets();
         }
 
-        private void DisposeObject(Object target)
+        private static void DisposeObject(Object target)
         {
             // delete the parent object first because Unity will perform undo operations as a stack, so if the parent object is destroyed the last,
             // it'll be recreated the first, having its references null, causing assert failures
