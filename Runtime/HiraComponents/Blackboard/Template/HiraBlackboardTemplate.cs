@@ -116,6 +116,9 @@ namespace UnityEngine
 
         public event InstanceSyncKeyUpdateDelegate OnInstanceSyncKeyUpdate = delegate { };
 
+        public unsafe T GetInstanceSyncedValue<T>(ushort keyIndex) where T : unmanaged =>
+	        *(T*) ((byte*) _template.GetUnsafePtr() + keyIndex);
+
         public unsafe void UpdateInstanceSyncedKey<T>(ushort keyIndex, T value) where T : unmanaged
         {
             *(T*) ((byte*) _template.GetUnsafePtr() + keyIndex) = value;
