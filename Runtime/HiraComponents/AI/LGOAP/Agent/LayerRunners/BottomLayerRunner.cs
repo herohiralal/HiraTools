@@ -94,7 +94,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 		{
 			if (success)
 			{
-                using (new BlackboardComponentBroadcastDisabler())
+                using (new BlackboardComponentBroadcastDisabler(_blackboard))
                     _domain.Actions[_result.First.CurrentIndex].Effect.ApplyTo(_blackboard);
 
 				if (_result.First.CanMoveNext)

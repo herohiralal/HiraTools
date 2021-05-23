@@ -81,7 +81,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
 
 		public void OnChildFinished()
 		{
-            using (new BlackboardComponentBroadcastDisabler())
+            using (new BlackboardComponentBroadcastDisabler(_blackboard))
                 _domain.Restarters.ApplyTo(_blackboard);
 
 			SchedulePlanner();
