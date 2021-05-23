@@ -1,12 +1,14 @@
 using System;
 using System.Runtime.CompilerServices;
 using UnityEngine.Assertions;
+using UnityEngine.Scripting;
 
 namespace UnityEngine
 {
 	[HiraManager]
 	public class HiraCommandBuffer : MonoBehaviour
 	{
+		public static HiraCommandBuffer Instance { get; [Preserve] private set; }
 		private struct ActiveTimer
 		{
 			internal bool Active;
@@ -15,7 +17,7 @@ namespace UnityEngine
 			internal Action Action;
 		}
 
-		[SerializeField] protected ushort bufferSize = 10;
+		[SerializeField] protected ushort bufferSize = 50;
 
 		private ActiveTimer[] _commandBuffer;
 		private System.Collections.Generic.Stack<ushort> _unusedCommandBufferIndices;
