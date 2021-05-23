@@ -58,6 +58,16 @@ namespace HiraEngine.Components.AI.Internal
 
         private void UpdateNavMeshAgentDestination(Vector3 targetPosition)
         {
+	        if (NavMesh.SamplePosition(targetPosition, out var hit, _tolerance, NavMesh.AllAreas))
+	        {
+		        targetPosition = hit.position;
+	        }
+	        else
+	        {
+		        _hasFailed = true;
+		        return;
+	        }
+	        
 	        _navMeshAgent.CalculatePath(targetPosition, _path);
 	        if (_path.status == NavMeshPathStatus.PathComplete)
 	        {
