@@ -9,6 +9,7 @@ namespace HiraEngine.Components.AI.Internal
         [HiraCollectionDropdown(typeof(VectorKey))]
         [SerializeField] private HiraBlackboardKey targetPosition = null;
 
+        [SerializeField] private bool followTarget = false;
         [SerializeField] private float speed = 3.5f;
         [SerializeField] private float tolerance = 0.1f;
 
@@ -16,7 +17,7 @@ namespace HiraEngine.Components.AI.Internal
         {
 	        if (target is IContainsComponent<NavMeshAgent> navigableTarget && navigableTarget.Component != null)
 	        {
-		        return GenericPool<StaticMoveToExecutable>.Retrieve().Init(navigableTarget.Component, blackboard, targetPosition, speed, tolerance);
+		        return GenericPool<StaticMoveToExecutable>.Retrieve().Init(navigableTarget.Component, blackboard, targetPosition, followTarget, speed, tolerance);
 	        }
 	        
 	        return AutoFailExecutable.INSTANCE;
