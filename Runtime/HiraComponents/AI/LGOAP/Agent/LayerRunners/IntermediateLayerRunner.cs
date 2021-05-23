@@ -92,7 +92,7 @@ namespace HiraEngine.Components.AI.LGOAP.Internal
         public void OnChildFinished()
         {
             using (new BlackboardComponentBroadcastDisabler(_blackboard))
-                _domain.IntermediateLayers[_layerIndex][_result.First.CurrentIndex].Effect.ApplyTo(_blackboard);
+                _domain.IntermediateLayers[_layerIndex][_result.First.CurrentElement].Effect.ApplyTo(_blackboard);
 
 			if (_result.First.CanMoveNext)
 			{
