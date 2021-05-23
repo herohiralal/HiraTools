@@ -46,7 +46,7 @@ namespace HiraEditor.Internal
 			if (IntermediateGoal.Collection3.Length > 0)
 				EditorGUILayout.LabelField("Targets", EditorStyles.boldLabel);
 
-			foreach (var targets in IntermediateGoal.Collection3)
+			foreach (var targets in IntermediateGoal.Collection4)
 			{
 				EditorGUILayout.LabelField(targets.ToString());
 			}
