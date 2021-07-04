@@ -14,22 +14,4 @@ namespace UnityEngine
         void SetValue<T>(string keyName, T value) where T : unmanaged;
         void SetValue<T>(ushort keyIndex, T value) where T : unmanaged;
     }
-
-    public readonly struct BlackboardComponentBroadcastDisabler : IDisposable
-    {
-        private readonly IBlackboardComponent _target;
-        private readonly bool _isMaster;
-        
-        public BlackboardComponentBroadcastDisabler(IBlackboardComponent target)
-        {
-            _target = target;
-            _isMaster = target.BroadcastKeyUpdateEvents;
-            _target.BroadcastKeyUpdateEvents = false;
-        }
-
-        public void Dispose()
-        {
-            if (_isMaster) _target.BroadcastKeyUpdateEvents = true;
-        }
-    }
 }

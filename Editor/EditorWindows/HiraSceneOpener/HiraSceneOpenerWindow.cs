@@ -77,7 +77,7 @@ namespace HiraEditor
 		private void Refresh()
 		{
 			RefreshSceneAssetList();
-			_list.Refresh();
+			_list.Rebuild();
 		}
 
 		private void RefreshSceneAssetList()

@@ -1,5 +1,4 @@
 ﻿using HiraEngine.Components.AI.LGOAP.Raw;
-using HiraEngine.Components.Blackboard.Internal;
 
 namespace HiraEngine.Components.AI.LGOAP
 {
@@ -9,7 +8,6 @@ namespace HiraEngine.Components.AI.LGOAP
 	    byte IntermediateLayerCount { get; }
 	    IntermediateGoal[][] IntermediateLayers { get; }
 	    Action[] Actions { get; }
-        IBlackboardEffector[] Restarters { get; } 
 		bool IsInitialized { get; }
         RawDomainData DomainData { get; }
     }
