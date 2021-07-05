@@ -1,6 +1,7 @@
 ﻿# Rider / Visual Studio generated files
 Plugins/.Source/.idea/
 Plugins/.Source/.vs/
+.vscode/
 
 # Native code built files
 Plugins/HiraEngine-Native.dll
